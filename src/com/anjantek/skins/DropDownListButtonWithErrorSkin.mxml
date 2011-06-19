@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+
+    ADOBE SYSTEMS INCORPORATED
+    Copyright 2010 Adobe Systems Incorporated
+    All Rights Reserved.
+
+    NOTICE: Adobe permits you to use, modify, and distribute this file
+    in accordance with the terms of the license agreement accompanying it.
+
+-->
+
+<!--- The default skin class for the anchor button on a Spark DropDownList component.  
+
+      @see spark.components.DropDownList        
+      @see spark.skins.spark.DropDownListSkin
+        
+      @langversion 3.0
+      @playerversion Flash 10
+      @playerversion AIR 1.5
+      @productversion Flex 4
+-->
+<s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" 
+    xmlns:fb="http://ns.adobe.com/flashbuilder/2009" minWidth="21" minHeight="21">
+	<fx:Metadata>[HostComponent("com.anjantek.controls.ButtonWithError")]</fx:Metadata>
+    
+     <!-- states -->
+    <s:states>
+        <s:State name="up" stateGroups="upGroup" />
+        <s:State name="over" stateGroups="overGroup" />
+        <s:State name="down" stateGroups="downGroup" />
+        <s:State name="disabled" />
+		
+		<s:State name="valid" stateGroups="validGroup" />
+		<s:State name="error" stateGroups="errorGroup" />
+		
+		<s:State name="upValid" stateGroups="upGroup, validGroup" />
+		<s:State name="overValid" stateGroups="overGroup, validGroup" />
+		<s:State name="downValid" stateGroups="downGroup, validGroup" />
+		
+		<s:State name="upError" stateGroups="upGroup, errorGroup" />
+		<s:State name="overError" stateGroups="overGroup, errorGroup" />
+		<s:State name="downError" stateGroups="downGroup, errorGroup" />
+		
+    </s:states>
+    
+    <!-- layer 1: shadow -->
+    <!--- @private -->
+    <s:Rect id="shadow" left="-1" right="-1" top="-1" bottom="-1" radiusX="2">
+        <s:fill>
+            <s:LinearGradient rotation="90">
+				<s:GradientEntry color="0x000000" 
+								 color.downGroup="0xFFFFFF"
+								 alpha="0.01"
+								 alpha.downGroup="0" />
+				<s:GradientEntry color="0x000000" 
+								 color.downGroup="0xFFFFFF" 
+								 alpha="0.07"
+								 alpha.downGroup="0.5" />
+            </s:LinearGradient>
+        </s:fill>
+    </s:Rect>
+    
+    <!-- layer 2: fill -->
+    <!--- @private -->
+	
+    <s:Rect id="fill" left="1" right="1" top="1" bottom="1" radiusX="2">
+        <s:fill>
+            <s:LinearGradient rotation="90">
+				<s:GradientEntry color="0xFFFFFF"
+								 color.over="0xBBBDBD" 
+								 color.down="0xAAAAAA" 
+								 
+								 color.upValid="0xCFFFD7"
+								 color.overValid="0x6CBD79"
+								 color.downValid="0x5EAA81"
+								 
+								 color.upError="0xFFDEDE"
+								 color.overError="0xBD867E"
+								 color.downError="0xAA6A5D"
+								 
+								 alpha="0.85" />
+				<s:GradientEntry color="0xD8D8D8"
+								 color.over="0x9FA0A1" 
+								 color.down="0x929496" 
+								 
+								 color.upValid="0x8DFFBB"
+								 color.overValid="0x48A17D"
+								 color.downValid="0x439669"
+								 
+								 color.upError="0xD8A9A2"
+								 color.overError="0xA16361"
+								 color.downError="0x96423F"
+								 
+								 alpha="0.85" />
+            </s:LinearGradient>
+        </s:fill>
+    </s:Rect>
+	
+    <!-- layer 3: fill lowlight -->
+    <!--- @private -->
+    <s:Rect id="lowlight" left="1" right="1" top="1" bottom="1" radiusX="2">
+        <s:fill>
+            <s:LinearGradient rotation="270">
+                <s:GradientEntry color="0x000000" ratio="0.0" alpha="0.0627" />
+                <s:GradientEntry color="0x000000" ratio="0.48" alpha="0.0099" />
+                <s:GradientEntry color="0x000000" ratio="0.48001" alpha="0" />
+            </s:LinearGradient>
+        </s:fill>
+    </s:Rect>
+    
+    <!-- layer 4: fill highlight -->
+    <!--- @private -->
+    <s:Rect id="highlight" left="1" right="1" top="1" bottom="1" radiusX="2">
+        <s:fill>
+            <s:LinearGradient rotation="90">
+                <s:GradientEntry color="0xFFFFFF"
+                                 ratio="0.0"
+                                 alpha="0.33" 
+                                 alpha.overGroup="0.22" 
+                                 alpha.downGroup="0.12"/>
+                <s:GradientEntry color="0xFFFFFF"
+                                 ratio="0.48"
+                                 alpha="0.33"
+                                 alpha.overGroup="0.22"
+                                 alpha.downGroup="0.12" />
+                <s:GradientEntry color="0xFFFFFF"
+                                 ratio="0.48001"
+                                 alpha="0" />
+            </s:LinearGradient>
+        </s:fill>
+    </s:Rect>
+    
+    <!-- layer 5: highlight stroke (all states except down) -->
+    <!--- @private -->
+    <s:Rect id="highlightStroke" left="1" right="1" top="1" bottom="1" excludeFrom="downGroup" radiusX="2">
+        <s:stroke>
+            <s:LinearGradientStroke rotation="90" weight="1">
+                <s:GradientEntry color="0xFFFFFF" alpha.overGroup="0.22" />
+                <s:GradientEntry color="0xD8D8D8" alpha.overGroup="0.22" />
+            </s:LinearGradientStroke>
+        </s:stroke>
+    </s:Rect>
+    
+    <!-- layer 6: highlight stroke (down state only) -->
+    <!--- @private -->
+    <s:Rect id="hldownstroke1" left="1" right="1" top="1" bottom="1" radiusX="2" includeIn="downGroup">
+        <s:stroke>
+            <s:LinearGradientStroke rotation="90" weight="1">
+                <s:GradientEntry color="0x000000" alpha="0.25" ratio="0.0" />
+                <s:GradientEntry color="0x000000" alpha="0.25" ratio="0.001" />
+                <s:GradientEntry color="0x000000" alpha="0.07" ratio="0.0011" />
+                <s:GradientEntry color="0x000000" alpha="0.07" ratio="0.965" />
+                <s:GradientEntry color="0x000000" alpha="0.00" ratio="0.9651" />
+            </s:LinearGradientStroke>
+        </s:stroke>
+    </s:Rect>
+    <!--- @private -->
+    <s:Rect id="hldownstroke2" left="2" right="2" top="2" bottom="2" radiusX="2" includeIn="downGroup">
+        <s:stroke>
+            <s:LinearGradientStroke rotation="90" weight="1">
+                <s:GradientEntry color="0x000000" alpha="0.09" ratio="0.0" />
+                <s:GradientEntry color="0x000000" alpha="0.00" ratio="0.0001" />
+            </s:LinearGradientStroke>
+        </s:stroke>
+    </s:Rect>
+    
+    <!-- layer 7: border - put on top of the fill so it doesn't disappear when scale is less than 1 -->
+    <!--- @private -->
+    <s:Rect id="border" left="0" right="0" top="0" bottom="0" width="69" height="20" radiusX="2">
+        <s:stroke>
+            <s:LinearGradientStroke rotation="90" weight="1">
+                <s:GradientEntry color="0x000000" 
+                               alpha="0.5625"
+                               alpha.downGroup="0.6375" />
+                <s:GradientEntry color="0x000000" 
+                               alpha="0.75" 
+                               alpha.downGroup="0.85" />
+            </s:LinearGradientStroke>
+        </s:stroke>
+    </s:Rect>
+    <s:Rect right="18" top="1" bottom="1" width="1">
+        <s:fill>
+             <s:LinearGradient rotation="90">
+                <s:GradientEntry color="0x000000" 
+                               alpha="0.5625"
+                               alpha.downGroup="0.6375" />
+                <s:GradientEntry color="0x000000" 
+                               alpha="0.75" 
+                               alpha.downGroup="0.85" />
+            </s:LinearGradient>
+        </s:fill>
+    </s:Rect>
+
+    <!-- layer 8: arrow -->
+    <!--- The arrow graphic displayed in the anchor button. -->
+    <s:Path right="6" verticalCenter="0" id="arrow"
+          data="M 4.0 4.0 L 4.0 3.0 L 5.0 3.0 L 5.0 2.0 L 6.0 2.0 L 6.0 1.0 L 7.0 1.0 L 7.0 0.0 L 0.0 0.0 L 0.0 1.0 L 1.0 1.0 L 1.0 2.0 L 2.0 2.0 L 2.0 3.0 L 3.0 3.0 L 3.0 4.0 L 4.0 4.0">
+        <s:fill>
+             <s:RadialGradient rotation="90" focalPointRatio="1">   
+                <!--- @private
+                      The first part of the arrow's gradient fill. 
+                      The default alpha is .6. The default color if 0x000000. -->
+                <s:GradientEntry id="arrowFill1" color="0" alpha="0.6" />
+                <!--- @private
+                      The second part of the arrow's gradient fill. 
+                      The default alpha is .6. The default color if 0x000000. -->
+                <s:GradientEntry id="arrowFill2" color="0" alpha="0.8" />
+            </s:RadialGradient>
+        </s:fill>
+    </s:Path>
+</s:SparkSkin>
