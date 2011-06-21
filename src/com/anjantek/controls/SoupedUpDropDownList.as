@@ -113,6 +113,7 @@ package com.anjantek.controls
 				{
 					showValidity = false;
 					isValid = true;
+					this.errorString = "";
 					break;
 				}
 					
@@ -134,6 +135,7 @@ package com.anjantek.controls
 				{
 					showValidity = false;
 					isValid = true;
+					this.errorString = "";
 					break;
 				}
 			}
@@ -186,9 +188,6 @@ package com.anjantek.controls
 				openButton.invalidateSkinState();
 			
 			var super_skin_state: String = super.getCurrentSkinState();
-			
-			if( "normal" == super_skin_state || "disabled" == super_skin_state )
-				this.errorString = "";
 			
 			//trace( "DDL Super state is: " + super_skin_state );
 			
