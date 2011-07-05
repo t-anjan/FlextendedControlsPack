@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<datagrids:SetDPSelectedDataGrid xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			xmlns:s="library://ns.adobe.com/flex/spark" 
+			xmlns:mx="library://ns.adobe.com/flex/mx"
+			xmlns:controls="com.anjantek.controls.*"
+			selectionMode="multipleRows" xmlns:datagrids="com.anjantek.controls.datagrids.*">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.anjantek.controls.gridColumns.itemRenderers.AwesomeGridItemRenderer;
+			
+			import spark.components.Button;
+			import spark.components.gridClasses.GridSelectionMode;
+			import spark.events.GridEvent;
+			import spark.events.GridSelectionEventKind;
+			
+			
+			//-------------------------------------------------------------------------------------------------
+			//---------------------------------START - To make auto multi-select----------------------------------------------------------------
+			
+			/**
+			 * Override the mouseDown handler to act as though the Ctrl key is always down.
+			 * Cannot just change event object and re-dispatch the event to the "super"
+			 * for it to do its usual stuff. Don't know why this cannot be done. 
+			 * The guess is that the "if (event.isDefaultPrevented())" code is not letting
+			 * "super" handle the re-dispatched event.
+			 * Hence, copied code from the the "super" handler and pasted it in this overridden handler.
+			 * There are some other "private" functions which are used by the "super" handler.
+			 * So, had to copy even those functions over here to get the overridden handler to work.
+			 */
+			override protected function grid_mouseDownHandler(event:GridEvent):void
+			{
+				//trace("Grid Mouse Down");
+				//trace(event.target)
+				//trace(event.currentTarget + "\n");
+				
+				if( event.itemRenderer is AwesomeGridItemRenderer )
+				{
+					var agir: AwesomeGridItemRenderer = event.itemRenderer as AwesomeGridItemRenderer;
+					var button_edit: Button = agir.button_edit;
+					var rect_button: Rectangle = button_edit.getBounds( button_edit.parent );
+					//trace("Button rect:", rect_button );
+					
+					var click_global_point: Point = grid.localToGlobal( new Point( event.localX, event.localY ) );
+					var click_agir_local_point: Point = button_edit.parent.globalToLocal( click_global_point );
+					//trace("Click local:", click_agir_local_point );
+					
+					// If the click is on the edit button, then don't dispatch any selectionChanging or selectionChange events.
+					// Only if the click has fallen outside the edit button, dispatch the usual events.
+					if( ! rect_button.containsPoint( click_agir_local_point ) )
+						auto_multi_select_mouseDownHandler( event );
+				}
+				else
+					auto_multi_select_mouseDownHandler( event );
+			}
+			
+			//-------------------------------------------------------------------------------------------------
+			
+			protected function auto_multi_select_mouseDownHandler( event: GridEvent ): void
+			{
+				if (event.isDefaultPrevented())
+					return;
+				
+				const isCellSelection:Boolean = false;
+				
+				const rowIndex:int = event.rowIndex;
+				
+				/*********
+				 * In the original implementation of this handler in the datagrid, the
+				 * columnIndex is set to event.columnIndex only when the selectionMode is
+				 * cellSelectionMode (single or multiple cells). If the selectionMode is
+				 * anything other that this, the columnIndex is set as -1. This causes a
+				 * problem when you are trying to detect which column was clicked if we 
+				 * are using a multipleRows selectionMode. So, I corrected it. */
+				const columnIndex:int = event.columnIndex;
+				
+				// Clicked on empty place in grid.  Don't change selection or caret
+				// position.
+				if (rowIndex == -1 || isCellSelection && columnIndex == -1)
+					return;
+				
+				if( !event.shiftKey )
+				{
+					// always assume the Ctrl key is pressed.
+					event.ctrlKey = true;
+				}
+				
+				if (event.ctrlKey)
+				{
+					// ctrl-click toggles the selection and updates caret and anchor.
+					if (!toggleSelection(rowIndex, columnIndex))
+						return;
+					
+					grid.anchorRowIndex = rowIndex;
+					grid.anchorColumnIndex = columnIndex;
+				}
+				else if (event.shiftKey)
+				{
+					// shift-click extends the selection and updates the caret.
+					if (!extendSelection(rowIndex, columnIndex))
+						return;
+				}
+			}
+			
+			//-------------------------------------------------------------------------------------------------
+			
+			/**
+			 *  @private
+			 *  Toggle the selection and set the caret to rowIndex/columnIndex.
+			 * 
+			 *  @return True if the selection has changed.
+			 */
+			protected function toggleSelection(rowIndex:int, columnIndex:int):Boolean
+			{
+				var kind:String;
+				
+				if (grid.selectionContainsIndex(rowIndex))
+					kind = GridSelectionEventKind.REMOVE_ROW;
+				else if (selectionMode == GridSelectionMode.MULTIPLE_ROWS)
+					kind = GridSelectionEventKind.ADD_ROW;
+				else
+					kind = GridSelectionEventKind.SET_ROW;
+				
+				var changed:Boolean = 
+					commitInteractiveSelection(kind, rowIndex, columnIndex);
+				
+				// Update the caret even if the selection did not change.
+				commitCaretPosition(rowIndex, columnIndex);
+				
+				return changed;
+			}
+			
+			//-------------------------------------------------------------------------------------------------
+			
+			/**
+			 *  @private
+			 *  Extends the selection from the anchor position to the given 'caret'
+			 *  position and updates the caret position.
+			 */
+			protected function extendSelection(caretRowIndex:int, caretColumnIndex:int):Boolean
+			{
+				if (!isAnchorSet())
+					return false;
+				
+				const startRowIndex:int = Math.min(grid.anchorRowIndex, caretRowIndex);
+				const endRowIndex:int = Math.max(grid.anchorRowIndex, caretRowIndex);
+				var changed:Boolean;
+				
+				changed = commitInteractiveSelection(
+					GridSelectionEventKind.SET_ROWS,
+					startRowIndex, -1,
+					endRowIndex - startRowIndex + 1, 0);
+				
+				// Update the caret.
+				commitCaretPosition(caretRowIndex, caretColumnIndex);
+				
+				return changed;
+			}
+			
+			//-------------------------------------------------------------------------------------------------
+			
+			/**
+			 *  @private
+			 *  @return True if there is an anchor position set.
+			 */    
+			protected function isAnchorSet():Boolean
+			{
+				if (!grid)
+					return false;
+				
+				return grid.anchorRowIndex != -1;
+			}
+			
+			//----------------------------------END - To make auto multi-select---------------------------------------------------------------
+			
+		]]>
+	</fx:Script>
+</datagrids:SetDPSelectedDataGrid>

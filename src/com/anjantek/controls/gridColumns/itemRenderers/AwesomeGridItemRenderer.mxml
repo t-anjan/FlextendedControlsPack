@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:GridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					xmlns:s="library://ns.adobe.com/flex/spark" 
+					xmlns:mx="library://ns.adobe.com/flex/mx" clipAndEnableScrolling="true">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.anjantek.controls.gridColumns.AwesomeGridColumn;
+			import com.anjantek.controls.gridColumns.assets.Pencil;
+			
+			import mx.utils.StringUtil;
+			
+			import spark.components.DataGrid;
+			
+			private const BASE_STATE: String = "base";
+			private const ERROR_STATE: String = "error";
+			
+			//-------------------------------------------------------------------------------------------------
+			
+			private var current_state: String = BASE_STATE;
+			
+			override public function set data(item:Object):void
+			{
+				super.data = item;
+				
+				if( item == null )
+					return;
+				
+				if( ! column is AwesomeGridColumn )
+					return;
+				
+				var awesome_column: AwesomeGridColumn = AwesomeGridColumn( column );
+				var validity_properties: String = awesome_column.validityProperties;
+				
+				if( "" == validity_properties )
+					return;
+				
+				// Multiple validity properties could be specified, as a comma-separated string.
+				validity_properties = StringUtil.trimArrayElements( validity_properties, "," );
+				var array_validity_properties: Array = validity_properties.split( "," );
+				
+				var is_item_column_valid: Boolean = true;
+				
+				for each( var vp: String in array_validity_properties )
+				{
+					if( item.hasOwnProperty( vp ) )
+					{
+						is_item_column_valid = is_item_column_valid && Boolean( item[ vp ] );
+					}
+				}
+				
+				if( is_item_column_valid )
+					current_state = BASE_STATE;
+				else
+					current_state = ERROR_STATE;
+			}
+			
+			//-------------------------------------------------------------------------------------------------
+			
+			protected function button_edit_clickHandler(event:MouseEvent):void
+			{
+				DataGrid(owner).startItemEditorSession( rowIndex, columnIndex );
+			}
+			
+			//-------------------------------------------------------------------------------------------------
+			
+			override public function prepare(hasBeenRecycled:Boolean):void
+			{
+				super.prepare( hasBeenRecycled );
+				this.currentState = current_state;
+				button_edit.visible = column.editable && DataGrid(owner).editable;
+			}
+			
+			//-------------------------------------------------------------------------------------------------
+			
+		]]>
+	</fx:Script>
+	
+	
+	<s:states>
+		<s:State id="state_base" name="base" />
+		<s:State id="state_error" name="error" />
+	</s:states>
+	
+	
+	<s:Rect id="fill_red" left="0" right="0" top="0" bottom="0" includeIn="error">
+		<s:fill>
+			<s:LinearGradient rotation="90">
+				<s:GradientEntry color="0xFFFFFF" 
+								 alpha="0.85" />
+				<s:GradientEntry color="0xFFBCBD" 
+								 alpha="0.5" />
+			</s:LinearGradient>
+		</s:fill>
+	</s:Rect>
+	
+	<s:HGroup width="100%" height="100%" verticalAlign="middle" horizontalAlign="center"
+			  paddingLeft="5" paddingRight="5" paddingTop="3" paddingBottom="3">
+		<s:Label id="labelDisplay" maxDisplayedLines="1"
+				 width="100%" />
+		
+		<s:Button id="button_edit"
+				  label="" icon="{ Pencil }"
+				  width="20" height="20"
+				  toolTip="Click this button to edit."
+				  click="button_edit_clickHandler(event)"/>
+	</s:HGroup>
+	
+	
+	
+</s:GridItemRenderer>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:GridColumn xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			  xmlns:s="library://ns.adobe.com/flex/spark" 
+			  xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			
+			//--------------------------------------------------------------------------
+			//
+			//  Properties 
+			//
+			//--------------------------------------------------------------------------
+			
+			//-------------------------------------------------------------------------------------------------
+			
+			private var _selectable: Boolean = true;
+			
+			public function get selectable(): Boolean
+			{
+				return _selectable;
+			}
+			
+			public function set selectable( value: Boolean ): void
+			{
+				_selectable = value;
+			}
+			
+			//-------------------------------------------------------------------------------------------------
+			
+			private var _valid_property: String = "";
+			
+			public function get validityProperties(): String
+			{
+				return _valid_property;
+			}
+			
+			public function set validityProperties( value: String ): void
+			{
+				_valid_property = value;
+			}
+			
+			//-------------------------------------------------------------------------------------------------
+			
+			private var _text_restrict: String = null;
+			
+			public function get textRestrict(): String
+			{
+				return _text_restrict;
+			}
+			
+			public function set textRestrict( value: String ): void
+			{
+				_text_restrict = value;
+			}
+			
+			//-------------------------------------------------------------------------------------------------
+			
+			private var _text_max_chars: Number = 0;
+			
+			public function get textMaxChars(): Number
+			{
+				return _text_max_chars;
+			}
+			
+			public function set textMaxChars( value: Number ): void
+			{
+				_text_max_chars = value;
+			}
+			
+			//-------------------------------------------------------------------------------------------------
+			
+			private var allow_duplicates: Boolean = true;
+			
+			public function get allowDuplicates(): Boolean
+			{
+				return allow_duplicates;
+			}
+			
+			public function set allowDuplicates( value: Boolean ): void
+			{
+				allow_duplicates = value;
+			}
+			
+			//-------------------------------------------------------------------------------------------------
+			
+		]]>
+	</fx:Script>
+</s:GridColumn>

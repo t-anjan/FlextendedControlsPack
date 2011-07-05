@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<datagrids:AwesomeDataGrid xmlns:fx="http://ns.adobe.com/mxml/2009" 
+						  xmlns:s="library://ns.adobe.com/flex/spark" 
+						  xmlns:mx="library://ns.adobe.com/flex/mx"
+						  xmlns:controls="com.anjantek.controls.*"
+						  selectionChange="selectionChangeHandler(event)" xmlns:datagrids="com.anjantek.controls.datagrids.*">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			
+			import spark.components.DataGrid;
+			import spark.components.gridClasses.CellRegion;
+			import spark.components.gridClasses.GridColumn;
+			import spark.events.GridSelectionEvent;
+			import spark.events.GridSelectionEventKind;
+			
+			//-------------------------------------------------------------------------------------------------
+			
+			override public function selectAll():Boolean
+			{
+				var result: Boolean = super.selectAll();
+				
+				// Don't dispatch a SELECT_ALL event here to let the handler take care of the "checking" of the check-boxes.
+				// Dispatching an event may produce unwanted consequences because there may be some listener outside for the
+				// GridSelectionEvent. The user may not intend to have that listener called when all he wants is to "check" the 
+				// check-boxes in the data grid.
+				for each( var _item: Object in dataProvider )
+				{
+					Set_Selected( _item, true );
+				}
+				
+				return result;
+			}
+			
+			//-------------------------------------------------------------------------------------------------
+			
+			override public function clearSelection():Boolean
+			{
+				var result: Boolean = super.clearSelection();
+				
+				// Don't dispatch a CLEAR_SELECTION event here to let the handler take care of the clearing of the check-boxes.
+				// Dispatching an event may produce unwanted consequences because there may be some listener outside for the
+				// GridSelectionEvent. The user may not intend to have that listener called when all he wants is to clear the 
+				// check-boxes in the data grid.
+				
+				for each( var _item: Object in dataProvider )
+				{
+					Set_Selected( _item, false );
+				}
+				
+				return result;
+			}
+			
+			//-------------------------------------------------------------------------------------------------
+			
+			protected function selectionChangeHandler(event:GridSelectionEvent):void
+			{
+				//trace("DG Change: " + event.kind );
+				var cell_region: CellRegion = event.selectionChange;
+				//trace("CellRegion rowindex: " + cell_region.rowIndex, "; rowcount: " + cell_region.rowCount );
+				
+				var data_grid: DataGrid = event.currentTarget as DataGrid;
+				var data_provider: ArrayCollection = data_grid.dataProvider as ArrayCollection;
+				var _item: Object;
+				
+				if( GridSelectionEventKind.ADD_ROW == event.kind )
+				{
+					_item = data_provider.getItemAt( cell_region.rowIndex );
+					Set_Selected( _item, true );
+				}
+				else if( GridSelectionEventKind.SET_ROWS == event.kind || GridSelectionEventKind.SET_ROW == event.kind )
+				{
+					var row_index: Number = cell_region.rowIndex;
+					var row_count: Number = cell_region.rowCount;
+					
+					// Not using "for each" here because the index of the loop is needed to find whether
+					// the current items falls in the selected range.
+					for( var i: Number = 0 ; i <= data_provider.length - 1 ; i++ )
+					{
+						_item = data_provider.getItemAt( i );
+						
+						// If the index falls between the selected items.
+						if( i >= row_index && i <= (row_index + row_count - 1) )
+						{
+							Set_Selected( _item, true );
+						}
+						else
+						{
+							Set_Selected( _item, false );
+						}
+					}
+				}
+				else if( GridSelectionEventKind.REMOVE_ROW == event.kind )
+				{
+					_item = data_provider.getItemAt( cell_region.rowIndex );
+					Set_Selected( _item, false );
+				}
+				else if( GridSelectionEventKind.SELECT_ALL == event.kind )
+				{
+					for each( _item in data_provider )
+					{
+						Set_Selected( _item, true );
+					}
+				}
+				else if( GridSelectionEventKind.CLEAR_SELECTION == event.kind )
+				{
+					for each( _item in data_provider )
+					{
+						Set_Selected( _item, false );
+					}
+				}
+				else
+				{
+					trace( "=========DG Change kind not detected!!======== It is: " + event.kind );
+				}
+				
+				data_grid.validateNow();
+			}
+			
+			//-------------------------------------------------------------------------------------------------
+			
+			private function Set_Selected( _item: Object, value: Boolean ): void
+			{
+				if( _item.hasOwnProperty( "selected" ) )
+				{
+					_item.selected = value;
+					dataProvider.itemUpdated( _item );
+				}
+			}
+			
+			//-------------------------------------------------------------------------------------------------
+			
+		]]>
+	</fx:Script>
+</datagrids:AwesomeDataGrid>

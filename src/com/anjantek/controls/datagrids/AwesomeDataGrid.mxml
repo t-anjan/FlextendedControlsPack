@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:DataGrid xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			xmlns:s="library://ns.adobe.com/flex/spark" 
+			xmlns:mx="library://ns.adobe.com/flex/mx"
+			selectionChanging="selectionChangingHandler(event)">
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import com.anjantek.controls.gridColumns.AwesomeGridColumn;
+			import com.anjantek.controls.gridColumns.itemRenderers.AwesomeGridItemRenderer;
+			
+			import mx.events.FlexEvent;
+			
+			import spark.components.Button;
+			import spark.components.gridClasses.GridColumn;
+			import spark.events.GridEvent;
+			import spark.events.GridSelectionEvent;
+			
+			//-------------------------------------------------------------------------------------------------
+			
+			protected function selectionChangingHandler(event:GridSelectionEvent):void
+			{
+				//trace("DG Selection changing inside:", event.eventPhase);
+				//trace(event.target);
+				//trace(event.currentTarget + "\n");
+				
+				// Prevent selection change if clicked on any column other than the selectable columns.
+				var data_grid: DataGrid = DataGrid( event.currentTarget );
+				var column_index: Number;
+				
+				// One of the two parameters should give the correct index of column clicked (not -1).
+				if( -1 != event.selectionChange.columnIndex )
+				{
+					column_index = event.selectionChange.columnIndex;
+				}
+				else
+				{
+					column_index = data_grid.grid.hoverColumnIndex;
+				}
+				// Clicked column has been found.
+				
+				if( -1 != column_index )
+				{
+					var _column: GridColumn = data_grid.columns.getItemAt( column_index ) as GridColumn;
+					//trace("Clicked on column : " + _column.headerText );
+					
+					// If the clicked column is set to disable selection, then disallow selection.
+					if( _column is AwesomeGridColumn )
+					{
+						var _set_selected_column: AwesomeGridColumn = AwesomeGridColumn( _column );
+						
+						if( ! _set_selected_column.selectable )
+						{
+							event.preventDefault();
+						}
+					}
+				}
+				else
+				{
+					trace("Received column index is -1"); 
+					event.preventDefault();
+				}
+			}
+			
+			//-------------------------------------------------------------------------------------------------
+			
+			override protected function grid_mouseDownHandler(event:GridEvent):void
+			{
+				//trace("Grid Mouse Down");
+				//trace(event.target)
+				//trace(event.currentTarget + "\n");
+				
+				if( event.itemRenderer is AwesomeGridItemRenderer )
+				{
+					var agir: AwesomeGridItemRenderer = event.itemRenderer as AwesomeGridItemRenderer;
+					var button_edit: Button = agir.button_edit;
+					var rect_button: Rectangle = button_edit.getBounds( button_edit.parent );
+					//trace("Button rect:", rect_button );
+					
+					var click_global_point: Point = grid.localToGlobal( new Point( event.localX, event.localY ) );
+					var click_agir_local_point: Point = button_edit.parent.globalToLocal( click_global_point );
+					//trace("Click local:", click_agir_local_point );
+					
+					// If the click is on the edit button, then don't dispatch any selectionChanging or selectionChange events.
+					// Only if the click has fallen outside the edit button, dispatch the usual events.
+					if( ! rect_button.containsPoint( click_agir_local_point ) )
+						super.grid_mouseDownHandler( event );
+				}
+				else
+					super.grid_mouseDownHandler( event );
+				
+			}
+			
+			//-------------------------------------------------------------------------------------------------
+			
+			// ***** Fixing what seems to a bug in the DG. ***** //
+			// When the datagrid's selectionMode is set to "multipleRows", this bug is reproducible.
+			// Suppose one or more items are selected in the DG. Then, if any column header is clicked
+			// to sort the collection by that column, the selected items get deselected.
+			// So, storing the selected items before the sorting happens and re-selecting the items
+			// after sorting.
+			override public function sortByColumns(columnIndices:Vector.<int>, isInteractive:Boolean=false):Boolean
+			{
+				var selected_items: Vector.<Object> = this.selectedItems;
+				var response: Boolean = super.sortByColumns( columnIndices, isInteractive );
+				this.selectedItems = selected_items;
+				
+				return response;
+			}
+			
+			//-------------------------------------------------------------------------------------------------
+			
+		]]>
+	</fx:Script>
+</s:DataGrid>

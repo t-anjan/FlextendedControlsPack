@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:GridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx">
+	
+	<fx:Script>
+		<![CDATA[
+			
+			//----------------------------------------------------------------------------------------------------------
+			
+			override public function set data(value:Object):void
+			{
+				super.data = value;
+				
+				if( value != null )
+				{
+					if( value.hasOwnProperty("selected") )
+					{
+						check_box.selected = value.selected;
+					}
+					else
+					{
+						check_box.selected = false;
+					}
+				}
+			}
+			
+			//----------------------------------------------------------------------------------------------------------
+			
+		]]>
+	</fx:Script>
+	
+	<!--The check box is only a visual indicator for whether the row is selected or not.
+	The "selected" property of the check_box will be controlled by the "set data" function. 
+	The check_box should not be allowed any user interaction. Hence disabling it.-->
+	<s:CheckBox id="check_box"
+				label="" 
+				enabled="false" skinClass="com.anjantek.controls.gridColumns.skins.NoDisabledCheckBoxSkin"
+				horizontalCenter="0" verticalCenter="0"/>
+	
+</s:GridItemRenderer>
