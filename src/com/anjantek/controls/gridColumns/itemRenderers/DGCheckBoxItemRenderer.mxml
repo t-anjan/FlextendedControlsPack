@@ -8,21 +8,20 @@
 			
 			//----------------------------------------------------------------------------------------------------------
 			
-			override public function set data(value:Object):void
+			override public function prepare(hasBeenRecycled:Boolean):void
 			{
-				super.data = value;
+				var selected_items: Vector.<Object> = grid.dataGrid.selectedItems;
 				
-				if( value != null )
+				if( null == selected_items )
 				{
-					if( value.hasOwnProperty("selected") )
-					{
-						check_box.selected = value.selected;
-					}
-					else
-					{
-						check_box.selected = false;
-					}
+					check_box.selected = false;
+					return;
 				}
+				
+				if( -1 != selected_items.indexOf( data ) )
+					check_box.selected = true;
+				else
+					check_box.selected = false;
 			}
 			
 			//----------------------------------------------------------------------------------------------------------
