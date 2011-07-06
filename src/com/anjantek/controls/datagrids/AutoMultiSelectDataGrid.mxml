@@ -37,7 +37,7 @@
 				//trace(event.target)
 				//trace(event.currentTarget + "\n");
 				
-				if( event.itemRenderer is AwesomeGridItemRenderer )
+				if( event.itemRenderer is AwesomeGridItemRenderer && event.column.editable )
 				{
 					var agir: AwesomeGridItemRenderer = event.itemRenderer as AwesomeGridItemRenderer;
 					var button_edit: Button = agir.button_edit;
