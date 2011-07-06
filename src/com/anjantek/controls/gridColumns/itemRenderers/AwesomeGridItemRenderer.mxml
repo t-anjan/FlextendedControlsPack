@@ -96,8 +96,14 @@
 	
 	<s:HGroup width="100%" height="100%" verticalAlign="middle" horizontalAlign="center"
 			  paddingLeft="5" paddingRight="5" paddingTop="3" paddingBottom="3">
-		<s:Label id="labelDisplay" maxDisplayedLines="1"
-				 width="100%" />
+		
+		<s:VGroup width="100%" gap="0"
+				  paddingLeft="0" paddingRight="0" paddingTop="0" paddingBottom="0">
+			<s:Spacer height="3" />
+			<s:Label id="labelDisplay" maxDisplayedLines="1"
+					 width="100%" />
+		</s:VGroup>
+		
 		
 		<s:Button id="button_edit"
 				  label="" icon="{ Pencil }"
