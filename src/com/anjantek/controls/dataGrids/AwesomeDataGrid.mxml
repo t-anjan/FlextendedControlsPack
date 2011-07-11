@@ -4,6 +4,10 @@
 			xmlns:mx="library://ns.adobe.com/flex/mx"
 			selectionChanging="selectionChangingHandler(event)">
 	
+	<fx:Metadata>
+		[Event(name="duplicateDataFound", type="com.anjantek.controls.gridColumns.events.GridColumnEvent")]
+		[Event(name="dataUpdatedInCell", type="com.anjantek.controls.gridColumns.events.GridColumnEvent")]
+	</fx:Metadata>
 	
 	<fx:Script>
 		<![CDATA[

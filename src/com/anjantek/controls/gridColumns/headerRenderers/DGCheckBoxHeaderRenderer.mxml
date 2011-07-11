@@ -3,7 +3,8 @@
 							 xmlns:s="library://ns.adobe.com/flex/spark" 
 							 xmlns:mx="library://ns.adobe.com/flex/mx"
 							 click="griditemrenderer_clickHandler(event)"
-							 creationComplete="griditemrenderer_creationCompleteHandler(event)" xmlns:skins="com.anjantek.controls.checkBoxes.skins.*" xmlns:checkBoxes="com.anjantek.controls.checkBoxes.*">
+							 creationComplete="griditemrenderer_creationCompleteHandler(event)" 
+							 xmlns:skins="com.anjantek.controls.checkBoxes.skins.*" xmlns:checkBoxes="com.anjantek.controls.checkBoxes.*">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
@@ -16,7 +17,9 @@
 			import mx.events.FlexEvent;
 			
 			import spark.components.DataGrid;
+			import spark.components.gridClasses.CellRegion;
 			import spark.events.GridSelectionEvent;
+			import spark.events.GridSelectionEventKind;
 			import spark.primitives.supportClasses.GraphicElement;
 			
 			//-----------------------Start of copied stuff (slightly modified) from DefaultGridHeaderRenderer---------------------------------------------------
@@ -122,24 +125,68 @@
 			
 			protected function griditemrenderer_clickHandler(event:MouseEvent):void
 			{
+				var grid_selection_change_event: GridSelectionEvent = new GridSelectionEvent( GridSelectionEvent.SELECTION_CHANGE );
+				var selection_change: CellRegion;
+				
 				if( checked )
+				{
+					grid_selection_change_event.kind = GridSelectionEventKind.CLEAR_SELECTION;
+					selection_change = new CellRegion( 0, -1, 0, -1 );
 					grid.dataGrid.clearSelection();
+				}
 				else
+				{
+					grid_selection_change_event.kind = GridSelectionEventKind.SELECT_ALL;
+					
+					try
+					{
+						selection_change = new CellRegion( 0, -1, grid.dataGrid.dataProviderLength, -1 );
+					}
+					catch( er: Error )
+					{
+						selection_change = new CellRegion( 0, -1, 0, -1 );
+					}
+					
 					grid.dataGrid.selectAll();
+				}
 				
 				checked = ! checked;
 				partial = false;
+				
+				grid_selection_change_event.selectionChange = selection_change;
+				grid.dataGrid.dispatchEvent( grid_selection_change_event );
 			}
 			
 			//----------------------------------------------------------------------------------------------------------
 			
 			protected function grid_selection_changeHandler( event: GridSelectionEvent ): void
 			{
-				const dg: DataGrid = event.currentTarget as DataGrid;
-				const selected_items: Vector.<Object> = dg.selectedItems;
-				const data_provider: IList = dg.dataProvider;
+				updateCheckBoxState();
+			}
+			
+			//----------------------------------------------------------------------------------------------------------
+			
+			override public function prepare(hasBeenRecycled:Boolean):void
+			{
+				super.prepare( hasBeenRecycled );
+				updateCheckBoxState();
+			}
+			
+			//----------------------------------------------------------------------------------------------------------
+			
+			private function updateCheckBoxState(): void
+			{
+				const selected_items: Vector.<Object> = grid.dataGrid.selectedItems;
+				const data_provider: IList = grid.dataGrid.dataProvider;
 				
-				if( null == selected_items || 0 == selected_items.length )
+				if( null == selected_items || null == data_provider )
+				{
+					checked = false;
+					partial = false;
+					return;
+				}
+				
+				if( 0 == selected_items.length )
 				{
 					checked = false;
 					partial = false;

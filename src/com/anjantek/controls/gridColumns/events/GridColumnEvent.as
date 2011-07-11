@@ -2,18 +2,22 @@ package com.anjantek.controls.gridColumns.events
 {
 	import flash.events.Event;
 	
-	public class AwesomeGridColumnEvent extends Event
+	import spark.components.gridClasses.GridColumn;
+	
+	public class GridColumnEvent extends Event
 	{
 		
 		//----------------------------------------------------------------------------------------------------------
 		
-		public static const DATA_UPDATED_IN_CELL: String = "data_updated_in_cell";
+		public static const DATA_UPDATED_IN_CELL: String = "dataUpdatedInCell";
+		public static const DUPLICATE_DATA_FOUND: String = "duplicateDataFound";
 		
 		//----------------------------------------------------------------------------------------------------------
 		
 		public var payload: Object;
+		public var column: GridColumn;
 		
-		public function AwesomeGridColumnEvent(type:String, _payload: Object = null, bubbles:Boolean=false, cancelable:Boolean=false)
+		public function GridColumnEvent(type:String, _payload: Object = null, bubbles:Boolean=false, cancelable:Boolean=false)
 		{
 			super(type, bubbles, cancelable);
 			payload = _payload;

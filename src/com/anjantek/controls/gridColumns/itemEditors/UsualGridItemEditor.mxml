@@ -9,12 +9,10 @@
 	<fx:Script>
 		<![CDATA[
 			import com.anjantek.controls.gridColumns.AwesomeGridColumn;
-			import com.anjantek.controls.gridColumns.events.AwesomeGridColumnEvent;
+			import com.anjantek.controls.gridColumns.events.GridColumnEvent;
 			import com.anjantek.controls.gridColumns.payloads.CellDataUpdatedPayload;
 			
 			import mx.collections.IList;
-			import mx.controls.Alert;
-			import mx.states.OverrideBase;
 			import mx.utils.StringUtil;
 			
 			import spark.components.DataGrid;
@@ -62,11 +60,7 @@
 							if( _label.toLowerCase() == value.toString().toLowerCase() && rowIndex != item_index )
 							{
 								result = result && false;
-								
-								var status_message: String = "'" + StringUtil.trim( _label ) + "' already exists.\n\n" +
-									"Duplicates are not allowed.";
-								var title: String = "Duplicate!";
-								Alert.show( status_message, title );
+								dg.dispatchEvent( new GridColumnEvent ( GridColumnEvent.DUPLICATE_DATA_FOUND, StringUtil.trim( _label ) ) );
 								break;
 							}
 							
@@ -94,7 +88,9 @@
 				// and hope that somebody listens for this event and updates the data accordingly.
 				var payload: CellDataUpdatedPayload = new CellDataUpdatedPayload( rowIndex, column, value.toString() );
 				var dg: DataGrid = owner as DataGrid;
-				dg.dispatchEvent( new AwesomeGridColumnEvent ( AwesomeGridColumnEvent.DATA_UPDATED_IN_CELL, payload ) );
+				var data_updated_event: GridColumnEvent = new GridColumnEvent ( GridColumnEvent.DATA_UPDATED_IN_CELL, payload );
+				data_updated_event.column = column;
+				dg.dispatchEvent( data_updated_event );
 				
 				return true;
 			}
