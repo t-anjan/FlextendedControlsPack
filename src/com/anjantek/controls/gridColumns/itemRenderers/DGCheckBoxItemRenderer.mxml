@@ -34,7 +34,7 @@
 	The check_box should not be allowed any user interaction. Hence disabling it.-->
 	<s:CheckBox id="check_box"
 				label="" 
-				enabled="false" skinClass="com.anjantek.controls.gridColumns.skins.NoDisabledCheckBoxSkin"
+				enabled="false" skinClass="com.anjantek.controls.checkBoxes.skins.NoDisabledCheckBoxSkin"
 				horizontalCenter="0" verticalCenter="0"/>
 	
 </s:GridItemRenderer>

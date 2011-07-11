@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<datagrids:SetDPSelectedDataGrid xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<dataGrids:SetDPSelectedDataGrid xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			xmlns:s="library://ns.adobe.com/flex/spark" 
 			xmlns:mx="library://ns.adobe.com/flex/mx"
 			xmlns:controls="com.anjantek.controls.*"
-			selectionMode="multipleRows" xmlns:datagrids="com.anjantek.controls.datagrids.*">
+			selectionMode="multipleRows" xmlns:dataGrids="com.anjantek.controls.dataGrids.*">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
@@ -178,4 +178,4 @@
 			
 		]]>
 	</fx:Script>
-</datagrids:SetDPSelectedDataGrid>
+</dataGrids:SetDPSelectedDataGrid>

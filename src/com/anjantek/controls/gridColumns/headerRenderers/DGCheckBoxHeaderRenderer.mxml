@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:GridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+							 xmlns:s="library://ns.adobe.com/flex/spark" 
+							 xmlns:mx="library://ns.adobe.com/flex/mx"
+							 click="griditemrenderer_clickHandler(event)"
+							 creationComplete="griditemrenderer_creationCompleteHandler(event)" xmlns:skins="com.anjantek.controls.checkBoxes.skins.*" xmlns:checkBoxes="com.anjantek.controls.checkBoxes.*">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.IList;
+			import mx.events.FlexEvent;
+			
+			import spark.components.DataGrid;
+			import spark.events.GridSelectionEvent;
+			import spark.primitives.supportClasses.GraphicElement;
+			
+			//-----------------------Start of copied stuff (slightly modified) from DefaultGridHeaderRenderer---------------------------------------------------
+			
+			// chrome color constants and variables
+			private static const DEFAULT_COLOR_VALUE:uint = 0xCC;
+			private static const DEFAULT_COLOR:uint = 0xCCCCCC;
+			private static const DEFAULT_SYMBOL_COLOR:uint = 0x000000;
+			
+			private static var colorTransform:ColorTransform = new ColorTransform();
+			
+			//----------------------------------------------------------------------------------------------------------
+			
+			private var chromeColorChanged:Boolean = false;
+			private var colorized:Boolean = false;
+			
+			/**
+			 *  @private
+			 *  Apply chromeColor style.
+			 */
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
+			{
+				// Apply chrome color
+				if (chromeColorChanged)
+				{
+					var chromeColor:uint = getStyle("chromeColor");
+					
+					if (chromeColor != DEFAULT_COLOR || colorized)
+					{          
+						colorTransform.redOffset = ((chromeColor & (0xFF << 16)) >> 16) - DEFAULT_COLOR_VALUE;
+						colorTransform.greenOffset = ((chromeColor & (0xFF << 8)) >> 8) - DEFAULT_COLOR_VALUE;
+						colorTransform.blueOffset = (chromeColor & 0xFF) - DEFAULT_COLOR_VALUE;
+						colorTransform.alphaMultiplier = alpha;
+						
+						transform.colorTransform = colorTransform;
+						
+						var exclusions:Array = [ check_box ];		// Only modification of copied stuff.
+						
+						// Apply inverse colorizing to exclusions
+						if (exclusions && exclusions.length > 0)
+						{
+							colorTransform.redOffset = -colorTransform.redOffset;
+							colorTransform.greenOffset = -colorTransform.greenOffset;
+							colorTransform.blueOffset = -colorTransform.blueOffset;
+							
+							for (var i:int = 0; i < exclusions.length; i++)
+							{
+								var exclusionObject:Object = exclusions[i];
+								
+								if (exclusionObject &&
+									(exclusionObject is DisplayObject ||
+										exclusionObject is GraphicElement))
+								{
+									colorTransform.alphaMultiplier = exclusionObject.alpha;
+									exclusionObject.transform.colorTransform = colorTransform;
+								}
+							}
+						}
+						
+						colorized = true;
+					}
+					
+					chromeColorChanged = false;
+				}
+				
+				super.updateDisplayList(unscaledWidth, unscaledHeight);
+			}
+			
+			//----------------------------------------------------------------------------------------------------------
+			
+			/**
+			 *  @private
+			 */
+			override public function styleChanged(styleProp:String):void
+			{
+				var allStyles:Boolean = !styleProp || styleProp == "styleName";
+				
+				super.styleChanged(styleProp);
+				
+				if (allStyles || styleProp == "chromeColor")
+				{
+					chromeColorChanged = true;
+					invalidateDisplayList();
+				}
+			}
+			
+			//-----------------------End of copied stuff (slightly modified) from DefaultGridHeaderRenderer---------------------------------------------------
+			
+			//----------------------------------------------------------------------------------------------------------
+			
+			protected function griditemrenderer_creationCompleteHandler(event:FlexEvent):void
+			{
+				grid.dataGrid.addEventListener( GridSelectionEvent.SELECTION_CHANGE, grid_selection_changeHandler );
+			}
+			
+			//----------------------------------------------------------------------------------------------------------
+			
+			[Bindable]
+			public var checked: Boolean = false;
+			
+			[Bindable]
+			public var partial: Boolean = false;
+			
+			protected function griditemrenderer_clickHandler(event:MouseEvent):void
+			{
+				if( checked )
+					grid.dataGrid.clearSelection();
+				else
+					grid.dataGrid.selectAll();
+				
+				checked = ! checked;
+				partial = false;
+			}
+			
+			//----------------------------------------------------------------------------------------------------------
+			
+			protected function grid_selection_changeHandler( event: GridSelectionEvent ): void
+			{
+				const dg: DataGrid = event.currentTarget as DataGrid;
+				const selected_items: Vector.<Object> = dg.selectedItems;
+				const data_provider: IList = dg.dataProvider;
+				
+				if( null == selected_items || 0 == selected_items.length )
+				{
+					checked = false;
+					partial = false;
+				}
+				else if( selected_items.length == data_provider.length )
+				{
+					partial = false;
+					checked = true;
+				}
+				else
+				{
+					checked = false;
+					partial = true;
+				}
+			}
+			
+			//----------------------------------------------------------------------------------------------------------
+			
+		]]>
+	</fx:Script>
+	
+	
+	<s:states>
+		<s:State name="normal" />
+		<s:State name="hovered" />
+		<s:State name="down" />
+	</s:states>      
+	
+	<!-- layer 1: shadow -->
+	<!--- @private -->
+	<s:Rect id="shadow" left="-1" right="-1" top="-1" bottom="-1" radiusX="2">
+		<s:fill>
+			<s:LinearGradient rotation="90">
+				<s:GradientEntry color="0x000000" 
+								 color.down="0xFFFFFF"
+								 alpha="0.01"
+								 alpha.down="0" />
+				<s:GradientEntry color="0x000000" 
+								 color.down="0xFFFFFF" 
+								 alpha="0.07"
+								 alpha.down="0.5" />
+			</s:LinearGradient>
+		</s:fill>
+	</s:Rect>
+	
+	<!-- layer 2: fill -->
+	<!--- @private -->
+	<s:Rect id="fill" left="0" right="0" top="0" bottom="0">
+		<s:fill>
+			<s:LinearGradient rotation="90">
+				<s:GradientEntry color="0xFFFFFF" 
+								 color.hovered="0xBBBDBD" 
+								 color.down="0xAAAAAA" 
+								 alpha="0.85" />
+				<s:GradientEntry color="0xD8D8D8" 
+								 color.hovered="0x9FA0A1" 
+								 color.down="0x929496" 
+								 alpha="0.85" />
+			</s:LinearGradient>
+		</s:fill>
+	</s:Rect>
+	
+	<!-- layer 3: fill lowlight -->
+	<!--- @private -->
+	<s:Rect id="lowlight" left="0" right="0" top="0" bottom="0">
+		<s:fill>
+			<s:LinearGradient rotation="270">
+				<s:GradientEntry color="0x000000" ratio="0.0" alpha="0.0627" />
+				<s:GradientEntry color="0x000000" ratio="0.48" alpha="0.0099" />
+				<s:GradientEntry color="0x000000" ratio="0.48001" alpha="0" />
+			</s:LinearGradient>
+		</s:fill>
+	</s:Rect>
+	
+	<!-- layer 4: fill highlight -->
+	<!--- @private -->
+	<s:Rect id="highlight" left="0" right="0" top="0" bottom="0">
+		<s:fill>
+			<s:LinearGradient rotation="90">
+				<s:GradientEntry color="0xFFFFFF"
+								 ratio="0.0"
+								 alpha="0.33" 
+								 alpha.hovered="0.22" 
+								 alpha.down="0.12"/>
+				<s:GradientEntry color="0xFFFFFF"
+								 ratio="0.48"
+								 alpha="0.33"
+								 alpha.hovered="0.22"
+								 alpha.down="0.12" />
+				<s:GradientEntry color="0xFFFFFF"
+								 ratio="0.48001"
+								 alpha="0" />
+			</s:LinearGradient>
+		</s:fill>
+	</s:Rect>  
+	
+	<!-- layer 5: highlight stroke (all states except down) -->
+	<!--- @private -->
+	<s:Rect id="highlightStroke" left="0" right="0" top="0" bottom="0" excludeFrom="down">
+		<s:stroke>
+			<s:LinearGradientStroke rotation="90" weight="1">
+				<s:GradientEntry color="0xFFFFFF" alpha.hovered="0.22" />
+				<s:GradientEntry color="0xD8D8D8" alpha.hovered="0.22" />
+			</s:LinearGradientStroke>
+		</s:stroke>
+	</s:Rect>
+	
+	<!-- layer 6: highlight stroke (down state only) -->
+	<!--- @private -->
+	<s:Rect id="hldownstroke1" left="0" right="0" top="0" bottom="0" includeIn="down">
+		<s:stroke>
+			<s:LinearGradientStroke rotation="90" weight="1">
+				<s:GradientEntry color="0x000000" alpha="0.25" ratio="0.0" />
+				<s:GradientEntry color="0x000000" alpha="0.25" ratio="0.001" />
+				<s:GradientEntry color="0x000000" alpha="0.07" ratio="0.0011" />
+				<s:GradientEntry color="0x000000" alpha="0.07" ratio="0.965" />
+				<s:GradientEntry color="0x000000" alpha="0.00" ratio="0.9651" />
+			</s:LinearGradientStroke>
+		</s:stroke>
+	</s:Rect>
+	<!--- @private -->
+	<s:Rect id="hldownstroke2" left="1" right="1" top="1" bottom="1" includeIn="down">
+		<s:stroke>
+			<s:LinearGradientStroke rotation="90" weight="1">
+				<s:GradientEntry color="0x000000" alpha="0.09" ratio="0.0" />
+				<s:GradientEntry color="0x000000" alpha="0.00" ratio="0.0001" />
+			</s:LinearGradientStroke>
+		</s:stroke>
+	</s:Rect>
+	
+	<checkBoxes:ThreeStateCheckBox id="check_box"
+								   enabled="false"
+								   label=""
+								   selected="{ checked }" partial="{ partial }"
+								   horizontalCenter="0" verticalCenter="0"/>
+	
+</s:GridItemRenderer>

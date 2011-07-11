@@ -21,7 +21,7 @@
       @productversion Flex 4
 -->
 <s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
-             xmlns:fb="http://ns.adobe.com/flashbuilder/2009" >
+             xmlns:fb="http://ns.adobe.com/flashbuilder/2009">
 
     <fx:Metadata>
     <![CDATA[ 
@@ -37,7 +37,7 @@
             /** 
              * @private 
              */     
-            private static const focusExclusions:Array = ["labelDisplay"];
+            private static const focusExclusions:Array = [];
 
             /**
              * @private
@@ -51,10 +51,16 @@
         <s:State name="over" stateGroups="overStates" />
         <s:State name="down" stateGroups="downStates" />
         <s:State name="disabled" stateGroups="disabledStates" />
+		
         <s:State name="upAndSelected" stateGroups="selectedStates" />
         <s:State name="overAndSelected" stateGroups="overStates, selectedStates" />
         <s:State name="downAndSelected" stateGroups="downStates, selectedStates" />
         <s:State name="disabledAndSelected" stateGroups="disabledStates, selectedStates" />
+		
+		<s:State name="upAndPartial" stateGroups="partialStates" />
+		<s:State name="overAndPartial" stateGroups="overStates, partialStates" />
+		<s:State name="downAndPartial" stateGroups="downStates, partialStates" />
+		<s:State name="disabledAndPartial" stateGroups="disabledStates, partialStates" />
     </s:states>
     
     <s:Group verticalCenter="0" width="13" height="13" layoutDirection="ltr">
@@ -150,12 +156,23 @@
             <s:fill>
                 <!--- 
                     @private 
-                    The solid color fill for the CheckBox's checkmark. The default alpha is .9, and the default fill color is 0x000000. 
+                    The solid color fill for the CheckBox's checkmark. The default alpha is .8, and the default fill color is 0x000000. 
                 -->
                 <s:SolidColor id="checkMarkFill" color="0" alpha="0.8" />
             </s:fill>
         </s:Path>
+		
+		<!-- partial selection mark -->
+		<!--- The partial selection mark in the box for this skin. -->
+		<s:Rect left="2.5" top="2.5" right="2.5" bottom="2.5" includeIn="partialStates" id="partial_check" itemCreationPolicy="immediate">        
+			<s:fill>
+				<!--- 
+				@private 
+				The solid color fill for the CheckBox's partial selection mark. The default alpha is .8, and the default fill color is 0x000000. 
+				-->
+				<s:SolidColor id="partialCheckMarkFill" color="0" alpha="0.8" />
+			</s:fill>
+		</s:Rect>
     </s:Group>
-
 
 </s:SparkSkin>

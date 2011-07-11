@@ -33,7 +33,7 @@
 	<s:RadioButton id="radio_button"
 				   label=""
 				   enabled="false"
-				   skinClass="com.anjantek.controls.gridColumns.skins.NoDisabledRadioButtonSkin"
+				   skinClass="com.anjantek.controls.radioButtons.skins.NoDisabledRadioButtonSkin"
 				   horizontalCenter="0" verticalCenter="0" />
 	
 </s:GridItemRenderer>
