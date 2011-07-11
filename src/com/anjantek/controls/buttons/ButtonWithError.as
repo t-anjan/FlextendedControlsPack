@@ -1,4 +1,4 @@
-package com.anjantek.controls
+package com.anjantek.controls.buttons
 {
 	import spark.components.Button;
 	

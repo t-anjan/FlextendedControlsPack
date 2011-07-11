@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
   <includeClasses>
-    <classEntry path="com.anjantek.helpers.Arc"/>
-    <classEntry path="com.anjantek.skins.SemiCircleButtonSkin"/>
+    <classEntry path="com.anjantek.controls.buttons.helpers.Arc"/>
+    <classEntry path="com.anjantek.controls.buttons.skins.SemiCircleButtonSkin"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

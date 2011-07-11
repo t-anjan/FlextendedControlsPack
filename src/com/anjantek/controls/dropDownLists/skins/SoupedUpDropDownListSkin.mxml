@@ -26,7 +26,7 @@
       @productversion Flex 4
 -->
 <s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" 
-    xmlns:fb="http://ns.adobe.com/flashbuilder/2009" alpha.disabled=".5" xmlns:controls="com.anjantek.controls.*"> 
+    xmlns:fb="http://ns.adobe.com/flashbuilder/2009" alpha.disabled=".5" xmlns:controls="com.anjantek.controls.*" xmlns:buttons="com.anjantek.controls.buttons.*"> 
 	
     <!-- host component -->
     <fx:Metadata>
@@ -34,7 +34,7 @@
         /** 
          * @copy spark.skins.spark.ApplicationSkin#hostComponent
          */
-        [HostComponent("com.anjantek.controls.SoupedUpDropDownList")]
+        [HostComponent("com.anjantek.controls.dropDownLists.SoupedUpDropDownList")]
     ]]>
     </fx:Metadata> 
 	
@@ -119,8 +119,8 @@
 		<!---  The default skin is DropDownListButtonSkin. 
 		@copy spark.components.supportClasses.DropDownListBase#openButton
 		@see spark.skins.spark.DropDownListButtonSkin -->
-		<controls:ButtonWithError id="openButton" left="0" right="0" top="0" bottom="0" focusEnabled="false" tabEnabled="false"
-								  skinClass="com.anjantek.skins.DropDownListButtonWithErrorSkin" />
+		<buttons:ButtonWithError id="openButton" left="0" right="0" top="0" bottom="0" focusEnabled="false" tabEnabled="false"
+								  skinClass="com.anjantek.controls.buttons.skins.DropDownListButtonWithErrorSkin" />
 		
 		<!--- @copy spark.components.DropDownList#labelDisplay -->
 		<s:Label id="labelDisplay" verticalAlign="middle" maxDisplayedLines="1" 
@@ -131,7 +131,7 @@
 	
 	<s:Button id="clearSelectionButton"
 			  width="{ height * 0.75 }" height="{ height * 0.75 }"
-			  skinClass="com.anjantek.skins.CrossButtonSkin"
+			  skinClass="com.anjantek.controls.buttons.skins.CrossButtonSkin"
 			  focusEnabled="false" tabEnabled="false"
 			  label="x" fontWeight="bold" fontSize="14" color="0x4B4B4B" />
 
