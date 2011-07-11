@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:DefaultGridItemEditor xmlns:fx="http://ns.adobe.com/mxml/2009" 
+						 xmlns:s="library://ns.adobe.com/flex/spark" 
+						 xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.anjantek.controls.gridColumns.AwesomeGridColumn;
+			import com.anjantek.controls.gridColumns.events.AwesomeGridColumnEvent;
+			import com.anjantek.controls.gridColumns.payloads.CellDataUpdatedPayload;
+			
+			import mx.collections.IList;
+			import mx.controls.Alert;
+			import mx.states.OverrideBase;
+			import mx.utils.StringUtil;
+			
+			import spark.components.DataGrid;
+			
+			//----------------------------------------------------------------------------------------------------------			
+			
+			override public function set data(_value:Object):void
+			{
+				super.data = _value;
+				
+				if( _value && column.dataField )
+				{
+					this.value = _value[ column.dataField ];
+				}
+				else
+				{
+					this.value = column.itemToLabel( _value );
+				}
+			}
+			
+			//----------------------------------------------------------------------------------------------------------			
+			
+			override protected function validate():Boolean
+			{
+				var result: Boolean = super.validate();
+				
+				if( "" == value.toString() )
+					result = result && false;
+				
+				if( column is AwesomeGridColumn )
+				{
+					var _column: AwesomeGridColumn = AwesomeGridColumn( column );
+					
+					if( ! _column.allowDuplicates )
+					{
+						var dg: DataGrid = owner as DataGrid;
+						var data_provider: IList = dg.dataProvider;
+						
+						var item_index: Number = 0;
+						
+						for each( var _item: Object in data_provider )
+						{
+							var _label: String = _column.itemToLabel( _item );
+							
+							if( _label.toLowerCase() == value.toString().toLowerCase() && rowIndex != item_index )
+							{
+								result = result && false;
+								
+								var status_message: String = "'" + StringUtil.trim( _label ) + "' already exists.\n\n" +
+									"Duplicates are not allowed.";
+								var title: String = "Duplicate!";
+								Alert.show( status_message, title );
+								break;
+							}
+							
+							item_index += 1;
+						}
+					}
+				}
+				
+				return result;
+			}
+			
+			//----------------------------------------------------------------------------------------------------------			
+			
+			override public function save():Boolean
+			{
+				if ( ! validate() )
+					return false;
+				
+				super.save();
+				
+				// This block is for all those cases where data to be updated is part of a complex structure.
+				// To update the data in such a complex structure, we need to know the exact structure of the data,
+				// to dig through it and update the correct property. The data structure parsing should not be
+				// done in the itemrenderer. We just dispatch an event (containing the cell address and new text)
+				// and hope that somebody listens for this event and updates the data accordingly.
+				var payload: CellDataUpdatedPayload = new CellDataUpdatedPayload( rowIndex, column, value.toString() );
+				var dg: DataGrid = owner as DataGrid;
+				dg.dispatchEvent( new AwesomeGridColumnEvent ( AwesomeGridColumnEvent.DATA_UPDATED_IN_CELL, payload ) );
+				
+				return true;
+			}
+			
+			//----------------------------------------------------------------------------------------------------------			
+			
+			override public function prepare():void
+			{
+				super.prepare();
+				
+				if( column is AwesomeGridColumn )
+				{
+					var _column: AwesomeGridColumn = AwesomeGridColumn( column );
+					textArea.restrict = _column.textRestrict;
+					textArea.maxChars = _column.textMaxChars;
+				}
+			}
+			
+			//----------------------------------------------------------------------------------------------------------			
+			
+			override public function get value():Object
+			{
+				return StringUtil.trim( super.value.toString() );
+			}
+			
+			//----------------------------------------------------------------------------------------------------------			
+			
+		]]>
+	</fx:Script>
+</s:DefaultGridItemEditor>

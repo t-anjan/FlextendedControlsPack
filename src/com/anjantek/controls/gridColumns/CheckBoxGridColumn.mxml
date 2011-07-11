@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:GridColumn xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<gridColumns:AwesomeGridColumn xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			  xmlns:s="library://ns.adobe.com/flex/spark" 
 			  xmlns:mx="library://ns.adobe.com/flex/mx"
+			  xmlns:gridColumns="com.anjantek.controls.gridColumns.*"
 			  editable="false" sortable="false" resizable="false"
 			  width="25" headerText="" 
 			  itemRenderer="com.anjantek.controls.gridColumns.itemRenderers.DGCheckBoxItemRenderer"
@@ -9,4 +10,4 @@
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
-</s:GridColumn>
+</gridColumns:AwesomeGridColumn>
