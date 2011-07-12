@@ -5,7 +5,7 @@
 			  xmlns:gridColumns="com.anjantek.controls.gridColumns.*"
 			  editable="false" sortable="false" resizable="false"
 			  width="25" headerText="" 
-			  itemRenderer="com.anjantek.controls.gridColumns.itemRenderers.DGCheckBoxItemRenderer"
+			  itemRenderer="com.anjantek.controls.gridColumns.itemRenderers.CheckBoxGridItemRenderer"
 			  headerRenderer="com.anjantek.controls.gridColumns.headerRenderers.DGCheckBoxHeaderRenderer">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
