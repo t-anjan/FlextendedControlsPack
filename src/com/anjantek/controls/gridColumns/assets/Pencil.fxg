@@ -1,326 +1,65 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<Graphic version="2.0" viewHeight="15.0205" viewWidth="15.623" ai:appVersion="15.1.0.39" ATE:version="1.0.0" flm:version="1.0.0" d:using="" xmlns="http://ns.adobe.com/fxg/2008" xmlns:ATE="http://ns.adobe.com/ate/2009" xmlns:ai="http://ns.adobe.com/ai/2009" xmlns:d="http://ns.adobe.com/fxg/2008/dt" xmlns:flm="http://ns.adobe.com/flame/2008">
+<Graphic version="2.0" viewHeight="15.209" viewWidth="15.209" ai:appVersion="15.1.0.39" ATE:version="1.0.0" flm:version="1.0.0" d:using="" xmlns="http://ns.adobe.com/fxg/2008" xmlns:ATE="http://ns.adobe.com/ate/2009" xmlns:ai="http://ns.adobe.com/ai/2009" xmlns:d="http://ns.adobe.com/fxg/2008/dt" xmlns:flm="http://ns.adobe.com/flame/2008">
   <Library/>
-  <Group ai:seqID="1" d:layerType="page" d:pageHeight="15.021" d:pageWidth="15.623" d:type="layer" d:userLabel="Artboard 3">
+  <Group ai:seqID="1" d:layerType="page" d:pageHeight="15.209" d:pageWidth="15.209" d:type="layer" d:userLabel="Artboard 1">
     <Group ai:seqID="2" d:type="layer" d:userLabel="Layer 1">
-      <Group ai:seqID="3">
-        <Group y="13.1074" maskType="luminosity" luminosityClip="true" ai:seqID="4" ai:spare="1">
-          <mask>
-            <Group x="-0.98291" y="-0.0961914">
-              <Ellipse width="16.8818" height="1.6582" ai:seqID="5">
-                <fill>
-                  <RadialGradient x="8.3828" y="0.823181" scaleX="14.4699" scaleY="1.4214">
-                    <GradientEntry ratio="0" color="#FFFFFF"/>
-                    <GradientEntry ratio="0.177357" color="#E5E5E5"/>
-                    <GradientEntry ratio="0.421137" color="#AEAEAE"/>
-                    <GradientEntry ratio="0.696932" color="#616161"/>
-                    <GradientEntry ratio="1"/>
-                  </RadialGradient>
-                </fill>
-              </Ellipse>
-            </Group>
-          </mask>
-          <Ellipse y="0.000488222" alpha="0.37" width="14.9741" height="1.4707" ai:seqID="6">
-            <fill>
-              <SolidColor/>
-            </fill>
-          </Ellipse>
-        </Group>
-        <Path x="3.43188" y="0.000171393" winding="nonZero" ai:seqID="7" d:userLabel="erase" data="M3.96314 11.5819C3.4231 12.1214 2.53639 12.1092 1.98121 11.5545L0.42408 9.99739C-0.130607 9.44221 -0.142814 8.555 0.396737 8.01594L8.01588 0.396313C8.55543 -0.14275 9.44263 -0.130542 9.99781 0.424145L11.5545 1.98127C12.1091 2.53596 12.1213 3.42317
- 11.5818 3.96223L3.96314 11.5819Z">
+      <Group x="0.0644531" ai:seqID="3">
+        <Path y="0.160945" winding="nonZero" ai:seqID="4" data="M0 14.9465 4.13965 13.3781 14.8662 2.60956C14.8662 2.60956 15.29 2.18769 14.5186 1.38886 13.5244 0.361028 13.6592 0.57636 13.6846 0.555364L13.1221 0.0372972C13.1221 0.0372972 12.165 -0.187312 11.5986 0.466496 11.0322 1.12079 1.7002 10.3264 1.7002
+ 10.3264L0 14.9465Z">
           <fill>
-            <RadialGradient x="15.4902" y="-0.237705" scaleX="22.9068" scaleY="22.9068" rotation="45">
-              <GradientEntry ratio="0" color="#FFFFFF"/>
-              <GradientEntry ratio="1" color="#B31C17"/>
-            </RadialGradient>
+            <SolidColor color="#AD5322"/>
           </fill>
         </Path>
-        <Path x="3.1958" y="2.29053" winding="nonZero" ai:seqID="8" d:userLabel="body1" data="M1.23926 6.7998 6.78271 1.25635C6.49805 0.843262 6.26953 0.419434 6.10449 0L0.347168 5.75732C0.176758 5.92773 0.0620117 6.1333 0 6.35352L0.445801 6.7998C0.665039 7.01855 1.02051 7.01855 1.23926 6.7998Z">
+        <Path x="0.772461" y="9.87695" winding="nonZero" ai:seqID="5" data="M0 3.15137 0.839844 0.741211 2.54102 0 2.47461 1.65723 4.19629 1.8291 4.02246 3.03906 3.36719 3.66211 1.55957 4.37988 0.469727 4.73047 0 3.15137Z">
           <fill>
-            <RadialGradient x="-6.00391" y="12.1574" scaleX="43.2229" scaleY="43.223" rotation="45">
-              <GradientEntry ratio="0" color="#EBFFD9"/>
-              <GradientEntry ratio="0.117977" color="#EBFFD9"/>
-              <GradientEntry ratio="0.207609" color="#E1F8CA"/>
-              <GradientEntry ratio="0.316161" color="#C7E6A5"/>
-              <GradientEntry ratio="0.432789" color="#A1CB6E"/>
-              <GradientEntry ratio="0.55618" color="#6FA726"/>
-              <GradientEntry ratio="0.665008" color="#5F8E19"/>
-              <GradientEntry ratio="0.831461" color="#3F5E00"/>
-              <GradientEntry ratio="1" color="#3F5E00"/>
-            </RadialGradient>
+            <SolidColor color="#9B5D50"/>
           </fill>
         </Path>
-        <Path x="6.13135" y="5.41113" winding="nonZero" ai:seqID="9" d:userLabel="body3" data="M7.06104 0.726562C6.60791 0.555664 6.14941 0.310547 5.70361 0L0.164551 5.53906C-0.0546875 5.7583 -0.0546875 6.11377 0.164551 6.33301L0.68457 6.85303C0.904785 6.7915 1.11084 6.67676 1.28125 6.50635L7.06104 0.726562Z">
+        <Path x="1.39551" y="11.5049" winding="nonZero" ai:seqID="6" data="M0.0166016 2.40332 1.86426 0 3.55957 0.205078 0.375977 2.51758 0 2.51758 0.0166016 2.40332Z">
           <fill>
-            <RadialGradient x="-7.99619" y="15.5353" scaleX="54.0236" scaleY="54.0236" rotation="45">
-              <GradientEntry ratio="0" color="#EBFFD9"/>
-              <GradientEntry ratio="0.117977" color="#EBFFD9"/>
-              <GradientEntry ratio="0.207609" color="#E1F8CA"/>
-              <GradientEntry ratio="0.316161" color="#C7E6A5"/>
-              <GradientEntry ratio="0.432789" color="#A1CB6E"/>
-              <GradientEntry ratio="0.55618" color="#6FA726"/>
-              <GradientEntry ratio="0.665008" color="#5F8E19"/>
-              <GradientEntry ratio="0.831461" color="#3F5E00"/>
-              <GradientEntry ratio="1" color="#3F5E00"/>
-            </RadialGradient>
+            <SolidColor color="#AA7062"/>
           </fill>
         </Path>
-        <Path x="4.21094" y="3.54688" winding="nonZero" ai:seqID="10" d:userLabel="body2" data="M1.33643 7.34961C1.5083 7.52197 1.72363 7.62158 1.94385 7.6499 1.96875 7.55957 2.01416 7.47412 2.08496 7.40332L7.62402 1.86426C7.2793 1.625 6.94287 1.34717 6.62402 1.02832 6.29688 0.700684 6.01172 0.354492 5.76758 0L0.224121 5.54346C0.15918 5.60791
- 0.0820312 5.65186 0 5.67822 0.0224609 5.90869 0.123047 6.13623 0.303223 6.31641L1.33643 7.34961Z">
+        <Path x="0.0102539" y="12.9512" winding="nonZero" ai:seqID="7" data="M-0.000488281 2.15625 2.31006 1.30566C2.31006 1.30566 1.35205 0.741211 0.784668 0L-0.000488281 2.15625Z">
           <fill>
-            <RadialGradient x="-4.98511" y="11.7445" scaleX="54.4491" scaleY="54.4491" rotation="45">
-              <GradientEntry ratio="0" color="#EBFFD9"/>
-              <GradientEntry ratio="0.117977" color="#EBFFD9"/>
-              <GradientEntry ratio="0.207609" color="#E1F8CA"/>
-              <GradientEntry ratio="0.316161" color="#C7E6A5"/>
-              <GradientEntry ratio="0.432789" color="#A1CB6E"/>
-              <GradientEntry ratio="0.55618" color="#6FA726"/>
-              <GradientEntry ratio="0.665008" color="#5F8E19"/>
-              <GradientEntry ratio="0.831461" color="#3F5E00"/>
-              <GradientEntry ratio="1" color="#3F5E00"/>
-            </RadialGradient>
+            <SolidColor color="#232222"/>
           </fill>
         </Path>
-        <Path x="3.43188" y="0.000171393" winding="nonZero" ai:seqID="11" d:userLabel="erase" data="M3.96314 11.5819C3.4231 12.1214 2.53639 12.1092 1.98121 11.5545L0.42408 9.99739C-0.130607 9.44221 -0.142814 8.555 0.396737 8.01594L8.01588 0.396313C8.55543 -0.14275 9.44263 -0.130542 9.99781 0.424145L11.5545 1.98127C12.1091 2.53596 12.1213 3.42317
- 11.5818 3.96223L3.96314 11.5819Z">
+        <Path x="1.31787" y="9.80078" winding="nonZero" ai:seqID="8" data="M-0.000488281 3.67773 0.915527 0.588867 2.06006 0 1.94482 1.69922 -0.000488281 3.67773Z">
           <fill>
-            <RadialGradient x="15.4198" y="-1.32528" scaleX="21.1013" scaleY="21.1013" rotation="45">
-              <GradientEntry ratio="0" color="#FFFFFF"/>
-              <GradientEntry ratio="0.78022" color="#B31C17"/>
-              <GradientEntry ratio="1"/>
-            </RadialGradient>
+            <SolidColor color="#D5A38A"/>
           </fill>
         </Path>
-        <Path x="3.57296" y="0.140771" winding="nonZero" ai:seqID="12" data="M1.93973 11.3143 0.382602 9.75767C-0.116422 9.25815 -0.129117 8.45835 0.355258 7.97446L7.9744 0.355322C8.4578 -0.129053 9.25809 -0.116357 9.75711 0.383154L11.3142 1.9398C11.8133 2.43882 11.8255 3.23862 11.3421 3.723L3.72245 11.3421C3.23905 11.8255
- 2.43875 11.8138 1.93973 11.3143L1.93973 11.3143Z">
+        <Path x="3.25977" y="3.03125" winding="nonZero" ai:seqID="9" data="M0.118164 6.7793 0 8.47363 1.71582 8.6748 8.59863 1.50391 7.33398 0 0.118164 6.7793Z">
           <fill>
-            <RadialGradient x="15.095" y="-0.304414" scaleX="22.4291" scaleY="22.4291" rotation="45">
-              <GradientEntry ratio="0" color="#FFFFFF"/>
-              <GradientEntry ratio="0.78022" color="#B31C17"/>
-              <GradientEntry ratio="1"/>
-            </RadialGradient>
+            <SolidColor color="#F38D33"/>
           </fill>
         </Path>
-        <Path x="1.95996" y="8.27979" winding="nonZero" ai:seqID="13" d:userLabel="pencil nib" data="M0.668457 5.24561 0 4.65967 1.36768 0 5.12158 3.90283 0.668457 5.24561Z">
+        <Path x="9.84277" y="1.12695" winding="nonZero" ai:seqID="10" data="M0 1.21777C0 1.21777 2.12451 3.26367 2.51367 4.1416L3.89648 2.81055C3.89648 2.81055 2.38477 0.470703 1.26367 0L0 1.21777Z">
           <fill>
-            <RadialGradient x="7.91653" y="-3.38513" scaleX="60.1468" scaleY="56.9825" rotation="45">
-              <GradientEntry ratio="0" color="#FFFFFF"/>
-              <GradientEntry ratio="0.184049" color="#FAC34F"/>
-              <GradientEntry ratio="0.858896" color="#FDAC37"/>
-              <GradientEntry ratio="0.927601" color="#F2A136"/>
-              <GradientEntry ratio="1" color="#D28232"/>
-            </RadialGradient>
+            <SolidColor color="#343F40"/>
           </fill>
         </Path>
-        <Path x="2.40137" y="8.8584" winding="nonZero" ai:seqID="14" data="M1.80273 0 0 3.91992 0.264648 4.18408 4.08447 2.38184 1.80273 0Z">
+        <Path x="11.083" y="-0.000181198" winding="nonZero" ai:seqID="11" data="M0 1.13446C0 1.13446 2.38477 3.23553 2.62305 3.90741 2.62305 3.90741 3.27148 3.2746 3.75195 2.78143 4.19922 2.32049 3.55469 1.70233 3.23047 1.3117 2.90625 0.921568 2.18359 0.268736 2.01123 0.160826 1.83691 0.0529156 1.35547 -0.154604 0.964844
+ 0.192076 0.574219 0.538755 0 1.13446 0 1.13446Z">
           <fill>
-            <RadialGradient x="5.88971" y="-1.01986" scaleX="45.7799" scaleY="45.7799" rotation="45">
-              <GradientEntry ratio="0" color="#FFFFFF"/>
-              <GradientEntry ratio="0.357143" color="#FAC34F"/>
-              <GradientEntry ratio="0.60989" color="#FDAC37"/>
-              <GradientEntry ratio="0.799839" color="#F2A136"/>
-              <GradientEntry ratio="1" color="#D28232"/>
-            </RadialGradient>
+            <SolidColor color="#EA7853"/>
           </fill>
         </Path>
-        <Path x="2.40137" y="9.60254" winding="nonZero" ai:seqID="15" data="M2.646 0 0 3.17578 0.264648 3.43994 3.24121 0.694824 2.646 0Z">
+        <Path x="10.4287" y="1.6582" winding="nonZero" ai:seqID="12" data="M1.21094 0 2.0293 0.75293C0.871094 2.09473 0.84375 2.08301 0.796875 2.11816 0.796875 2.11816 0.175781 1.42773 0 1.27344L1.21094 0Z">
           <fill>
-            <RadialGradient x="-0.900238" y="4.57365" scaleX="57.315" scaleY="57.315" rotation="45">
-              <GradientEntry ratio="0" color="#FFFFFF"/>
-              <GradientEntry ratio="0.357143" color="#FAC34F"/>
-              <GradientEntry ratio="0.60989" color="#FDAC37"/>
-              <GradientEntry ratio="0.799839" color="#F2A136"/>
-              <GradientEntry ratio="1" color="#D28232"/>
-            </RadialGradient>
+            <SolidColor color="#A7CFCF"/>
           </fill>
         </Path>
-        <Path x="9.30029" y="0.690993" winding="nonZero" ai:seqID="16" d:userLabel="inox" data="M5.53271 3.41106C4.84521 3.15422 4.0293 2.60832 3.271 1.85051 2.67725 1.25578 2.21289 0.624924 1.9165 0.0492409 1.87305 -0.0347435 1.58496 0.0145729 1.58496 0.0145729L0 1.59953C0.306641 2.37883 0.825684 3.17522 1.53467 3.8842 2.26611 4.61565 3.08936
- 5.14397 3.89209 5.4467L5.62793 3.71037C5.62793 3.71037 5.63525 3.44914 5.53271 3.41106Z">
+        <Path x="11.9704" y="0.506208" winding="nonZero" ai:seqID="13" data="M1.71023 0.820452C1.71023 0.820452 1.24099 0.0299244 0.886989 0.00209236 0.53445 -0.0252514 0.0149183 0.214983 0.000758171 0.568499 -0.0148668 0.922991 0.132106 0.956682 0.567653 1.39125 1.00027 1.8268 1.60281 1.71938 1.69656 1.35121 1.79226 0.984026
+ 1.71023 0.820452 1.71023 0.820452Z">
           <fill>
-            <RadialGradient x="6.61075" y="-1.25825" scaleX="21.2619" scaleY="21.2619" rotation="45">
-              <GradientEntry ratio="0" color="#FFFFFF"/>
-              <GradientEntry ratio="1" color="#030303"/>
-            </RadialGradient>
+            <SolidColor color="#FB966D"/>
           </fill>
         </Path>
-        <Path x="9.46533" y="0.831673" winding="nonZero" ai:seqID="17" data="M1.46924 3.6444C0.820801 2.99596 0.313965 2.25378 0 1.49206L1.48584 0.00621748C1.5459 -0.000618458 1.6084 -0.0020833 1.64209 0.00279951 1.95752 0.607292 2.42871 1.23083 3.00732 1.80895 3.74072 2.54235 4.57617 3.11999 5.30127 3.39489 5.31006 3.4154
- 5.31885 3.46374 5.32129 3.51354L3.69238 5.14196C2.90527 4.82995 2.13867 4.31383 1.46924 3.6444L1.46924 3.6444Z">
+        <Path x="3.01855" y="2.83594" winding="nonZero" ai:seqID="14" data="M0.361328 6.9707 0 7.14551 7.31543 0 7.53613 0.228516 0.361328 6.9707Z">
           <fill>
-            <LinearGradient x="0.678772" y="0.813179" scaleX="5.19242" rotation="44.9991">
-              <GradientEntry ratio="0" color="#B9BBBD"/>
-              <GradientEntry ratio="0.0312192" color="#B6B8BA"/>
-              <GradientEntry ratio="0.0570891" color="#ADAFB0"/>
-              <GradientEntry ratio="0.0813811" color="#9C9D9E"/>
-              <GradientEntry ratio="0.104396" color="#828282"/>
-              <GradientEntry ratio="0.142952" color="#B6B6B6"/>
-              <GradientEntry ratio="0.180158" color="#DDDDDD"/>
-              <GradientEntry ratio="0.215741" color="#F6F6F6"/>
-              <GradientEntry ratio="0.247253" color="#FFFFFF"/>
-              <GradientEntry ratio="0.324461" color="#E7E7E8"/>
-              <GradientEntry ratio="0.406593" color="#DFE0E1"/>
-              <GradientEntry ratio="0.567416" color="#9E9FA1"/>
-              <GradientEntry ratio="0.796703" color="#F5F5F5"/>
-              <GradientEntry ratio="0.926966" color="#B4B4B4"/>
-              <GradientEntry ratio="1" color="#BDBFC1"/>
-            </LinearGradient>
-          </fill>
-        </Path>
-        <Path x="9.67627" y="1.82812" winding="nonZero" ai:seqID="18" data="M1.74561 2.16064C1.09717 1.51221 0.495117 0.865234 0 0.28418L0.28418 0C0.317383 0.0205078 0.354004 0.0449219 0.375977 0.0615234 0.808105 0.548828 1.34131 1.11133 1.91943 1.68896 2.65283 2.42285 3.38379 3.10449 3.92725 3.56152 3.94092 3.57715 3.96533
- 3.60986 3.98682 3.64014L3.67529 3.95166C3.08057 3.44727 2.41504 2.82959 1.74561 2.16064L1.74561 2.16064Z">
-          <fill>
-            <LinearGradient>
-              <GradientEntry ratio="0" color="#B9BBBD"/>
-              <GradientEntry ratio="0.0312192" color="#B6B8BA"/>
-              <GradientEntry ratio="0.0570891" color="#ADAFB0"/>
-              <GradientEntry ratio="0.0813811" color="#9C9D9E"/>
-              <GradientEntry ratio="0.104396" color="#828282"/>
-              <GradientEntry ratio="0.142952" color="#B6B6B6"/>
-              <GradientEntry ratio="0.180158" color="#DDDDDD"/>
-              <GradientEntry ratio="0.215741" color="#F6F6F6"/>
-              <GradientEntry ratio="0.247253" color="#FFFFFF"/>
-              <GradientEntry ratio="0.324461" color="#E7E7E8"/>
-              <GradientEntry ratio="0.406593" color="#DFE0E1"/>
-              <GradientEntry ratio="0.567416" color="#9E9FA1"/>
-              <GradientEntry ratio="0.796703" color="#F5F5F5"/>
-              <GradientEntry ratio="0.926966" color="#B4B4B4"/>
-              <GradientEntry ratio="1" color="#BDBFC1"/>
-              <matrix>
-                <Matrix a="2.22714" b="2.22714" c="-1.60168" d="2.712" tx="0.716007" ty="0.741512"/>
-              </matrix>
-            </LinearGradient>
-          </fill>
-        </Path>
-        <Path x="10.436" y="1.06836" winding="nonZero" ai:seqID="19" data="M1.74561 2.16064C1.09717 1.51221 0.495117 0.865234 0 0.28418L0.28418 0C0.317383 0.0205078 0.354004 0.0454102 0.375977 0.0615234 0.808105 0.549316 1.34131 1.11084 1.91943 1.68896 2.65283 2.42285 3.38379 3.10449 3.92725 3.56201 3.94043 3.57715 3.96533
- 3.60938 3.98682 3.64014L3.67529 3.95166C3.08057 3.44775 2.41504 2.83008 1.74561 2.16064L1.74561 2.16064Z">
-          <fill>
-            <LinearGradient>
-              <GradientEntry ratio="0" color="#B9BBBD"/>
-              <GradientEntry ratio="0.0312192" color="#B6B8BA"/>
-              <GradientEntry ratio="0.0570891" color="#ADAFB0"/>
-              <GradientEntry ratio="0.0813811" color="#9C9D9E"/>
-              <GradientEntry ratio="0.104396" color="#828282"/>
-              <GradientEntry ratio="0.142952" color="#B6B6B6"/>
-              <GradientEntry ratio="0.180158" color="#DDDDDD"/>
-              <GradientEntry ratio="0.215741" color="#F6F6F6"/>
-              <GradientEntry ratio="0.247253" color="#FFFFFF"/>
-              <GradientEntry ratio="0.324461" color="#E7E7E8"/>
-              <GradientEntry ratio="0.406593" color="#DFE0E1"/>
-              <GradientEntry ratio="0.567416" color="#9E9FA1"/>
-              <GradientEntry ratio="0.796703" color="#F5F5F5"/>
-              <GradientEntry ratio="0.926966" color="#B4B4B4"/>
-              <GradientEntry ratio="1" color="#BDBFC1"/>
-              <matrix>
-                <Matrix a="2.22714" b="2.22714" c="-1.60168" d="2.712" tx="0.715923" ty="0.741596"/>
-              </matrix>
-            </LinearGradient>
-          </fill>
-        </Path>
-        <Path x="3.1958" y="2.29053" winding="nonZero" ai:seqID="20" d:userLabel="body1" data="M1.23926 6.7998 6.78271 1.25635C6.49805 0.843262 6.26953 0.419434 6.10449 0L0.347168 5.75732C0.176758 5.92773 0.0620117 6.1333 0 6.35352L0.445801 6.7998C0.665039 7.01855 1.02051 7.01855 1.23926 6.7998Z">
-          <fill>
-            <RadialGradient x="-2.82574" y="11.2062" scaleX="37.6135" scaleY="37.6135" rotation="45">
-              <GradientEntry ratio="0" color="#EBFFD9"/>
-              <GradientEntry ratio="0.117977" color="#EBFFD9"/>
-              <GradientEntry ratio="0.207609" color="#E3F2CC"/>
-              <GradientEntry ratio="0.316161" color="#CFD2AB"/>
-              <GradientEntry ratio="0.432789" color="#B2A17A"/>
-              <GradientEntry ratio="0.55618" color="#8C6239"/>
-              <GradientEntry ratio="0.831461" color="#754C24"/>
-              <GradientEntry ratio="1" color="#754C24"/>
-            </RadialGradient>
-          </fill>
-        </Path>
-        <Path x="3.35498" y="2.53809" winding="nonZero" ai:seqID="21" data="M0.385742 6.45312 0 6.06689C0.0610352 5.89258 0.157715 5.73877 0.287109 5.60938L5.896 0C6.04199 0.332031 6.2251 0.665039 6.44238 0.991699L0.981445 6.45264C0.816895 6.6167 0.549805 6.6167 0.385742 6.45312L0.385742 6.45312Z">
-          <fill>
-            <RadialGradient x="-5.73495" y="11.6702" scaleX="41.3409" scaleY="41.3409" rotation="45">
-              <GradientEntry ratio="0" color="#EBFFD9"/>
-              <GradientEntry ratio="0.117977" color="#EBFFD9"/>
-              <GradientEntry ratio="0.207609" color="#E3F2CC"/>
-              <GradientEntry ratio="0.316161" color="#CFD2AB"/>
-              <GradientEntry ratio="0.432789" color="#B2A17A"/>
-              <GradientEntry ratio="0.55618" color="#8C6239"/>
-              <GradientEntry ratio="0.831461" color="#754C24"/>
-              <GradientEntry ratio="1" color="#603813"/>
-            </RadialGradient>
-          </fill>
-        </Path>
-        <Path x="6.13135" y="5.41113" winding="nonZero" ai:seqID="22" d:userLabel="body3" data="M7.06104 0.726562C6.60791 0.555664 6.14941 0.310547 5.70361 0L0.164551 5.53906C-0.0546875 5.7583 -0.0546875 6.11377 0.164551 6.33301L0.68457 6.85303C0.904785 6.7915 1.11084 6.67676 1.28125 6.50635L7.06104 0.726562Z">
-          <fill>
-            <RadialGradient x="-2.81897" y="9.89545" scaleX="52.2184" scaleY="52.2184" rotation="45">
-              <GradientEntry ratio="0" color="#EBFFD9"/>
-              <GradientEntry ratio="0.117977" color="#EBFFD9"/>
-              <GradientEntry ratio="0.207609" color="#E5F4CE"/>
-              <GradientEntry ratio="0.316161" color="#D7D9B2"/>
-              <GradientEntry ratio="0.432789" color="#C2B188"/>
-              <GradientEntry ratio="0.55618" color="#A67C52"/>
-              <GradientEntry ratio="0.831461" color="#8C6239"/>
-              <GradientEntry ratio="1" color="#754C24"/>
-            </RadialGradient>
-          </fill>
-        </Path>
-        <Path x="6.27191" y="5.59326" winding="nonZero" ai:seqID="23" data="M0.583069 6.51221 0.123108 6.05176C-0.0409546 5.88721 -0.0409546 5.62109 0.123596 5.45654L5.58014 0C5.93903 0.241211 6.30426 0.440918 6.66998 0.595703L1.04108 6.2251C0.911682 6.354 0.757874 6.45117 0.583069 6.51221L0.583069 6.51221Z">
-          <fill>
-            <RadialGradient x="-7.76733" y="14.8326" scaleX="51.8672" scaleY="51.8672" rotation="45">
-              <GradientEntry ratio="0" color="#EBFFD9"/>
-              <GradientEntry ratio="0.117977" color="#EBFFD9"/>
-              <GradientEntry ratio="0.207609" color="#E3F2CC"/>
-              <GradientEntry ratio="0.316161" color="#CFD2AB"/>
-              <GradientEntry ratio="0.432789" color="#B2A17A"/>
-              <GradientEntry ratio="0.55618" color="#8C6239"/>
-              <GradientEntry ratio="0.831461" color="#754C24"/>
-              <GradientEntry ratio="1" color="#603813"/>
-            </RadialGradient>
-          </fill>
-        </Path>
-        <Path x="4.21094" y="3.54688" winding="nonZero" ai:seqID="24" d:userLabel="body2" data="M1.33643 7.34961C1.5083 7.52197 1.72363 7.62158 1.94385 7.6499 1.96875 7.55957 2.01416 7.47412 2.08496 7.40332L7.62402 1.86426C7.2793 1.625 6.94287 1.34717 6.62402 1.02832 6.29688 0.700684 6.01172 0.354492 5.76758 0L0.224121 5.54346C0.15918 5.60791
- 0.0820312 5.65186 0 5.67822 0.0224609 5.90869 0.123047 6.13623 0.303223 6.31641L1.33643 7.34961Z">
-          <fill>
-            <RadialGradient x="-0.106506" y="7.49502" scaleX="29.7575" scaleY="29.7575" rotation="45">
-              <GradientEntry ratio="0" color="#EBFFD9"/>
-              <GradientEntry ratio="0.117977" color="#EBFFD9"/>
-              <GradientEntry ratio="0.207609" color="#E3F2CC"/>
-              <GradientEntry ratio="0.316161" color="#CFD2AB"/>
-              <GradientEntry ratio="0.432789" color="#B2A17A"/>
-              <GradientEntry ratio="0.55618" color="#8C6239"/>
-              <GradientEntry ratio="0.831461" color="#754C24"/>
-              <GradientEntry ratio="1" color="#754C24"/>
-            </RadialGradient>
-          </fill>
-        </Path>
-        <Path x="4.36621" y="3.76416" winding="nonZero" ai:seqID="25" data="M1.28076 7.0332 0.24707 5.99951C0.12207 5.87451 0.0361328 5.71729 0 5.54785 0.0629883 5.51514 0.119629 5.47461 0.168945 5.42529L5.59375 0C5.82764 0.323242 6.08838 0.628906 6.36963 0.910645 6.64209 1.18359 6.93896 1.43652 7.25244 1.66504L1.83008
- 7.08691C1.77637 7.14062 1.73242 7.20264 1.69873 7.27295 1.5415 7.23291 1.39893 7.15088 1.28076 7.0332L1.28076 7.0332Z">
-          <fill>
-            <RadialGradient x="-4.78925" y="11.2831" scaleX="52.1322" scaleY="52.1322" rotation="45">
-              <GradientEntry ratio="0" color="#EBFFD9"/>
-              <GradientEntry ratio="0.349693" color="#8C6239"/>
-              <GradientEntry ratio="0.831461" color="#603813"/>
-              <GradientEntry ratio="1" color="#603813"/>
-            </RadialGradient>
-          </fill>
-        </Path>
-        <Path x="1.46777" y="11.8354" winding="nonZero" ai:seqID="26" data="M0 1.53076 0.851074 0C0.851074 0 1.12354 0.421875 1.42139 0.71875 1.71924 1.0166 2.28955 1.33936 2.28955 1.33936L0.677246 2.21045 0 1.53076Z">
-          <fill>
-            <RadialGradient x="5.23337" y="-2.6314" scaleX="12.796" scaleY="12.796" rotation="45">
-              <GradientEntry ratio="0" color="#FFFFFF"/>
-              <GradientEntry ratio="1" color="#030303"/>
-            </RadialGradient>
-          </fill>
-        </Path>
-        <Path x="12.2216" y="0.372306" winding="nonZero" ai:seqID="27" data="M0.986887 0.275644C0.689035 -0.0217197 0.316965 -0.0471103 0.0689182 0.0524991 -0.179129 0.15162 0.292063 0.920663 0.689035 1.31715 1.08601 1.71412 1.8653 2.54517 2.07771 2.35914 2.27644 2.18531 1.80525 1.51588 1.5323 1.24293 1.25935 0.970468
- 1.30915 0.597909 0.986887 0.275644Z">
-          <fill>
-            <RadialGradient x="3.00996" y="-0.73033" scaleX="13.5491" scaleY="13.5491" rotation="45">
-              <GradientEntry ratio="0" color="#FFFFFF"/>
-              <GradientEntry ratio="0.78022" color="#B31C17"/>
-              <GradientEntry ratio="1"/>
-            </RadialGradient>
-          </fill>
-        </Path>
-        <Path x="1.93848" y="12.3481" winding="nonZero" ai:seqID="28" data="M0.760254 0 0 1.22363 1.22363 0.462891 0.760254 0Z">
-          <fill>
-            <RadialGradient x="-2.02209" y="-1.34147" scaleX="14.4105" scaleY="14.4105" rotation="45">
-              <GradientEntry ratio="0" color="#FFFFFF"/>
-              <GradientEntry ratio="1" color="#030303"/>
-            </RadialGradient>
+            <SolidColor color="#FFFFFF"/>
           </fill>
         </Path>
       </Group>
