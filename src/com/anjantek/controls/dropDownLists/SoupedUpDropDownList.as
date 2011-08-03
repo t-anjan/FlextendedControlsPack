@@ -2,6 +2,9 @@ package com.anjantek.controls.dropDownLists
 {
 	import avmplus.getQualifiedClassName;
 	
+	import com.anjantek.controls.buttons.ButtonWithError;
+	import com.anjantek.controls.dropDownLists.skins.SoupedUpDropDownListSkin;
+	
 	import flash.events.MouseEvent;
 	
 	import mx.binding.utils.BindingUtils;
@@ -10,13 +13,10 @@ package com.anjantek.controls.dropDownLists
 	import mx.states.State;
 	import mx.utils.ObjectUtil;
 	
-	import com.anjantek.controls.dropDownLists.skins.SoupedUpDropDownListSkin;
-	
 	import spark.components.DropDownList;
 	import spark.components.supportClasses.ButtonBase;
 	import spark.events.IndexChangeEvent;
 	import spark.skins.spark.DropDownListSkin;
-	import com.anjantek.controls.buttons.ButtonWithError;
 	
 	
 	//--------------------------------------
@@ -45,10 +45,25 @@ package com.anjantek.controls.dropDownLists
 	 */
 	[SkinState("error")]
 	
+	[SkinState("normalWithClear")]
+	[SkinState("openWithClear")]
+	[SkinState("disabledWithClear")]
+	
+	
+	
 	[SkinState("normalError")]
+	[SkinState("normalErrorWithClear")]
+	
 	[SkinState("normalValid")]
+	[SkinState("normalValidWithClear")]
+	
+	
+	
 	[SkinState("openError")]
+	[SkinState("openErrorWithClear")]
+	
 	[SkinState("openValid")]
+	[SkinState("openValidWithClear")]
 	
 	//-------------------------------------------------------------------------------------------------
 	
@@ -74,10 +89,7 @@ package com.anjantek.controls.dropDownLists
 			}
 			
 			if( null != clearSelectionButton )
-			{
-				BindingUtils.bindProperty( clearSelectionButton, "visible", this, "showClearButton" );
 				clearSelectionButton.addEventListener( MouseEvent.CLICK, clearSelectionButton_clickHandler );
-			}
 			
 			Add_States();
 			
@@ -159,8 +171,23 @@ package com.anjantek.controls.dropDownLists
 		[Bindable]
 		public var isValid: Boolean = true;
 		
-		[Bindable]
-		public var showClearButton: Boolean = false;
+		//-------------------------------------------------------------------------------------------------
+		
+		private var _showClearButton: Boolean = false;
+		
+		public function get showClearButton(): Boolean
+		{
+			return _showClearButton;
+		}
+		
+		public function set showClearButton( value: Boolean ): void
+		{
+			_showClearButton = value;
+			this.invalidateSkinState();
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
 		
 		//-------------------------------------------------------------------------------------------------
 		
@@ -200,21 +227,25 @@ package com.anjantek.controls.dropDownLists
 			if( skin_class_name != allowed_skin_class_name )
 				return super_skin_state;
 			
-			if( ! showValidity )
-				return super_skin_state;
-			
-			if( ! enabled )
-				return "disabled";
-			
 			var skin_state: String;
 			
-			if( isDropDownOpen )
-				skin_state = isValid ? "openValid" : "openError";
+			if( ! showValidity )
+				skin_state = super_skin_state;
+			else if( ! enabled )
+				skin_state = "disabled";
 			else
-				skin_state = isValid ? "normalValid" : "normalError";
+			{
+				if( isDropDownOpen )
+					skin_state = isValid ? "openValid" : "openError";
+				else
+					skin_state = isValid ? "normalValid" : "normalError";
+			}
 			
 			//trace( "DDL Skin state: " + skin_state );
-			return skin_state;
+			if( showClearButton )
+				return skin_state + "WithClear";
+			else
+				return skin_state;
 		}
 		
 		//-------------------------------------------------------------------------------------------------
@@ -225,7 +256,7 @@ package com.anjantek.controls.dropDownLists
 			{
 				for ( var i : int = 0 ; i < dataProvider.length ; i++ ) 
 				{
-					if ( _value == itemToLabel( dataProvider [ i ] ) ) 
+					if ( _value.toString().toLowerCase() == itemToLabel( dataProvider [ i ] ).toLowerCase() ) 
 					{
 						selectedIndex = i;
 						validateNow();

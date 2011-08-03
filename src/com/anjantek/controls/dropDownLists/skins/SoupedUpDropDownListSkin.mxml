@@ -26,7 +26,7 @@
       @productversion Flex 4
 -->
 <s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" 
-    xmlns:fb="http://ns.adobe.com/flashbuilder/2009" alpha.disabled=".5" xmlns:controls="com.anjantek.controls.*" xmlns:buttons="com.anjantek.controls.buttons.*"> 
+    xmlns:fb="http://ns.adobe.com/flashbuilder/2009" alpha.disabledGroup=".5" xmlns:controls="com.anjantek.controls.*" xmlns:buttons="com.anjantek.controls.buttons.*"> 
 	
     <!-- host component -->
     <fx:Metadata>
@@ -38,24 +38,32 @@
     ]]>
     </fx:Metadata> 
 	
-	<!--
-		NOTE: this skin file contains sub-parts that may continue to react to
-		Style code.  To remove this behavior create new copies of those skins
-		and remove the styles.
-	-->
-    <s:states>
+	<s:states>
         <s:State name="normal" stateGroups="normalGroup" />
+		<s:State name="normalWithClear" stateGroups="normalGroup, clearGroup" />
+		
         <s:State name="open" stateGroups="openGroup" />
-        <s:State name="disabled" />
+		<s:State name="openWithClear" stateGroups="openGroup, clearGroup" />
+		
+        <s:State name="disabled" stateGroups="disabledGroup" />
+		<s:State name="disabledWithClear" stateGroups="disabledGroup, clearGroup" />
 		
 		<s:State name="error" stateGroups="errorGroup" />
 		<s:State name="valid" stateGroups="validGroup" />
 		
+		
 		<s:State name="normalError" stateGroups="normalGroup, errorGroup" />
+		<s:State name="normalErrorWithClear" stateGroups="normalGroup, errorGroup, clearGroup" />
+		
 		<s:State name="normalValid" stateGroups="normalGroup, validGroup" />
+		<s:State name="normalValidWithClear" stateGroups="normalGroup, validGroup, clearGroup" />
+		
 		
 		<s:State name="openError" stateGroups="openGroup, errorGroup" />
+		<s:State name="openErrorWithClear" stateGroups="openGroup, errorGroup, clearGroup" />
+		
 		<s:State name="openValid" stateGroups="openGroup, validGroup" />
+		<s:State name="openValidWithClear" stateGroups="openGroup, validGroup, clearGroup" />
     </s:states>
     
 	<s:layout>
@@ -130,7 +138,8 @@
 	
 	
 	<s:Button id="clearSelectionButton"
-			  width="{ height * 0.75 }" height="{ height * 0.75 }"
+			  visible="false" visible.clearGroup="true"
+			  width="0" width.clearGroup="{ height * 0.75 }" height="{ height * 0.75 }"
 			  skinClass="com.anjantek.controls.buttons.skins.CrossButtonSkin"
 			  focusEnabled="false" tabEnabled="false"
 			  label="x" fontWeight="bold" fontSize="14" color="0x4B4B4B" />
