@@ -45,10 +45,11 @@ package com.anjantek.controls.dropDownLists
 	 */
 	[SkinState("error")]
 	
+	//-------------------------------------------------------------------------------------------------
+	
 	[SkinState("normalWithClear")]
 	[SkinState("openWithClear")]
 	[SkinState("disabledWithClear")]
-	
 	
 	
 	[SkinState("normalError")]
@@ -56,7 +57,6 @@ package com.anjantek.controls.dropDownLists
 	
 	[SkinState("normalValid")]
 	[SkinState("normalValidWithClear")]
-	
 	
 	
 	[SkinState("openError")]
@@ -78,98 +78,9 @@ package com.anjantek.controls.dropDownLists
 		
 		//-------------------------------------------------------------------------------------------------
 		
-		protected function initializeHandler( event: FlexEvent ): void
-		{
-			//trace( "SkinClass: " + getStyle( "skinClass" ) );
-			
-			if( openButton is ButtonWithError )
-			{
-				BindingUtils.bindProperty( openButton, "showValidity", this, "showValidity" );
-				BindingUtils.bindProperty( openButton, "isValid", this, "isValid" );
-			}
-			
-			if( null != clearSelectionButton )
-				clearSelectionButton.addEventListener( MouseEvent.CLICK, clearSelectionButton_clickHandler );
-			
-			Add_States();
-			
-			this.currentState = "base";
-		}
-		
-		//-------------------------------------------------------------------------------------------------
-		
-		protected function Add_States(): void
-		{
-			var state_valid: State = new State();
-			state_valid.name = "valid";
-			
-			var state_error: State = new State();
-			state_error.name = "error";
-			
-			var state_base: State = new State();
-			state_base.name = "base";
-			
-			this.addEventListener( StateChangeEvent.CURRENT_STATE_CHANGE, currentStateChangeHandler );
-			
-			states = [ state_base, state_valid, state_error ];
-		}
-		
-		//-------------------------------------------------------------------------------------------------
-		
-		protected function currentStateChangeHandler( event: StateChangeEvent ): void
-		{
-			//trace("State changed: " + event.newState );
-			
-			switch( event.newState )
-			{
-				case "base":
-				{
-					showValidity = false;
-					isValid = true;
-					this.errorString = "";
-					break;
-				}
-					
-				case "valid":
-				{
-					showValidity = true;
-					isValid = true;
-					break;
-				}
-					
-				case "error":
-				{
-					showValidity = true;
-					isValid = false;
-					break;
-				}
-					
-				default:
-				{
-					showValidity = false;
-					isValid = true;
-					this.errorString = "";
-					break;
-				}
-			}
-		}
-		
-		//-------------------------------------------------------------------------------------------------
-		
-		protected function clearSelectionButton_clickHandler( event: MouseEvent ): void
-		{
-			this.selectedIndex = -1;
-			this.dispatchEvent( new IndexChangeEvent( IndexChangeEvent.CHANGE ) );
-			this.invalidateSkinState();
-		}
-		
-		//-------------------------------------------------------------------------------------------------
-		
-		[Bindable]
-		public var showValidity: Boolean = false;
-		
-		[Bindable]
-		public var isValid: Boolean = true;
+		public static const BASE_STATE: String = "base";
+		public static const VALID_STATE: String = "valid";
+		public static const ERROR_STATE: String = "error";
 		
 		//-------------------------------------------------------------------------------------------------
 		
@@ -188,6 +99,13 @@ package com.anjantek.controls.dropDownLists
 		
 		//-------------------------------------------------------------------------------------------------
 		
+		override public function set enabled(value:Boolean):void
+		{
+			super.enabled = value;
+			
+			if( openButton is ButtonWithError )
+				openButton.enabled = value;
+		}
 		
 		//-------------------------------------------------------------------------------------------------
 		
@@ -208,7 +126,106 @@ package com.anjantek.controls.dropDownLists
 		public var clearSelectionButton:ButtonBase;
 		
 		//-------------------------------------------------------------------------------------------------
-
+		
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		protected function initializeHandler( event: FlexEvent ): void
+		{
+			//trace( "SkinClass: " + getStyle( "skinClass" ) );
+			
+			if( null != clearSelectionButton )
+				clearSelectionButton.addEventListener( MouseEvent.CLICK, clearSelectionButton_clickHandler );
+			
+			Add_States();
+			
+			this.currentState = SoupedUpDropDownList.BASE_STATE;
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		protected function Add_States(): void
+		{
+			var state_valid: State = new State();
+			state_valid.name = SoupedUpDropDownList.VALID_STATE;
+			
+			var state_error: State = new State();
+			state_error.name = SoupedUpDropDownList.ERROR_STATE;
+			
+			var state_base: State = new State();
+			state_base.name = SoupedUpDropDownList.BASE_STATE;
+			
+			this.addEventListener( StateChangeEvent.CURRENT_STATE_CHANGE, currentStateChangeHandler );
+			
+			states = [ state_base, state_valid, state_error ];
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		private var showValidity: Boolean = false;
+		
+		private var isValid: Boolean = true;
+		
+		protected function currentStateChangeHandler( event: StateChangeEvent ): void
+		{
+			//trace("State changed: " + event.newState );
+			
+			switch( event.newState )
+			{
+				case SoupedUpDropDownList.BASE_STATE:
+				{
+					showValidity = false;
+					isValid = true;
+					this.errorString = "";
+					break;
+				}
+					
+				case SoupedUpDropDownList.VALID_STATE:
+				{
+					showValidity = true;
+					isValid = true;
+					break;
+				}
+					
+				case SoupedUpDropDownList.ERROR_STATE:
+				{
+					showValidity = true;
+					isValid = false;
+					break;
+				}
+					
+				default:
+				{
+					showValidity = false;
+					isValid = true;
+					this.errorString = "";
+					break;
+				}
+			}
+			
+			// Reflect the validity status on the openButton.
+			if( openButton is ButtonWithError )
+			{
+				var open_button_with_error: ButtonWithError = ButtonWithError( openButton );
+				open_button_with_error.showValidity = showValidity;
+				open_button_with_error.isValid = isValid;
+			}
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		protected function clearSelectionButton_clickHandler( event: MouseEvent ): void
+		{
+			var change_event: IndexChangeEvent = new IndexChangeEvent( IndexChangeEvent.CHANGE );
+			change_event.oldIndex = this.selectedIndex;
+			this.selectedIndex = -1;
+			change_event.newIndex = -1;
+			this.dispatchEvent( change_event );
+			
+			this.invalidateSkinState();
+		}
+		
+		//-------------------------------------------------------------------------------------------------
 		
 		override protected function getCurrentSkinState():String
 		{
@@ -220,8 +237,8 @@ package com.anjantek.controls.dropDownLists
 			//trace( "DDL Super state is: " + super_skin_state );
 			
 			var skin_class: * = getStyle( "skinClass" );
-			var skin_class_name: String = getQualifiedClassName(skin_class);
-			var allowed_skin_class_name: String = getQualifiedClassName(SoupedUpDropDownListSkin);
+			var skin_class_name: String = getQualifiedClassName( skin_class );
+			var allowed_skin_class_name: String = getQualifiedClassName( SoupedUpDropDownListSkin );
 			
 			//trace("Skin class: " + getQualifiedClassName(skin_class), getQualifiedClassName(SoupedUpDropDownListSkin) + "\n" + "Skin class boolean: " + (skin_class is SoupedUpDropDownListSkin) )
 			if( skin_class_name != allowed_skin_class_name )
@@ -250,13 +267,13 @@ package com.anjantek.controls.dropDownLists
 		
 		//-------------------------------------------------------------------------------------------------
 		
-		public function set value ( _value : Object ): void
+		public function set selectedLabel ( _label : String ): void
 		{
-			if ( (dataProvider != null) && (_value != null) ) 
+			if ( (dataProvider != null) && (_label != null) ) 
 			{
 				for ( var i : int = 0 ; i < dataProvider.length ; i++ ) 
 				{
-					if ( _value.toString().toLowerCase() == itemToLabel( dataProvider [ i ] ).toLowerCase() ) 
+					if ( _label.toLowerCase() == itemToLabel( dataProvider [ i ] ).toLowerCase() ) 
 					{
 						selectedIndex = i;
 						validateNow();

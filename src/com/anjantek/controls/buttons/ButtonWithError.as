@@ -30,6 +30,16 @@ package com.anjantek.controls.buttons
 	
 	//-------------------------------------------------------------------------------------------------
 	
+	[SkinState("upValid")]
+	[SkinState("downValid")]
+	[SkinState("overValid")]
+	
+	[SkinState("upError")]
+	[SkinState("downError")]
+	[SkinState("overError")]
+	
+	//-------------------------------------------------------------------------------------------------
+	
 	public class ButtonWithError extends Button
 	{
 		public function ButtonWithError()
