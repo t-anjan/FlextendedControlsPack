@@ -31,13 +31,16 @@
 			 * There are some other "private" functions which are used by the "super" handler.
 			 * So, had to copy even those functions over here to get the overridden handler to work.
 			 */
+			// **************** NOTE: This function has been copied from AwesomeDataGrid. ************** */
+			// Any changes made here, please reproduce in that DataGrid as well. 
+			// The reason for having to re-implement the function again here is explained above.
 			override protected function grid_mouseDownHandler(event:GridEvent):void
 			{
 				//trace("Grid Mouse Down");
 				//trace(event.target)
 				//trace(event.currentTarget + "\n");
 				
-				if( event.itemRenderer is AwesomeGridItemRenderer && event.column.editable )
+				if( event.itemRenderer is AwesomeGridItemRenderer && event.column.editable && event.column.grid.dataGrid.editable )
 				{
 					var agir: AwesomeGridItemRenderer = event.itemRenderer as AwesomeGridItemRenderer;
 					var button_edit: Button = agir.button_edit;

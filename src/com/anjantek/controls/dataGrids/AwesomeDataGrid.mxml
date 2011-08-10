@@ -69,13 +69,16 @@
 			
 			//-------------------------------------------------------------------------------------------------
 			
+			// **************** NOTE: This function has been copied and placed again in the AMS DataGrid (AutoMultiSelectDataGrid). ************** */
+			// Any changes made here, please reproduce in that DataGrid as well. 
+			// The reason for having to re-implement the function again there is explained there.
 			override protected function grid_mouseDownHandler(event:GridEvent):void
 			{
 				//trace("Grid Mouse Down");
 				//trace(event.target)
 				//trace(event.currentTarget + "\n");
 				
-				if( event.itemRenderer is AwesomeGridItemRenderer && event.column.editable )
+				if( event.itemRenderer is AwesomeGridItemRenderer && event.column.editable && event.column.grid.dataGrid.editable )
 				{
 					var agir: AwesomeGridItemRenderer = event.itemRenderer as AwesomeGridItemRenderer;
 					var button_edit: Button = agir.button_edit;
