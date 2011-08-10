@@ -14,10 +14,15 @@
 			
 			private const BASE_STATE: String = "base";
 			private const ERROR_STATE: String = "error";
+			private const APPEND_EDIT_STATE: String = "WithEdit";
 			
 			//-------------------------------------------------------------------------------------------------
 			
 			private var current_state: String = BASE_STATE;
+			private var is_item_column_valid: Boolean = true;
+			
+			[Bindable]
+			private var error_string: String = "";
 			
 			override public function set data(item:Object):void
 			{
@@ -26,11 +31,12 @@
 				if( item == null )
 					return;
 				
-				if( ! column is AwesomeGridColumn )
+				if( ! (column is AwesomeGridColumn) )
 					return;
 				
 				var awesome_column: AwesomeGridColumn = AwesomeGridColumn( column );
 				var validity_properties: String = awesome_column.validityProperties;
+				error_string = awesome_column.validityErrorString;
 				
 				if( "" == validity_properties )
 					return;
@@ -39,20 +45,13 @@
 				validity_properties = StringUtil.trimArrayElements( validity_properties, "," );
 				var array_validity_properties: Array = validity_properties.split( "," );
 				
-				var is_item_column_valid: Boolean = true;
+				is_item_column_valid = true;
 				
 				for each( var vp: String in array_validity_properties )
 				{
 					if( item.hasOwnProperty( vp ) )
-					{
 						is_item_column_valid = is_item_column_valid && Boolean( item[ vp ] );
-					}
 				}
-				
-				if( is_item_column_valid )
-					current_state = BASE_STATE;
-				else
-					current_state = ERROR_STATE;
 			}
 			
 			//-------------------------------------------------------------------------------------------------
@@ -64,11 +63,22 @@
 			
 			//-------------------------------------------------------------------------------------------------
 			
+			private var is_edit_mode: Boolean = false;
+			
 			override public function prepare(hasBeenRecycled:Boolean):void
 			{
 				super.prepare( hasBeenRecycled );
+				is_edit_mode = column.editable && grid.dataGrid.editable;
+				
+				if( is_item_column_valid )
+					current_state = BASE_STATE;
+				else
+					current_state = ERROR_STATE;
+				
+				if( is_edit_mode )
+					current_state = current_state + APPEND_EDIT_STATE;
+				
 				this.currentState = current_state;
-				button_edit.visible = column.editable && DataGrid(owner).editable;
 			}
 			
 			//-------------------------------------------------------------------------------------------------
@@ -78,12 +88,15 @@
 	
 	
 	<s:states>
-		<s:State id="state_base" name="base" />
-		<s:State id="state_error" name="error" />
+		<s:State id="state_base" name="base" stateGroups="baseGroup" />
+		<s:State id="state_error" name="error" stateGroups="errorGroup" />
+		
+		<s:State id="state_base_edit" name="baseWithEdit" stateGroups="baseGroup, editGroup" />
+		<s:State id="state_error_edit" name="errorWithEdit" stateGroups="errorGroup, editGroup" />
 	</s:states>
 	
 	
-	<s:Rect id="fill_red" left="0" right="0" top="0" bottom="0" includeIn="error">
+	<s:Rect id="fill_red" left="0" right="0" top="0" bottom="0" includeIn="errorGroup">
 		<s:fill>
 			<s:LinearGradient rotation="90">
 				<s:GradientEntry color="0xFFFFFF" 
@@ -95,13 +108,13 @@
 	</s:Rect>
 	
 	<s:HGroup width="100%" height="100%" verticalAlign="middle" horizontalAlign="center"
-			  paddingLeft="5" paddingRight="5" paddingTop="3" paddingBottom="3">
+			  paddingLeft="5" paddingRight="5" paddingTop="3" paddingBottom="3"
+			  errorString.errorGroup="{ error_string }">
 		
 		<s:VGroup width="100%" gap="0"
 				  paddingLeft="0" paddingRight="0" paddingTop="0" paddingBottom="0">
 			<s:Spacer height="3" />
-			<s:Label id="labelDisplay" maxDisplayedLines="1"
-					 width="100%" />
+			<s:Label id="labelDisplay" width="100%" />
 		</s:VGroup>
 		
 		
@@ -109,7 +122,8 @@
 				  label="" icon="{ Pencil }"
 				  width="20" height="20"
 				  toolTip="Click this button to edit."
-				  click="button_edit_clickHandler(event)"/>
+				  click="button_edit_clickHandler(event)"
+				  includeIn="editGroup"/>
 	</s:HGroup>
 	
 	

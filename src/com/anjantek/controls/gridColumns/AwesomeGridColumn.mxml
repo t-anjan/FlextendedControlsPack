@@ -31,16 +31,16 @@
 			
 			//-------------------------------------------------------------------------------------------------
 			
-			private var _valid_property: String = "";
+			private var _valid_properties: String = "";
 			
 			public function get validityProperties(): String
 			{
-				return _valid_property;
+				return _valid_properties;
 			}
 			
 			public function set validityProperties( value: String ): void
 			{
-				_valid_property = value;
+				_valid_properties = value;
 			}
 			
 			//-------------------------------------------------------------------------------------------------
@@ -83,6 +83,20 @@
 			public function set allowDuplicates( value: Boolean ): void
 			{
 				allow_duplicates = value;
+			}
+			
+			//-------------------------------------------------------------------------------------------------
+			
+			private var _validity_error_string: String = "";
+			
+			public function get validityErrorString(): String
+			{
+				return _validity_error_string;
+			}
+			
+			public function set validityErrorString( value: String ): void
+			{
+				_validity_error_string = value;
 			}
 			
 			//-------------------------------------------------------------------------------------------------
