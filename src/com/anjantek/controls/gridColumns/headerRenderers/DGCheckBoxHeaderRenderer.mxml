@@ -117,14 +117,19 @@
 			
 			//----------------------------------------------------------------------------------------------------------
 			
-			[Bindable]
-			public var checked: Boolean = false;
+			public var clickable: Boolean = true;
 			
 			[Bindable]
-			public var partial: Boolean = false;
+			private var checked: Boolean = false;
+			
+			[Bindable]
+			private var partial: Boolean = false;
 			
 			protected function griditemrenderer_clickHandler(event:MouseEvent):void
 			{
+				if( ! clickable )
+					return;
+				
 				var grid_selection_change_event: GridSelectionEvent = new GridSelectionEvent( GridSelectionEvent.SELECTION_CHANGE );
 				var selection_change: CellRegion;
 				

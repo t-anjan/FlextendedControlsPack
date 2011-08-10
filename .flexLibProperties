@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
   <includeClasses>
-    <classEntry path="com.anjantek.controls.gridColumns.CheckBoxGridColumn"/>
     <classEntry path="com.anjantek.controls.gridColumns.headerRenderers.DGCheckBoxHeaderRenderer"/>
     <classEntry path="com.anjantek.controls.checkBoxes.skins.ThreeStateCheckBoxSkin"/>
     <classEntry path="com.anjantek.controls.checkBoxes.ThreeStateCheckBox"/>
+    <classEntry path="com.anjantek.controls.gridColumns.CheckBoxGridColumn"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
