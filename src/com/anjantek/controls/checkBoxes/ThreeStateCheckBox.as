@@ -118,13 +118,10 @@ package com.anjantek.controls.checkBoxes
 		{
 			var super_skin_state: String = super.getCurrentSkinState();
 			
-			//trace( "DDL Super state is: " + super_skin_state );
-			
 			var skin_class: * = getStyle( "skinClass" );
 			var skin_class_name: String = getQualifiedClassName( skin_class );
 			var allowed_skin_class_name: String = getQualifiedClassName( ThreeStateCheckBoxSkin );
 			
-			//trace("Skin class: " + getQualifiedClassName(skin_class), getQualifiedClassName(SoupedUpDropDownListSkin) + "\n" + "Skin class boolean: " + (skin_class is SoupedUpDropDownListSkin) )
 			if( skin_class_name != allowed_skin_class_name )
 			{
 				trace("Wrong skin class being used for the three state check box!!");

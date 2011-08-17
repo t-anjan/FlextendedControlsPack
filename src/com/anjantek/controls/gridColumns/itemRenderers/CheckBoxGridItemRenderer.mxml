@@ -1,27 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:GridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 				xmlns:s="library://ns.adobe.com/flex/spark" 
-				xmlns:mx="library://ns.adobe.com/flex/mx">
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				click="griditemrenderer_clickHandler(event)">
 	
 	<fx:Script>
 		<![CDATA[
+			import com.anjantek.controls.gridColumns.CheckBoxGridColumn;
 			
 			//----------------------------------------------------------------------------------------------------------
 			
 			override public function prepare(hasBeenRecycled:Boolean):void
 			{
-				var selected_items: Vector.<Object> = grid.dataGrid.selectedItems;
-				
-				if( null == selected_items )
-				{
-					check_box.selected = false;
+				if( ! (column is CheckBoxGridColumn) )
 					return;
+				
+				var check_box_grid_column: CheckBoxGridColumn = CheckBoxGridColumn( column );
+				
+				if( "" == check_box_grid_column.controlProperty )
+				{
+					// If there is no property to be controlled by this item renderer, then we make the check box mimic the 
+					// selection status of the whole row.
+					const selected_items: Vector.<Object> = grid.dataGrid.selectedItems;
+					
+					if( null == selected_items )
+					{
+						check_box.selected = false;
+						return;
+					}
+					
+					if( -1 != selected_items.indexOf( data ) )
+						check_box.selected = true;
+					else
+						check_box.selected = false;
+				}
+				else
+				{
+					const control_property: String = check_box_grid_column.controlProperty;
+					
+					if( data && data.hasOwnProperty( control_property ) && (data[ control_property ] is Boolean) )
+						check_box.selected = data[ control_property ];
+					else
+						check_box.selected = false;
+				}
+			}
+			
+			//----------------------------------------------------------------------------------------------------------
+			
+			protected function griditemrenderer_clickHandler(event:MouseEvent):void
+			{
+				if( ! (column is CheckBoxGridColumn) )
+					return;
+				
+				var check_box_grid_column: CheckBoxGridColumn = CheckBoxGridColumn( column );
+				
+				if( "" == check_box_grid_column.controlProperty )
+					return;
+				
+				var control_property: String = check_box_grid_column.controlProperty;
+				
+				// If there is a property to be controlled by the item renderer, then the property should be
+				// toggled when the item renderer is clicked.
+				if( data && data.hasOwnProperty( control_property ) && (data[ control_property ] is Boolean) )
+				{
+					data[ control_property ] = !( data[ control_property ] );
+					grid.dataProvider.itemUpdated( data );
 				}
 				
-				if( -1 != selected_items.indexOf( data ) )
-					check_box.selected = true;
-				else
-					check_box.selected = false;
+				// The checkbox selection is handled in the prepare method.
 			}
 			
 			//----------------------------------------------------------------------------------------------------------

@@ -1,13 +1,17 @@
 package com.anjantek.controls.gridColumns
 {
-	import com.anjantek.controls.gridColumns.headerRenderers.DGCheckBoxHeaderRenderer;
+	import com.anjantek.controls.gridColumns.events.GridColumnEvent;
+	import com.anjantek.controls.gridColumns.headerRenderers.CheckBoxGridHeaderRenderer;
 	import com.anjantek.controls.gridColumns.itemRenderers.CheckBoxGridItemRenderer;
 	
 	import mx.binding.utils.BindingUtils;
+	import mx.collections.IList;
 	import mx.core.ClassFactory;
 	import mx.events.FlexEvent;
 	
-	import spark.skins.spark.DefaultGridHeaderRenderer;
+	import spark.components.gridClasses.CellRegion;
+	import spark.events.GridSelectionEvent;
+	import spark.events.GridSelectionEventKind;
 
 	public class CheckBoxGridColumn extends AwesomeGridColumn
 	{
@@ -23,12 +27,15 @@ package com.anjantek.controls.gridColumns
 			this.width = 25;
 			
 			this.itemRenderer = new ClassFactory( CheckBoxGridItemRenderer );
-			class_factory_check_box_header_renderer = new ClassFactory( DGCheckBoxHeaderRenderer );
-			class_factory_default_header_renderer = new ClassFactory( DefaultGridHeaderRenderer );
-			Determine_Header_Renderer();
+			class_factory_check_box_header_renderer = new ClassFactory( CheckBoxGridHeaderRenderer );
+			
+			this.controlProperty = "";
+			updateHeaderRenderer();
 		}
 		
 		//----------------------------------------------------------------------------------------------------------
+		
+		//---------------------------------------PROPERTIES - Start-------------------------------------------------------------------
 		
 		private var _headerClickable: Boolean = true;
 		
@@ -36,7 +43,7 @@ package com.anjantek.controls.gridColumns
 		public function set headerClickable( value: Boolean ): void
 		{
 			_headerClickable = value;
-			Determine_Header_Renderer();
+			updateHeaderRenderer();
 		}
 		
 		public function get headerClickable(): Boolean
@@ -46,34 +53,32 @@ package com.anjantek.controls.gridColumns
 		
 		//----------------------------------------------------------------------------------------------------------
 		
-		private var _renderCheckBoxHeader: Boolean = true;
+		private var _controlProperty: String = "";
 		
-		public function set renderCheckBoxHeader( value: Boolean ): void
+		public function set controlProperty( value: String ): void
 		{
-			_renderCheckBoxHeader = value;
-			Determine_Header_Renderer();
+			if( value != _controlProperty )
+				_controlProperty = value;
+			
+			if( "" == _controlProperty )
+				this.selectable = true;
+			else
+				this.selectable = false;
 		}
 		
-		public function get renderCheckBoxHeader(): Boolean
+		public function get controlProperty(): String
 		{
-			return _renderCheckBoxHeader;
+			return _controlProperty;
 		}
+		
+		//-----------------------------------PROPERTIES - End-----------------------------------------------------------------------
 		
 		//----------------------------------------------------------------------------------------------------------
 		
-		private function Determine_Header_Renderer(): void
+		protected function updateHeaderRenderer(): void
 		{
-			if( _renderCheckBoxHeader )
-			{
-				class_factory_check_box_header_renderer.properties = { clickable: headerClickable };
-				this.headerRenderer = class_factory_check_box_header_renderer;
-				this.resizable = false;
-			}
-			else
-			{
-				this.headerRenderer = class_factory_default_header_renderer;
-				this.resizable = true;
-			}
+			class_factory_check_box_header_renderer.properties = { clickable: headerClickable };
+			this.headerRenderer = class_factory_check_box_header_renderer;
 		}
 		
 		//----------------------------------------------------------------------------------------------------------

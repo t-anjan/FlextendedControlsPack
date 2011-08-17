@@ -2,22 +2,22 @@
 <s:GridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 							 xmlns:s="library://ns.adobe.com/flex/spark" 
 							 xmlns:mx="library://ns.adobe.com/flex/mx"
-							 click="griditemrenderer_clickHandler(event)"
 							 creationComplete="griditemrenderer_creationCompleteHandler(event)" 
-							 xmlns:skins="com.anjantek.controls.checkBoxes.skins.*" xmlns:checkBoxes="com.anjantek.controls.checkBoxes.*">
-	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
-	</fx:Declarations>
-	
+							 xmlns:skins="com.anjantek.controls.checkBoxes.skins.*" 
+							 xmlns:checkBoxes="com.anjantek.controls.checkBoxes.*">
 	
 	
 	<fx:Script>
 		<![CDATA[
+			import com.anjantek.controls.gridColumns.CheckBoxGridColumn;
+			import com.anjantek.controls.gridColumns.events.GridColumnEvent;
+			
 			import mx.collections.IList;
 			import mx.events.FlexEvent;
 			
 			import spark.components.DataGrid;
 			import spark.components.gridClasses.CellRegion;
+			import spark.events.GridEvent;
 			import spark.events.GridSelectionEvent;
 			import spark.events.GridSelectionEventKind;
 			import spark.primitives.supportClasses.GraphicElement;
@@ -56,7 +56,7 @@
 						
 						transform.colorTransform = colorTransform;
 						
-						var exclusions:Array = [ check_box ];		// Only modification of copied stuff.
+						var exclusions:Array = [ checkBox ];		// ************ Only modification of copied stuff.
 						
 						// Apply inverse colorizing to exclusions
 						if (exclusions && exclusions.length > 0)
@@ -110,9 +110,68 @@
 			
 			//----------------------------------------------------------------------------------------------------------
 			
+			override public function prepare(hasBeenRecycled:Boolean):void
+			{
+				super.prepare( hasBeenRecycled );
+				
+				if( column && (checkBox.label != column.headerText) )
+					checkBox.label = column.headerText;
+				
+				// Accounting for the blank label. Adjusting position of checkbox to center it.
+				if( "" == column.headerText )
+				{
+					checkBox.left = null;
+					checkBox.right = null;
+					checkBox.horizontalCenter = 2;
+				}
+				else
+				{
+					checkBox.left = 7;
+					checkBox.right = 7;
+					checkBox.horizontalCenter = 0;
+				}
+				
+				updateRendererCheckBoxState();
+			}
+			
+			//----------------------------------------------------------------------------------------------------------
+			
 			protected function griditemrenderer_creationCompleteHandler(event:FlexEvent):void
 			{
 				grid.dataGrid.addEventListener( GridSelectionEvent.SELECTION_CHANGE, grid_selection_changeHandler );
+				
+				// Listen for the click event on "this" only when the mouse is hovered over the actual header renderer.
+				// The header renderer's left and right edges (a few pixels wide) are reserved for the separators. 
+				// Clicking on the separators should not be detected as clicking on the header. 
+				// The GRID_ROLL_OVER event is dispatched only when over the renderer. The GRID_ROLL_OUT event is
+				// dispatched when the mouse moves from the renderer to the separator or to anywhere else.
+				grid.dataGrid.columnHeaderGroup.addEventListener( GridEvent.GRID_ROLL_OVER, On_Grid_Roll_Over );
+			}
+			
+			//----------------------------------------------------------------------------------------------------------
+			
+			protected function On_Grid_Roll_Over( event: GridEvent ): void
+			{
+				if( column != event.column )
+					return;
+				
+				grid.dataGrid.columnHeaderGroup.removeEventListener( GridEvent.GRID_ROLL_OVER, On_Grid_Roll_Over );
+				grid.dataGrid.columnHeaderGroup.addEventListener( GridEvent.GRID_ROLL_OUT, On_Grid_Roll_Out );
+				
+				this.addEventListener( MouseEvent.CLICK, griditemrenderer_clickHandler );
+			}
+			
+			//----------------------------------------------------------------------------------------------------------
+			
+			protected function On_Grid_Roll_Out( event: GridEvent ): void
+			{
+				if( column != event.column )
+					return;
+				
+				grid.dataGrid.columnHeaderGroup.removeEventListener( GridEvent.GRID_ROLL_OUT, On_Grid_Roll_Out );
+				grid.dataGrid.columnHeaderGroup.addEventListener( GridEvent.GRID_ROLL_OVER, On_Grid_Roll_Over );
+				
+				this.removeEventListener( MouseEvent.CLICK, griditemrenderer_clickHandler );
 			}
 			
 			//----------------------------------------------------------------------------------------------------------
@@ -125,11 +184,103 @@
 			[Bindable]
 			private var partial: Boolean = false;
 			
+			protected function grid_selection_changeHandler( event: GridSelectionEvent ): void
+			{
+				updateRendererCheckBoxState();
+			}
+			
+			//----------------------------------------------------------------------------------------------------------
+			
+			protected function updateRendererCheckBoxState(): void
+			{
+				const data_provider: IList = grid.dataGrid.dataProvider;
+				var selected_items: Vector.<Object>;
+				
+				if( !( column is CheckBoxGridColumn ) )
+					return;
+				
+				var _controlProperty: String = CheckBoxGridColumn( column ).controlProperty;
+				
+				// If there is a control property, then the state of the header checkbox is controlled by that control property.
+				// If all the DP items have that property set to true, then the header checkbox should be selected. And so on.
+				
+				// If there is no control property, then the state of the header checkbox should be controlled by the selection
+				// status of the rows.
+				if( "" == _controlProperty )
+					selected_items = grid.dataGrid.selectedItems;
+				else
+					selected_items = getItemsWithTrueControlProperty( _controlProperty );
+				
+				
+				if( null == selected_items || null == data_provider )
+				{
+					checked = false;
+					partial = false;
+					return;
+				}
+				
+				if( 0 == selected_items.length )
+				{
+					checked = false;
+					partial = false;
+				}
+				else if( selected_items.length == data_provider.length )
+				{
+					checked = true;
+					partial = false;
+				}
+				else
+				{
+					checked = false;
+					partial = true;
+				}
+			}
+			
+			//----------------------------------------------------------------------------------------------------------
+			
+			protected function getItemsWithTrueControlProperty( _controlProperty: String ): Vector.<Object>
+			{
+				const data_provider: IList = grid.dataGrid.dataProvider;
+				
+				if( null == data_provider )
+					return null;
+				
+				var true_items: Vector.<Object> = new Vector.<Object>();
+				
+				for each( var dp_item: Object in data_provider )
+				{
+					if( dp_item.hasOwnProperty( _controlProperty ) && (dp_item[ _controlProperty ] is Boolean) )
+					{
+						if( dp_item[ _controlProperty ] )
+							true_items.push( dp_item );
+					}
+				}
+				
+				return true_items;
+			}
+			
+			//----------------------------------------------------------------------------------------------------------
+			
 			protected function griditemrenderer_clickHandler(event:MouseEvent):void
 			{
 				if( ! clickable )
 					return;
 				
+				if( !( column is CheckBoxGridColumn ) )
+					return;
+				
+				var _controlProperty: String = CheckBoxGridColumn( column ).controlProperty;
+				
+				if( "" == _controlProperty )
+					Manage_Row_Selection_On_Header_Click();
+				else
+					Manage_Control_Property_On_Header_Click( _controlProperty );
+			}
+			
+			//----------------------------------------------------------------------------------------------------------
+			
+			private function Manage_Row_Selection_On_Header_Click(): void
+			{
 				var grid_selection_change_event: GridSelectionEvent = new GridSelectionEvent( GridSelectionEvent.SELECTION_CHANGE );
 				var selection_change: CellRegion;
 				
@@ -155,56 +306,28 @@
 					grid.dataGrid.selectAll();
 				}
 				
-				checked = ! checked;
-				partial = false;
-				
 				grid_selection_change_event.selectionChange = selection_change;
 				grid.dataGrid.dispatchEvent( grid_selection_change_event );
 			}
 			
 			//----------------------------------------------------------------------------------------------------------
 			
-			protected function grid_selection_changeHandler( event: GridSelectionEvent ): void
+			private function Manage_Control_Property_On_Header_Click( _controlProperty: String ): void
 			{
-				updateCheckBoxState();
-			}
-			
-			//----------------------------------------------------------------------------------------------------------
-			
-			override public function prepare(hasBeenRecycled:Boolean):void
-			{
-				super.prepare( hasBeenRecycled );
-				updateCheckBoxState();
-			}
-			
-			//----------------------------------------------------------------------------------------------------------
-			
-			private function updateCheckBoxState(): void
-			{
-				const selected_items: Vector.<Object> = grid.dataGrid.selectedItems;
 				const data_provider: IList = grid.dataGrid.dataProvider;
 				
-				if( null == selected_items || null == data_provider )
-				{
-					checked = false;
-					partial = false;
+				if( null == data_provider )
 					return;
-				}
 				
-				if( 0 == selected_items.length )
+				var boolean_to_be_set: Boolean = ! checked;
+				
+				for each( var dp_item: Object in data_provider )
 				{
-					checked = false;
-					partial = false;
-				}
-				else if( selected_items.length == data_provider.length )
-				{
-					partial = false;
-					checked = true;
-				}
-				else
-				{
-					checked = false;
-					partial = true;
+					if( dp_item.hasOwnProperty( _controlProperty ) && (dp_item[ _controlProperty ] is Boolean) )
+					{
+						dp_item[ _controlProperty ] = boolean_to_be_set;
+						grid.dataProvider.itemUpdated( dp_item );
+					}
 				}
 			}
 			
@@ -322,10 +445,12 @@
 		</s:stroke>
 	</s:Rect>
 	
-	<checkBoxes:ThreeStateCheckBox id="check_box"
-								   enabled="false"
-								   label=""
-								   selected="{ checked }" partial="{ partial }"
-								   horizontalCenter="0" verticalCenter="0"/>
+	<!-- layer 7: checkBox:ThreeStateCheckBox  -->
+	<checkBoxes:ThreeStateCheckBox id="checkBox"
+								   enabled="false" fontWeight="bold"
+								   horizontalCenter="0" verticalCenter="0"
+								   left="7" right="7"
+								   selected="{ checked }" partial="{ partial }"/>
+	
 	
 </s:GridItemRenderer>
