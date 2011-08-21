@@ -8,21 +8,21 @@
 			
 			//----------------------------------------------------------------------------------------------------------
 			
-			override public function set data(value:Object):void
+			override public function prepare(hasBeenRecycled:Boolean):void
 			{
-				super.data = value;
+				// We make the radio button mimic the selection status of the whole row.
+				const selected_items: Vector.<Object> = grid.dataGrid.selectedItems;
 				
-				if( value != null )
+				if( null == selected_items )
 				{
-					if( value.hasOwnProperty("selected") )
-					{
-						radio_button.selected = value.selected;
-					}
-					else
-					{
-						radio_button.selected = false;
-					}
+					radio_button.selected = false;
+					return;
 				}
+				
+				if( -1 != selected_items.indexOf( data ) )
+					radio_button.selected = true;
+				else
+					radio_button.selected = false;
 			}
 			
 			//----------------------------------------------------------------------------------------------------------

@@ -18,6 +18,7 @@
 			
 			import spark.components.Button;
 			import spark.components.gridClasses.GridColumn;
+			import spark.components.gridClasses.GridSelectionMode;
 			import spark.events.GridEvent;
 			import spark.events.GridSelectionEvent;
 			
@@ -109,6 +110,9 @@
 			// after sorting.
 			override public function sortByColumns(columnIndices:Vector.<int>, isInteractive:Boolean=false):Boolean
 			{
+				if( GridSelectionMode.MULTIPLE_ROWS != selectionMode )
+					return super.sortByColumns( columnIndices, isInteractive );
+				
 				var selected_items: Vector.<Object> = this.selectedItems;
 				var response: Boolean = super.sortByColumns( columnIndices, isInteractive );
 				this.selectedItems = selected_items;
