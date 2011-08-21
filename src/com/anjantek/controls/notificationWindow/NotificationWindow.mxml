@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   close="titlewindow_closeHandler(event)"
+			   click="titlewindow_clickHandler(event)"
+			   title="Successfully finished!"
+			   width="300" borderAlpha="0.2" borderColor="0x000000"
+			   showEffect="{ effect_move_left }" removedEffect="{ effect_move_right }"
+			   creationComplete="titlewindow_creationCompleteHandler(event)" visible="false">
+	
+	<fx:Declarations>
+		<s:Move id="effect_move_left" target="{ this }"
+				xFrom="{ parent_width }" xTo="{ target_x }" />
+		
+		<s:Move id="effect_move_right" target="{ this }"
+				xFrom="{ target_x }" xTo="{ parent_width }" />
+	</fx:Declarations>
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import com.anjantek.controls.notificationWindow.NotificationWindowManager;
+			import com.anjantek.controls.notificationWindow.assets.TickMark;
+			
+			import flashx.textLayout.formats.TextAlign;
+			
+			import mx.binding.utils.BindingUtils;
+			import mx.events.CloseEvent;
+			import mx.events.EffectEvent;
+			import mx.events.FlexEvent;
+			
+			import spark.utils.TextFlowUtil;
+			
+			[Bindable]
+			public var statusMessage: String = "One moment please...";
+			
+			[Bindable]
+			public var textAlign: String = TextAlign.CENTER;
+			
+			[Bindable]
+			public var showCloseButton: Boolean = true;
+			
+			public var auto_close_delay: Number = 3000; 
+			
+			//----------------------------------------------------------------------------------------------------------
+			
+			[Bindable]
+			private var parent_width: Number;
+			
+			[Bindable]
+			private var target_x: Number;
+			
+			protected function titlewindow_creationCompleteHandler(event:FlexEvent):void
+			{
+				parent_width = this.parent.width;
+				target_x = parent_width - width - 2;
+				
+				this.x = parent_width;
+				this.y = 70;
+				
+				BindingUtils.bindProperty( closeButton, "visible", this, "showCloseButton" );
+				
+				Add_Roll_Event_Listeners();
+				
+				Setup_Timer();
+				this.visible = true;
+			}
+			
+			//----------------------------------------------------------------------------------------------------------
+			
+			protected function Add_Roll_Event_Listeners(): void
+			{
+				if( ! hasEventListener( MouseEvent.ROLL_OUT ) )
+					this.addEventListener( MouseEvent.ROLL_OUT, titlewindow_rollOutHandler );
+				
+				if( ! hasEventListener( MouseEvent.ROLL_OVER ) )
+					this.addEventListener( MouseEvent.ROLL_OVER, titlewindow_rollOverHandler );
+			}
+			
+			//----------------------------------------------------------------------------------------------------------
+			
+			protected function Remove_Roll_Event_Listeners(): void
+			{
+				if( hasEventListener( MouseEvent.ROLL_OUT ) )
+					this.removeEventListener( MouseEvent.ROLL_OUT, titlewindow_rollOutHandler );
+				
+				if( hasEventListener( MouseEvent.ROLL_OVER ) )
+					this.removeEventListener( MouseEvent.ROLL_OVER, titlewindow_rollOverHandler );
+			}
+			
+			//----------------------------------------------------------------------------------------------------------
+			
+			private var timer_hide_notification_window: Timer;
+			
+			protected function Setup_Timer(): void
+			{
+				timer_hide_notification_window = new Timer( auto_close_delay, 1 );
+				Start_Timer();
+			}
+			
+			//----------------------------------------------------------------------------------------------------------
+			
+			protected function Start_Timer(): void
+			{
+				if( 0 != auto_close_delay )
+				{
+					if( ! timer_hide_notification_window.hasEventListener( TimerEvent.TIMER_COMPLETE ) )
+						timer_hide_notification_window.addEventListener( TimerEvent.TIMER_COMPLETE, On_Timer_Hide_Notification_Window_Complete );
+					
+					timer_hide_notification_window.start();
+				}
+			}
+			
+			//-------------------------------------------------------------------------------------------------
+			
+			protected function Stop_Timer(): void
+			{
+				if( timer_hide_notification_window.hasEventListener( TimerEvent.TIMER_COMPLETE ) )
+					timer_hide_notification_window.removeEventListener( TimerEvent.TIMER_COMPLETE, On_Timer_Hide_Notification_Window_Complete );
+				
+				timer_hide_notification_window.reset();
+			}
+			
+			//-------------------------------------------------------------------------------------------------
+			
+			public function Restart_Timer(): void
+			{
+				Stop_Timer();
+				timer_hide_notification_window.delay = auto_close_delay;
+				Start_Timer();
+			}
+			
+			//-------------------------------------------------------------------------------------------------
+			
+			protected function On_Timer_Hide_Notification_Window_Complete ( e: TimerEvent ): void
+			{
+				Stop_Timer();
+				Remove_Roll_Event_Listeners();
+				NotificationWindowManager.Hide_Notification();
+			}
+			
+			//-------------------------------------------------------------------------------------------------
+			
+			// Handle the close button.
+			protected function titlewindow_closeHandler(event:CloseEvent):void
+			{
+				Stop_Timer();
+				Remove_Roll_Event_Listeners();
+				callLater( NotificationWindowManager.Cross_Clicked );
+			}
+			
+			//----------------------------------------------------------------------------------------------------------
+			
+			protected function titlewindow_clickHandler(event:MouseEvent):void
+			{
+				if( closeButton == event.target )
+					return;
+				
+				Stop_Timer();
+				Remove_Roll_Event_Listeners();
+				callLater( NotificationWindowManager.Hide_Notification );
+			}
+			
+			//----------------------------------------------------------------------------------------------------------
+			
+			protected function titlewindow_rollOverHandler(event:MouseEvent):void
+			{
+				Stop_Timer();
+				this.setStyle( "borderAlpha", 1 );
+				this.setStyle( "borderColor", "0x00FF00" );
+				
+			}
+			
+			//----------------------------------------------------------------------------------------------------------
+			
+			protected function titlewindow_rollOutHandler(event:MouseEvent):void
+			{
+				Start_Timer();
+				this.setStyle( "borderAlpha", 0.2 );
+				this.setStyle( "borderColor", "0x000000" );
+			}
+			
+			//----------------------------------------------------------------------------------------------------------
+			
+		]]>
+	</fx:Script>
+	
+	
+	<!--
+	<s:states>
+		<s:State id="state_smoke" name="smoke" />
+		<s:State id="state_music_video" name="music_video"  />
+	</s:states>
+	-->
+	
+	<s:HGroup horizontalAlign="center" verticalAlign="middle" 
+			  width="100%" height="100%"
+			  gap="5"
+			  paddingTop="15" paddingBottom="15"
+			  paddingLeft="15" paddingRight="15">
+		<mx:Image id="image_Tick_Mark" 
+				  width="50" height="50" 
+				  source="{ TickMark }"/>
+		
+		<s:RichText id="text_message" width="100%" fontSize="16" backgroundAlpha="0"
+					textFlow="{ TextFlowUtil.importFromString( statusMessage ) }"
+					textAlign="{ textAlign }" verticalAlign="middle"/>
+	</s:HGroup>
+	
+	
+	<s:Label id="message_close" text="Click anywhere on this window to close" 
+			 fontSize="10" color="gray"
+			 bottom="1" right="5" />
+	
+</s:TitleWindow>

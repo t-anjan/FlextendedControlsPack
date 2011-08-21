@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Graphic version="2.0" viewHeight="631.4" viewWidth="749.2" ATE:version="1.0.0" flm:version="1.0.0" d:using="" xmlns="http://ns.adobe.com/fxg/2008" xmlns:ATE="http://ns.adobe.com/ate/2009" xmlns:d="http://ns.adobe.com/fxg/2008/dt" xmlns:flm="http://ns.adobe.com/flame/2008">
+  <Path data="M23.2 0.35Q18.7 4 15.95 9 13.25 14.05 8.95 26.7 7.35 23.75 6.45 22.35L4.8 19.85Q2.5 16.25 0 13.9 1.45 12.65 2.65 12.65 4.2 12.65 5.35 13.75 6.55 14.9 8.35 18.05 10.4 11.4 13.55 5.45 15.25 2.2 16.65 1.1 18 0 20.25 0 21.45 0 23.2 0.35">
+    <fill>
+      <SolidColor color="#00CC00"/>
+    </fill>
+  </Path>
+</Graphic>
