@@ -12,6 +12,7 @@
 			import com.anjantek.controls.gridColumns.CheckBoxGridColumn;
 			import com.anjantek.controls.gridColumns.events.GridColumnEvent;
 			
+			import mx.collections.ArrayCollection;
 			import mx.collections.IList;
 			import mx.events.FlexEvent;
 			
@@ -194,24 +195,44 @@
 			protected function updateRendererCheckBoxState(): void
 			{
 				const data_provider: IList = grid.dataGrid.dataProvider;
-				var selected_items: Vector.<Object>;
 				
 				if( !( column is CheckBoxGridColumn ) )
 					return;
 				
-				var _controlProperty: String = CheckBoxGridColumn( column ).controlProperty;
+				const check_box_grid_column: CheckBoxGridColumn = CheckBoxGridColumn( column );
+				
+				var selected_items: Vector.<Object>;
+				const control_property: String = check_box_grid_column.controlProperty;
 				
 				// If there is a control property, then the state of the header checkbox is controlled by that control property.
 				// If all the DP items have that property set to true, then the header checkbox should be selected. And so on.
 				
 				// If there is no control property, then the state of the header checkbox should be controlled by the selection
 				// status of the rows.
-				if( "" == _controlProperty )
+				if( "" == control_property )
 					selected_items = grid.dataGrid.selectedItems;
 				else
-					selected_items = getItemsWithTrueControlProperty( _controlProperty );
+					selected_items = getItemsWithTrueControlProperty( control_property );
 				
 				
+				var selectable_items: IList;
+				const can_edit_renderer_property: String = check_box_grid_column.canEditRendererProperty;
+				
+				// If there is a property to check if the checkbox is allowed to be toggled, then the max number of
+				// selectable items is equal to the number of items which have this property set to true.
+				
+				// If there is no such property, then all the items in the data provider can be selected, i.e.,
+				// every single checkbox in the column can be toggled.
+				if( "" == can_edit_renderer_property )
+					selectable_items = data_provider;
+				else
+					selectable_items = getItemsWithTrueCanEditRendererProperty( can_edit_renderer_property );
+				
+				
+				
+				// If ALL the selectable items are selected, then the header should be checked. (the lengths are equal)
+				// If NONE of the selectable items are selected, then the header should be unchecked. (the length of the selected_items is 0)
+				// Else, partial.
 				if( null == selected_items || null == data_provider )
 				{
 					checked = false;
@@ -224,7 +245,7 @@
 					checked = false;
 					partial = false;
 				}
-				else if( selected_items.length == data_provider.length )
+				else if( selected_items.length == selectable_items.length )
 				{
 					checked = true;
 					partial = false;
@@ -261,6 +282,29 @@
 			
 			//----------------------------------------------------------------------------------------------------------
 			
+			protected function getItemsWithTrueCanEditRendererProperty( can_edit_renderer_property: String ): ArrayCollection
+			{
+				const data_provider: IList = grid.dataGrid.dataProvider;
+				
+				if( null == data_provider )
+					return null;
+				
+				var true_items: ArrayCollection = new ArrayCollection();
+				
+				for each( var dp_item: Object in data_provider )
+				{
+					if( dp_item.hasOwnProperty( can_edit_renderer_property ) && (dp_item[ can_edit_renderer_property ] is Boolean) )
+					{
+						if( dp_item[ can_edit_renderer_property ] )
+							true_items.addItem( dp_item );
+					}
+				}
+				
+				return true_items;
+			}
+			
+			//----------------------------------------------------------------------------------------------------------
+			
 			protected function griditemrenderer_clickHandler(event:MouseEvent):void
 			{
 				if( ! clickable )
@@ -269,12 +313,14 @@
 				if( !( column is CheckBoxGridColumn ) )
 					return;
 				
-				var _controlProperty: String = CheckBoxGridColumn( column ).controlProperty;
+				const check_box_grid_column: CheckBoxGridColumn = CheckBoxGridColumn( column );
+				const control_property: String = check_box_grid_column.controlProperty;
+				const can_edit_renderer_property: String = check_box_grid_column.canEditRendererProperty;
 				
-				if( "" == _controlProperty )
+				if( "" == control_property )
 					Manage_Row_Selection_On_Header_Click();
 				else
-					Manage_Control_Property_On_Header_Click( _controlProperty );
+					Manage_Control_Property_On_Header_Click( control_property, can_edit_renderer_property );
 			}
 			
 			//----------------------------------------------------------------------------------------------------------
@@ -312,7 +358,7 @@
 			
 			//----------------------------------------------------------------------------------------------------------
 			
-			private function Manage_Control_Property_On_Header_Click( _controlProperty: String ): void
+			private function Manage_Control_Property_On_Header_Click( control_property: String, can_edit_renderer_property: String ): void
 			{
 				const data_provider: IList = grid.dataGrid.dataProvider;
 				
@@ -323,10 +369,23 @@
 				
 				for each( var dp_item: Object in data_provider )
 				{
-					if( dp_item.hasOwnProperty( _controlProperty ) && (dp_item[ _controlProperty ] is Boolean) )
+					if( dp_item.hasOwnProperty( control_property ) && (dp_item[ control_property ] is Boolean) )
 					{
-						dp_item[ _controlProperty ] = boolean_to_be_set;
-						grid.dataProvider.itemUpdated( dp_item );
+						// If there is no property to check (if the checkbox is editable), then toggle the checkbox straight-away.
+						if( "" == can_edit_renderer_property )
+						{
+							dp_item[ control_property ] = boolean_to_be_set;
+							grid.dataProvider.itemUpdated( dp_item );
+						}
+						else
+						{
+							// If there is a property to check, then check it to find out if the checkbox is allowed to be toggled.
+							if( dp_item.hasOwnProperty( can_edit_renderer_property ) && (dp_item[ can_edit_renderer_property ] is Boolean) && dp_item[ can_edit_renderer_property ] )
+							{
+								dp_item[ control_property ] = boolean_to_be_set;
+								grid.dataProvider.itemUpdated( dp_item );
+							}
+						}
 					}
 				}
 			}

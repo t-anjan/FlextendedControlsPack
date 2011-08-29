@@ -2,11 +2,14 @@
 <s:GridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 				xmlns:s="library://ns.adobe.com/flex/spark" 
 				xmlns:mx="library://ns.adobe.com/flex/mx"
-				click="griditemrenderer_clickHandler(event)">
+				alpha.disabled="0.5">
 	
 	<fx:Script>
 		<![CDATA[
 			import com.anjantek.controls.gridColumns.CheckBoxGridColumn;
+			
+			private const BASE_STATE: String = "base";
+			private const DISABLED_STATE: String = "disabled";
 			
 			//----------------------------------------------------------------------------------------------------------
 			
@@ -15,7 +18,7 @@
 				if( ! (column is CheckBoxGridColumn) )
 					return;
 				
-				var check_box_grid_column: CheckBoxGridColumn = CheckBoxGridColumn( column );
+				const check_box_grid_column: CheckBoxGridColumn = CheckBoxGridColumn( column );
 				
 				if( "" == check_box_grid_column.controlProperty )
 				{
@@ -42,6 +45,27 @@
 						check_box.selected = data[ control_property ];
 					else
 						check_box.selected = false;
+				}
+				
+				
+				if( "" != check_box_grid_column.canEditRendererProperty )
+				{
+					const can_edit_renderer_property: String = check_box_grid_column.canEditRendererProperty;
+					
+					if( data && data.hasOwnProperty( can_edit_renderer_property ) && (data[ can_edit_renderer_property ] is Boolean) && data[ can_edit_renderer_property ] )
+					{
+						if( ! hasEventListener( MouseEvent.CLICK ) )
+							this.addEventListener( MouseEvent.CLICK, griditemrenderer_clickHandler );
+						
+						this.currentState = BASE_STATE;
+					}
+					else
+					{
+						if( hasEventListener( MouseEvent.CLICK ) )
+							this.removeEventListener( MouseEvent.CLICK, griditemrenderer_clickHandler );
+						
+						this.currentState = DISABLED_STATE;
+					}
 				}
 			}
 			
@@ -75,6 +99,11 @@
 		]]>
 	</fx:Script>
 	
+	<s:states>
+		<s:State id="state_base" name="base" />
+		<s:State id="state_disabled" name="disabled" />
+	</s:states>
+	
 	<!--The check box is only a visual indicator for whether the row is selected or not.
 	The "selected" property of the check_box will be controlled by the "set data" function. 
 	The check_box should not be allowed any user interaction. Hence disabling it.-->
@@ -82,5 +111,11 @@
 				label="" 
 				enabled="false" skinClass="com.anjantek.controls.checkBoxes.skins.NoDisabledCheckBoxSkin"
 				horizontalCenter="0" verticalCenter="0"/>
+	
+	<s:Rect width="100%" height="100%" includeIn="disabled">
+		<s:fill>
+			<s:SolidColor color="gray" alpha="0.2" />
+		</s:fill>
+	</s:Rect>
 	
 </s:GridItemRenderer>

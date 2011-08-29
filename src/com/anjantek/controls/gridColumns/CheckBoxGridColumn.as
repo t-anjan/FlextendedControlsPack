@@ -71,6 +71,22 @@ package com.anjantek.controls.gridColumns
 			return _controlProperty;
 		}
 		
+		//----------------------------------------------------------------------------------------------------------
+		
+		// Call this boolean property on the data provider item to determine if the checkbox state should be allowed to be edited.
+		private var _canEditRendererProperty: String = "";
+		
+		public function set canEditRendererProperty( value: String ): void
+		{
+			if( value != _canEditRendererProperty )
+				_canEditRendererProperty = value;
+		}
+		
+		public function get canEditRendererProperty(): String
+		{
+			return _canEditRendererProperty;
+		}
+		
 		//-----------------------------------PROPERTIES - End-----------------------------------------------------------------------
 		
 		//----------------------------------------------------------------------------------------------------------
