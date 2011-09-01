@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<supportClasses:MultiThumbSliderBase xmlns:fx="http://ns.adobe.com/mxml/2009" 
+									 xmlns:s="library://ns.adobe.com/flex/spark" 
+									 xmlns:mx="library://ns.adobe.com/flex/mx" 
+									 xmlns:supportClasses="com.anjantek.controls.sliders.supportClasses.*"
+									 skinClass="com.anjantek.controls.sliders.skins.MultiThumbHSliderSkin"
+									 dataTipOffsetX="0" dataTipOffsetY="-25">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+</supportClasses:MultiThumbSliderBase>
