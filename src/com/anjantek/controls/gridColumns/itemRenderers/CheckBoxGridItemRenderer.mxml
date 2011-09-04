@@ -15,6 +15,8 @@
 			
 			override public function prepare(hasBeenRecycled:Boolean):void
 			{
+				super.prepare( hasBeenRecycled );
+				
 				if( ! (column is CheckBoxGridColumn) )
 					return;
 				
@@ -105,7 +107,7 @@
 	</s:states>
 	
 	<!--The check box is only a visual indicator for whether the row is selected or not.
-	The "selected" property of the check_box will be controlled by the "set data" function. 
+	The "selected" property of the check_box will be controlled by the "prepare" function. 
 	The check_box should not be allowed any user interaction. Hence disabling it.-->
 	<s:CheckBox id="check_box"
 				label="" 
