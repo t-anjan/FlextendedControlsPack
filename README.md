@@ -92,6 +92,10 @@ If a particular row's `canEditItemRendererProperty` returns false, then the `Che
 
 Based on the Spark `GridItemRenderer`, the `RadioButtonGridItemRenderer` is very similar to the `CheckBoxGridItemRenderer` in that it mimics the selection status of the row. This item renderer is meant to be used in those data grids which have a `selectionMode` of `singleRow`.
 
+### Demo application with source
+
+Please visit [this](http://anjantek.com/2011/09/04/flex-4-5-spark-datagrid-radio-button-itemrenderer/) page to view a demo of the component. The source of the demo application is also available there.
+
 ## CheckBoxGridHeaderRenderer
 
 Based on the Spark `GridItemRenderer`, the `CheckBoxGridHeaderRenderer` is the designated header for the `CheckBoxGridColumn`. It displays a check box which supports three states according the check boxes' selection status in the `CheckBoxGridColumn`. This is explained in the `CheckBoxGridColumn` section above.
