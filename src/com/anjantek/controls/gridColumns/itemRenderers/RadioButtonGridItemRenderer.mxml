@@ -10,6 +10,8 @@
 			
 			override public function prepare(hasBeenRecycled:Boolean):void
 			{
+				super.prepare( hasBeenRecycled );
+				
 				// We make the radio button mimic the selection status of the whole row.
 				const selected_items: Vector.<Object> = grid.dataGrid.selectedItems;
 				
@@ -30,6 +32,9 @@
 		]]>
 	</fx:Script>
 	
+	<!--The radio button is only a visual indicator for whether the row is selected or not.
+	The "selected" property of the radio_button will be controlled by the "prepare" function. 
+	The radio_button should not be allowed any user interaction. Hence disabling it.-->
 	<s:RadioButton id="radio_button"
 				   label=""
 				   enabled="false"
