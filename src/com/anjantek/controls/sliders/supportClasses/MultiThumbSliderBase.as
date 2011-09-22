@@ -26,7 +26,9 @@ package com.anjantek.controls.sliders.supportClasses
 {
 	import com.anjantek.controls.sliders.events.ThumbKeyEvent;
 	import com.anjantek.controls.sliders.events.ThumbMouseEvent;
+	import com.anjantek.controls.sliders.interfaces.IValueBounding;
 	import com.anjantek.controls.sliders.interfaces.IValueLayout;
+	import com.anjantek.controls.sliders.interfaces.IValueSnapping;
 	
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -35,17 +37,41 @@ package com.anjantek.controls.sliders.supportClasses
 	
 	import mx.core.IFactory;
 	import mx.core.IVisualElement;
+	import mx.core.InteractionMode;
 	import mx.events.FlexEvent;
+	import mx.events.ResizeEvent;
 	
 	import spark.components.Button;
+	import spark.components.Group;
 	import spark.components.SkinnableContainer;
-	import com.anjantek.controls.sliders.interfaces.IValueBounding;
-	import com.anjantek.controls.sliders.interfaces.IValueSnapping;
 	
 	[Style(name="slideDuration", type="Number", format="Time", inherit="no")]
 	[Style(name="liveDragging", type="Boolean", inherit="no")]
 	[Style(name="dataTipOffsetX", type="Number", format="Length", inherit="yes")]
 	[Style(name="dataTipOffsetY", type="Number", format="Length", inherit="yes")]
+	
+	/**
+	 *  The color for each slider track.
+	 *  
+	 *  @langversion 3.0
+	 *  @playerversion Flash 10
+	 *  @playerversion AIR 1.5
+	 *  @productversion Flex 4
+	 */
+	[Style(name="accentColors", type="Array", format="Color", inherit="yes", theme="spark")]
+	
+	/**
+	 *  Specifies whether to enable track highlighting between thumbs
+	 *  (or a single thumb and the beginning of the track).
+	 *
+	 *  @default false
+	 *  
+	 *  @langversion 3.0
+	 *  @playerversion Flash 10
+	 *  @playerversion AIR 1.5
+	 *  @productversion Flex 4
+	 */
+	[Style(name="showTrackHighlight", type="Boolean", inherit="no")]
 	
 	public class MultiThumbSliderBase extends SkinnableContainer implements IValueBounding, IValueSnapping
 	{
@@ -54,6 +80,12 @@ package com.anjantek.controls.sliders.supportClasses
 		
 		[SkinPart(required="false")]
 		public var track: Button;
+		
+		[SkinPart(required="false", type="spark.components.Button")]
+		public var trackHighlight: IFactory;
+		
+		[SkinPart(required="false", type="spark.components.Group")]
+		public var contentGroupHighlight: Group
 		
 		private const DEFAULT_MINIMUM: Number = 0;
 		private const DEFAULT_MAXIMUM: Number = 100;
@@ -73,6 +105,8 @@ package com.anjantek.controls.sliders.supportClasses
 		private var allowOverlapChanged: Boolean = false;
 		private var snapIntervalChanged: Boolean = false;
 		private var thumbValueChanged: Boolean = false;
+		private var accentColorsChanged: Boolean = false;
+		private var showTrackHighlightChanged: Boolean = false;
 		
 		private var animating: Boolean = false;
 		private var draggingThumb: Boolean = false;
@@ -80,6 +114,8 @@ package com.anjantek.controls.sliders.supportClasses
 		private var keyDownOnThumb: Boolean = false;
 		
 		private var thumbs: Vector.<SliderThumb>;
+		private var trackHighlightButtons: Vector.<Button>;
+		
 		private var focusedThumbIndex: uint = 0;
 		private var animatedThumb: SliderThumb;
 		
@@ -90,6 +126,7 @@ package com.anjantek.controls.sliders.supportClasses
 			super();
 			
 			thumbs = new Vector.<SliderThumb>();
+			trackHighlightButtons = new Vector.<Button>();
 			
 			if(!newMinimum)
 				minimum = DEFAULT_MINIMUM;
@@ -181,7 +218,6 @@ package com.anjantek.controls.sliders.supportClasses
 					for(var index: int = 0; index < numberOfThumbs; index++)
 					{
 						var value: Number = getThumbAt(index).value;
-						
 						thumbValues.push(value);
 					}
 				}
@@ -217,6 +253,40 @@ package com.anjantek.controls.sliders.supportClasses
 			}
 		}
 		
+		//-------------------------------------------------------------------------------------------------
+		
+		[Bindable]
+		private var _accentColors:Array;
+		
+		public function get accentColors(): Array
+		{
+			return this._accentColors;
+		}
+		
+		public function set accentColors(color:Array):void
+		{
+			this._accentColors = color;
+			accentColorsChanged = true;
+			invalidateProperties();
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		[Bindable]
+		private var _showTrackHighlight:Boolean = true;
+		
+		public function get showTrackHighlight():Boolean
+		{
+			return this._showTrackHighlight;
+		}
+		
+		public function set showTrackHighlight(show:Boolean):void
+		{
+			_showTrackHighlight = show;
+			showTrackHighlightChanged = true;
+			invalidateProperties();
+		}
+		
 		//------------------------------ PROPERTIES - END -------------------------------------------------------------------
 		
 		//-------------------------------------------------------------------------------------------------
@@ -245,6 +315,16 @@ package com.anjantek.controls.sliders.supportClasses
 				
 				track.focusEnabled = false;
 			}
+			else if(partName == "trackHighlight")
+			{
+				var instance_track_highlight: Button = Button( instance );
+				instance_track_highlight.focusEnabled = false;
+				instance_track_highlight.addEventListener(ResizeEvent.RESIZE, trackHighLight_resizeHandler);
+				
+				// track is only clickable if in mouse interactionMode
+				if (getStyle("interactionMode") == InteractionMode.MOUSE)
+					instance_track_highlight.addEventListener(MouseEvent.MOUSE_DOWN, trackHighLight_mouseDownHandler);
+			}
 		}
 		
 		//-------------------------------------------------------------------------------------------------
@@ -268,6 +348,37 @@ package com.anjantek.controls.sliders.supportClasses
 				
 				track.removeEventListener(MouseEvent.MOUSE_DOWN, trackMouseDownHandler);
 			}
+			else if(partName == "trackHighlight")
+			{
+				var instance_track_highlight: Button = Button( instance );
+				instance_track_highlight.removeEventListener(MouseEvent.MOUSE_DOWN, trackHighLight_mouseDownHandler);
+				instance_track_highlight.removeEventListener(ResizeEvent.RESIZE, trackHighLight_resizeHandler);
+			}
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		/**
+		 *  @private
+		 */
+		override public function styleChanged(styleProp:String):void
+		{
+			var anyStyle:Boolean = styleProp == null || styleProp == "styleName";
+			
+			super.styleChanged(styleProp);
+			if (styleProp == "showTrackHighlight" || anyStyle)
+			{
+				showTrackHighlightChanged = true;
+				invalidateProperties();
+			}
+			
+			if (styleProp == "accentColors" || anyStyle)
+			{
+				accentColorsChanged = true;
+				invalidateProperties();
+			}
+			
+			invalidateDisplayList();
 		}
 		
 		//-------------------------------------------------------------------------------------------------
@@ -297,6 +408,12 @@ package com.anjantek.controls.sliders.supportClasses
 					removeAllThumbs();
 					createThumbsFrom(newValues);
 					
+					if( contentGroupHighlight && trackHighlight )
+					{
+						removeAllTrackHighlights();
+						createTrackHighlightsFrom( newValues );
+					}
+					
 					dispatchEvent(new FlexEvent(FlexEvent.VALUE_COMMIT));
 				}
 				
@@ -312,6 +429,27 @@ package com.anjantek.controls.sliders.supportClasses
 				dispatchEvent(new Event(Event.CHANGE));
 				
 				thumbValueChanged = false;
+			}
+			
+			if( showTrackHighlightChanged )
+			{
+				for each( var track_highlight: Button in trackHighlightButtons )
+				{
+					track_highlight.visible = _showTrackHighlight;
+				}
+				
+				showTrackHighlightChanged = false;
+			}
+			
+			if( true )
+			{
+				for( var i: Number = 0 ; i <= trackHighlightButtons.length - 1 ; i++ )
+				{
+					var track_hl: Button = trackHighlightButtons[ i ];
+					track_hl.setStyle( "themeColor", uint( accentColors[ i ] ) );
+				}
+				
+				accentColorsChanged = false;
 			}
 		}
 		
@@ -341,6 +479,97 @@ package com.anjantek.controls.sliders.supportClasses
 		
 		//-------------------------------------------------------------------------------------------------
 		
+		private function createTrackHighlightsFrom(values: Array): void
+		{
+			for(var index: int = 0; index < values.length; index++)
+			{
+				var track_highlight: Button = Button( createDynamicPartInstance("trackHighlight") );
+				
+				if( ! track_highlight )
+				{
+					throw new ArgumentError("Track highlight part must be of type " +
+						getQualifiedClassName(Button));
+				}
+				
+				trackHighlightButtons.push( track_highlight );
+				updateTrackHighlightDisplay( index );
+				
+				contentGroupHighlight.addElement( track_highlight );
+			}
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		/**
+		 *  @private
+		 */
+		protected function updateTrackHighlightDisplay( _index: Number ):void
+		{
+			var _thumb: SliderThumb = thumbs[ _index ];
+			
+			// The vector should have, at least, (_index + 1) items.
+			if( trackHighlightButtons.length < (_index + 1) )
+				return;
+			
+			var track_highlight: Button = trackHighlightButtons[ _index ];
+			
+			if( !_thumb || !track || !track_highlight )
+				return;
+			
+			var hl_x: Number;
+			var hl_y: Number = 0;
+			var hl_width: Number;
+			var hl_height: Number = track.getLayoutBoundsHeight();
+			
+			var track_width: Number = track.getLayoutBoundsWidth();
+			var range: Number = maximum - minimum;
+			
+			var thumb_track_x: Number;
+			var thumb_global_position: Point;
+			var parent_thumb_x: Number;
+			
+			if( 0 == _index )
+			{
+				hl_x = 0;
+				
+				// calculate thumb position.
+				thumb_track_x = (range > 0) ? ((_thumb.value - minimum) / range) * track_width : 0;
+				
+				// convert to parent's coordinates.
+				thumb_global_position = track.localToGlobal( new Point(thumb_track_x, 0) );
+				parent_thumb_x = _thumb.parent.globalToLocal( thumb_global_position ).x;
+				
+				hl_width = Math.round( parent_thumb_x );
+			}
+			else
+			{
+				var previous_thumb: SliderThumb = thumbs[ _index - 1 ];
+				
+				// calculate previous thumb position.
+				var previous_thumb_track_x: Number = (range > 0) ? ((previous_thumb.value - minimum) / range) * track_width : 0;
+				
+				// convert to parent's coordinates.
+				var previous_thumb_global_position: Point = track.localToGlobal( new Point(previous_thumb_track_x, 0) );
+				var parent_previous_thumb_x: Number = previous_thumb.parent.globalToLocal( previous_thumb_global_position ).x;
+				
+				hl_x = parent_previous_thumb_x;
+				
+				// calculate thumb position.
+				thumb_track_x = (range > 0) ? ((_thumb.value - minimum) / range) * track_width : 0;
+				
+				// convert to parent's coordinates.
+				thumb_global_position = track.localToGlobal( new Point(thumb_track_x, 0) );
+				parent_thumb_x = _thumb.parent.globalToLocal( thumb_global_position ).x;
+				
+				hl_width = Math.round( parent_thumb_x - parent_previous_thumb_x );
+			}
+			
+			track_highlight.setLayoutBoundsPosition( hl_x, hl_y );
+			track_highlight.setLayoutBoundsSize( hl_width, hl_height );
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
 		private function removeAllThumbs(): void
 		{
 			for(var index: int = 0; index < thumbs.length; index++)
@@ -350,6 +579,19 @@ package com.anjantek.controls.sliders.supportClasses
 			}
 			
 			thumbs.splice(0, thumbs.length);
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		private function removeAllTrackHighlights(): void
+		{
+			for(var index: int = 0; index < trackHighlightButtons.length; index++)
+			{
+				removeDynamicPartInstance("trackHighlight", trackHighlightButtons[index]);
+				contentGroupHighlight.removeElement(trackHighlightButtons[index]);
+			}
+			
+			trackHighlightButtons.splice( 0, trackHighlightButtons.length );
 		}
 		
 		//-------------------------------------------------------------------------------------------------
@@ -429,8 +671,7 @@ package com.anjantek.controls.sliders.supportClasses
 			
 			if(valueBasedLayout)
 			{
-				var draggedTo: Point 
-				= contentGroup.globalToLocal(new Point(event.stageX, event.stageY));
+				var draggedTo: Point = contentGroup.globalToLocal(new Point(event.stageX, event.stageY));
 				draggedTo.offset(thumbPressOffset.x, thumbPressOffset.y);
 				
 				thumb.value = valueBasedLayout.pointToValue(draggedTo);
@@ -486,9 +727,11 @@ package com.anjantek.controls.sliders.supportClasses
 		
 		private function thumbValueCommitHandler(event: FlexEvent): void
 		{
+			var _thumb: SliderThumb = SliderThumb( event.currentTarget );
+			
 			if(!allowOverlap && numberOfThumbs > 1)
 			{
-				constrainThumb(SliderThumb(event.currentTarget));
+				constrainThumb( _thumb );
 			}
 			
 			if(!animating && !isDraggingThumbWithLiveDraggingDisabled)
@@ -497,6 +740,26 @@ package com.anjantek.controls.sliders.supportClasses
 			}
 			
 			contentGroup.invalidateDisplayList();
+			
+			var index: Number = thumbs.indexOf( _thumb );
+			// Update the HL track of the thumb that was updated. 
+			updateTrackHighlightDisplay( index );
+			
+			// If this is not the first thumb, then update the display of the previous HL track as well,
+			// because, obviously, the width of that track should change too.
+			if( 0 != index &&
+				trackHighlightButtons.length >= index && 
+				trackHighlightButtons[ index - 1 ] )
+			{
+				updateTrackHighlightDisplay( index - 1 );
+			}
+			
+			// If there is an HL track after the current one, update its display too.
+			if( trackHighlightButtons.length >= (index + 2) && 
+				trackHighlightButtons[ index + 1 ] )
+			{
+				updateTrackHighlightDisplay( index + 1 );
+			}
 		}
 		
 		//-------------------------------------------------------------------------------------------------
@@ -604,6 +867,36 @@ package com.anjantek.controls.sliders.supportClasses
 			
 			dispatchChangeEnd();
 		}
+		
+		//---------------------------------------Thumb Code - End----------------------------------------------------------
+		
+		//-------------------------------------Track Highlight Code - Start------------------------------------------------------------
+		
+		/**
+		 *  @private
+		 */
+		private function trackHighLight_resizeHandler(event:Event):void
+		{
+			var track_highlight: Button = Button( event.currentTarget );
+			var index: Number = trackHighlightButtons.indexOf( track_highlight );
+			updateTrackHighlightDisplay( index );
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		/**
+		 *  @private
+		 *  Handle mouse-down events for the slider track hightlight. We
+		 *  calculate the value based on the new position and then
+		 *  move the thumb to the correct location as well as
+		 *  commit the value.
+		 */
+		protected function trackHighLight_mouseDownHandler(event:MouseEvent):void
+		{
+			trackMouseDownHandler(event);
+		}
+		
+		//-------------------------------------Track Highlight Code - End------------------------------------------------------------
 		
 		//-------------------------------------------------------------------------------------------------
 		

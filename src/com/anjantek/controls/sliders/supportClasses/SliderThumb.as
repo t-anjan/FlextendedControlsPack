@@ -26,6 +26,10 @@ package com.anjantek.controls.sliders.supportClasses
 {
 	import com.anjantek.controls.sliders.events.ThumbKeyEvent;
 	import com.anjantek.controls.sliders.events.ThumbMouseEvent;
+	import com.anjantek.controls.sliders.interfaces.ISliderThumbAnimation;
+	import com.anjantek.controls.sliders.interfaces.IValueBounding;
+	import com.anjantek.controls.sliders.interfaces.IValueCarrying;
+	import com.anjantek.controls.sliders.interfaces.IValueSnapping;
 	
 	import flash.display.DisplayObject;
 	import flash.events.KeyboardEvent;
@@ -43,11 +47,9 @@ package com.anjantek.controls.sliders.supportClasses
 	
 	import spark.components.Button;
 	import spark.components.DataRenderer;
+	import spark.components.Label;
 	import spark.components.supportClasses.SkinnableComponent;
-	import com.anjantek.controls.sliders.interfaces.IValueBounding;
-	import com.anjantek.controls.sliders.interfaces.IValueSnapping;
-	import com.anjantek.controls.sliders.interfaces.ISliderThumbAnimation;
-	import com.anjantek.controls.sliders.interfaces.IValueCarrying;
+	import spark.formatters.NumberFormatter;
 	
 	use namespace mx_internal;
 	
@@ -63,6 +65,9 @@ package com.anjantek.controls.sliders.supportClasses
 		
 		[SkinPart(required="false", type="spark.components.DataRenderer")]
 		public var dataTip: IFactory;
+		
+		[SkinPart(required="false")]
+		public var label: Label;
 		
 		private var dataTipInstance: DataRenderer;
 		
@@ -87,6 +92,10 @@ package com.anjantek.controls.sliders.supportClasses
 			valueRange = new ValueRange(DEFAULT_MINIMUM, DEFAULT_MAXIMUM, DEFAULT_SNAP_INTERVAL);
 		}
 		
+		//------------------------------ PROPERTIES - START -------------------------------------------------------------------
+		
+		//-------------------------------------------------------------------------------------------------
+		
 		public function get minimum(): Number
 		{
 			return valueRange.minimum;
@@ -100,6 +109,8 @@ package com.anjantek.controls.sliders.supportClasses
 				invalidateProperties();
 			}
 		}
+		
+		//-------------------------------------------------------------------------------------------------
 		
 		public function get maximum(): Number
 		{
@@ -115,6 +126,8 @@ package com.anjantek.controls.sliders.supportClasses
 			}
 		}
 		
+		//-------------------------------------------------------------------------------------------------
+		
 		public function get snapInterval(): Number
 		{
 			return valueRange.snapInterval;
@@ -128,6 +141,27 @@ package com.anjantek.controls.sliders.supportClasses
 				invalidateProperties();
 			}
 		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		private var dataFormatter: NumberFormatter;
+		public var formattedValuePrecision: Number = 0;
+		
+		public function get formattedValue(): String
+		{
+			var formatted_value: String;
+			
+			if(dataFormatter == null)
+				dataFormatter = new NumberFormatter();
+			
+			dataFormatter.fractionalDigits = formattedValuePrecision;
+			
+			formatted_value = dataFormatter.format( value ); 
+			
+			return formatted_value;
+		}
+		
+		//-------------------------------------------------------------------------------------------------
 		
 		public function get value(): Number
 		{
@@ -147,6 +181,10 @@ package com.anjantek.controls.sliders.supportClasses
 			}
 		}
 		
+		//------------------------------ PROPERTIES - END -------------------------------------------------------------------
+		
+		//-------------------------------------------------------------------------------------------------
+		
 		public function constrainMinimumTo(thumb: SliderThumb): void
 		{
 			var nearestGreaterInterval: Number = valueRange.roundToNearestGreaterInterval(thumb.value);
@@ -154,12 +192,16 @@ package com.anjantek.controls.sliders.supportClasses
 			minimum = nearestGreaterInterval;
 		}
 		
+		//-------------------------------------------------------------------------------------------------
+		
 		public function constrainMaximumTo(thumb: SliderThumb): void
 		{
 			var nearestLesserInterval: Number = valueRange.roundToNearestLesserInterval(thumb.value);
 			
 			maximum = nearestLesserInterval;
 		}
+		
+		//-------------------------------------------------------------------------------------------------
 		
 		public function animateMovementTo(value: Number, endHandler: Function): void
 		{
@@ -169,16 +211,22 @@ package com.anjantek.controls.sliders.supportClasses
 			animation.play(slideDuration, valueRange.getNearestValidValueTo(value), endHandler);
 		}
 		
+		//-------------------------------------------------------------------------------------------------
+		
 		public function stopAnimation(): void
 		{
 			if(animationIsPlaying)
 				animation.stop();
 		}
 		
+		//-------------------------------------------------------------------------------------------------
+		
 		private function get animationIsPlaying(): Boolean
 		{
 			return animation && animation.isPlaying();
 		}
+		
+		//-------------------------------------------------------------------------------------------------
 		
 		override protected function partAdded(partName: String, instance: Object): void
 		{
@@ -189,11 +237,23 @@ package com.anjantek.controls.sliders.supportClasses
 			else if(partName == "dataTip")
 			{
 				systemManager.toolTipChildren.addChild(DisplayObject(instance));
-				addEventListener(MoveEvent.MOVE, moveHandler);
+				
+				if( ! hasEventListener( MoveEvent.MOVE ) )
+					addEventListener(MoveEvent.MOVE, moveHandler);
+				
 				dataTipInstance = DataRenderer(instance);
 				updateDataTip();
 			}
+			else if( partName == "label" )
+			{
+				if( ! hasEventListener( MoveEvent.MOVE ) )
+					addEventListener(MoveEvent.MOVE, moveHandler);
+				
+				updateLabel();
+			}
 		}
+		
+		//-------------------------------------------------------------------------------------------------
 		
 		override protected function partRemoved(partName: String, instance: Object): void
 		{
@@ -204,10 +264,11 @@ package com.anjantek.controls.sliders.supportClasses
 			else if(partName == "dataTip")
 			{
 				systemManager.toolTipChildren.removeChild(DisplayObject(instance));
-				removeEventListener(MoveEvent.MOVE, moveHandler);
 				dataTipInstance = null;
 			}
 		}
+		
+		//-------------------------------------------------------------------------------------------------
 		
 		override protected function commitProperties(): void
 		{
@@ -225,6 +286,8 @@ package com.anjantek.controls.sliders.supportClasses
 			valueChanged = false;
 		}
 		
+		//-------------------------------------------------------------------------------------------------
+		
 		override public function drawFocus(isFocused: Boolean): void
 		{
 			if(button)
@@ -233,6 +296,10 @@ package com.anjantek.controls.sliders.supportClasses
 				button.drawFocus(isFocused);
 			}
 		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		//---------------------------------- MOUSE EVENTS - START ---------------------------------------------------------------
 		
 		private function mouseDownHandler(event: MouseEvent): void
 		{
@@ -254,10 +321,14 @@ package com.anjantek.controls.sliders.supportClasses
 				createDynamicPartInstance("dataTip");
 		}
 		
+		//-------------------------------------------------------------------------------------------------
+		
 		private function systemMouseMoveHandler(event: MouseEvent): void
 		{
 			dispatchThumbEvent(ThumbMouseEvent.DRAGGING,  new Point(event.stageX, event.stageY));
 		}
+		
+		//-------------------------------------------------------------------------------------------------
 		
 		private function systemMouseUpHandler(event: MouseEvent): void
 		{
@@ -275,16 +346,31 @@ package com.anjantek.controls.sliders.supportClasses
 				removeDynamicPartInstance("dataTip", dataTipInstance);
 		}
 		
+		//-------------------------------------------------------------------------------------------------
+		
 		private function dispatchThumbEvent(type: String, point: Point): void
 		{
 			dispatchEvent(new ThumbMouseEvent(type, point.x, point.y));            
 		}
 		
+		//-------------------------------------------------------------------------------------------------
+		
 		private function moveHandler(event: MoveEvent): void
 		{
 			if(dataTipInstance && !animationIsPlaying)
+			{
 				updateDataTip();
+			}
+			
+			if( label && !animationIsPlaying )
+			{
+				updateLabel();
+			}
 		}
+		
+		//---------------------------------- MOUSE EVENTS - END ---------------------------------------------------------------
+		
+		//-------------------------------------------------------------------------------------------------
 		
 		private function updateDataTip(): void
 		{
@@ -295,6 +381,15 @@ package com.anjantek.controls.sliders.supportClasses
 			dataTipInstance.data = value;
 		}
 		
+		//-------------------------------------------------------------------------------------------------
+		
+		private function updateLabel(): void
+		{
+			label.text = formattedValue;
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
 		private function getCenterPointCoordinatesOf(component: UIComponent): Point
 		{
 			var x: Number = component.getLayoutBoundsX() + (component.getLayoutBoundsWidth() / 2);
@@ -302,6 +397,8 @@ package com.anjantek.controls.sliders.supportClasses
 			
 			return new Point(x, y);
 		}
+		
+		//-------------------------------------------------------------------------------------------------
 		
 		override protected function keyDownHandler(event: KeyboardEvent): void
 		{
@@ -339,6 +436,8 @@ package com.anjantek.controls.sliders.supportClasses
 			}
 		}
 		
+		//-------------------------------------------------------------------------------------------------
+		
 		override protected function keyUpHandler(event: KeyboardEvent): void
 		{
 			var thumbKeyEvent: ThumbKeyEvent;
@@ -358,5 +457,8 @@ package com.anjantek.controls.sliders.supportClasses
 				}
 			}
 		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
 	}
 }
