@@ -90,13 +90,14 @@ package com.anjantek.controls.sliders.supportClasses
 		private const DEFAULT_MINIMUM: Number = 0;
 		private const DEFAULT_MAXIMUM: Number = 100;
 		private const DEFAULT_SNAP_INTERVAL: Number = 1;
-		private const DEFAULT_VALUES: Array = [0, 100];
+		private const DEFAULT_VALUES: Array = [50];
 		private const DEFAULT_ALLOW_OVERLAP: Boolean = false;
 		
 		private var newMinimum: Number;
 		private var newMaximum: Number;
 		private var _snapInterval: Number = DEFAULT_SNAP_INTERVAL;
 		private var newValues: Array;
+		private var _fixedValues: Array = new Array();
 		private var _allowOverlap: Boolean = DEFAULT_ALLOW_OVERLAP;
 		
 		private var minimumChanged: Boolean = false;
@@ -130,8 +131,10 @@ package com.anjantek.controls.sliders.supportClasses
 			
 			if(!newMinimum)
 				minimum = DEFAULT_MINIMUM;
+			
 			if(!newMaximum)
 				maximum = DEFAULT_MAXIMUM;
+			
 			if(!newValues)
 				values = DEFAULT_VALUES;
 		}
@@ -228,11 +231,36 @@ package com.anjantek.controls.sliders.supportClasses
 		
 		public function set values(value: Array): void
 		{
+			if( ! allowDuplicateValues )
+				value = removeDuplicates( value );
+			
+			value = mergeArrays( _fixedValues, value );
+			
 			if(value != values)
 			{
 				newValues = value;
 				valuesChanged = true;
 				invalidateProperties();
+			}  
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		// Contains the values whose thumbs will not be allowed to be moved.
+		public function get fixedValues(): Array
+		{
+			return _fixedValues;
+		}
+		
+		public function set fixedValues(value: Array): void
+		{
+			if( ! allowDuplicateValues )
+				value = removeDuplicates( value );
+			
+			if( value != _fixedValues )
+			{
+				_fixedValues = value;
+				values = mergeArrays( _fixedValues, values );
 			}  
 		}
 		
@@ -255,6 +283,10 @@ package com.anjantek.controls.sliders.supportClasses
 		
 		//-------------------------------------------------------------------------------------------------
 		
+		public var allowDuplicateValues: Boolean = true;
+		
+		//-------------------------------------------------------------------------------------------------
+		
 		[Bindable]
 		private var _accentColors:Array;
 		
@@ -263,9 +295,9 @@ package com.anjantek.controls.sliders.supportClasses
 			return this._accentColors;
 		}
 		
-		public function set accentColors(color:Array):void
+		public function set accentColors(colors:Array):void
 		{
-			this._accentColors = color;
+			this._accentColors = colors;
 			accentColorsChanged = true;
 			invalidateProperties();
 		}
@@ -297,17 +329,18 @@ package com.anjantek.controls.sliders.supportClasses
 			
 			if(partName == "thumb")
 			{
-				var thumb: SliderThumb = SliderThumb(instance);
+				var instance_thumb: SliderThumb = SliderThumb(instance);
+				
 				var slideDuration: Number = getStyle("slideDuration");
 				
-				thumb.setStyle("slideDuration", slideDuration);
+				instance_thumb.setStyle("slideDuration", slideDuration);
 				
-				thumb.addEventListener(MouseEvent.MOUSE_DOWN, thumbMouseDownHandler);
-				thumb.addEventListener(ThumbMouseEvent.PRESS, thumbPressHandler);
-				thumb.addEventListener(ThumbKeyEvent.KEY_DOWN, thumbKeyDownHandler);
-				thumb.addEventListener(FlexEvent.VALUE_COMMIT, thumbValueCommitHandler);
+				instance_thumb.addEventListener(MouseEvent.MOUSE_DOWN, thumbMouseDownHandler);
+				instance_thumb.addEventListener(ThumbMouseEvent.PRESS, thumbPressHandler);
+				instance_thumb.addEventListener(ThumbKeyEvent.KEY_DOWN, thumbKeyDownHandler);
+				instance_thumb.addEventListener(FlexEvent.VALUE_COMMIT, thumbValueCommitHandler);
 				
-				thumb.focusEnabled = true;
+				instance_thumb.focusEnabled = true;
 			}
 			else if(partName == "track")
 			{
@@ -441,12 +474,11 @@ package com.anjantek.controls.sliders.supportClasses
 				showTrackHighlightChanged = false;
 			}
 			
-			if( true )
+			if( accentColorsChanged )
 			{
 				for( var i: Number = 0 ; i <= trackHighlightButtons.length - 1 ; i++ )
 				{
-					var track_hl: Button = trackHighlightButtons[ i ];
-					track_hl.setStyle( "themeColor", uint( accentColors[ i ] ) );
+					updateTrackHighlightColor( i );
 				}
 				
 				accentColorsChanged = false;
@@ -467,9 +499,23 @@ package com.anjantek.controls.sliders.supportClasses
 						getQualifiedClassName(SliderThumb));
 				}
 				
-				thumb.minimum = minimum;
-				thumb.maximum = maximum;
 				thumb.snapInterval = snapInterval;
+				
+				// If the value is not a fixed_value.
+				if( -1 == _fixedValues.indexOf( values[index] ) )
+				{
+					thumb.minimum = minimum;
+					thumb.maximum = maximum;
+					thumb.isValueFixed = false;
+				}
+				else
+				{
+					// If the value is a fixed value, then the max and min of the thumb should be the value itself.
+					thumb.minimum = values[index];
+					thumb.maximum = values[index];
+					thumb.isValueFixed = true;
+				}
+				
 				thumb.value = values[index];
 				
 				addElement(thumb);
@@ -503,15 +549,15 @@ package com.anjantek.controls.sliders.supportClasses
 		/**
 		 *  @private
 		 */
-		protected function updateTrackHighlightDisplay( _index: Number ):void
+		protected function updateTrackHighlightDisplay( index: Number ):void
 		{
-			var _thumb: SliderThumb = thumbs[ _index ];
+			var _thumb: SliderThumb = thumbs[ index ];
 			
 			// The vector should have, at least, (_index + 1) items.
-			if( trackHighlightButtons.length < (_index + 1) )
+			if( trackHighlightButtons.length < (index + 1) )
 				return;
 			
-			var track_highlight: Button = trackHighlightButtons[ _index ];
+			var track_highlight: Button = trackHighlightButtons[ index ];
 			
 			if( !_thumb || !track || !track_highlight )
 				return;
@@ -528,7 +574,7 @@ package com.anjantek.controls.sliders.supportClasses
 			var thumb_global_position: Point;
 			var parent_thumb_x: Number;
 			
-			if( 0 == _index )
+			if( 0 == index )
 			{
 				hl_x = 0;
 				
@@ -543,7 +589,7 @@ package com.anjantek.controls.sliders.supportClasses
 			}
 			else
 			{
-				var previous_thumb: SliderThumb = thumbs[ _index - 1 ];
+				var previous_thumb: SliderThumb = thumbs[ index - 1 ];
 				
 				// calculate previous thumb position.
 				var previous_thumb_track_x: Number = (range > 0) ? ((previous_thumb.value - minimum) / range) * track_width : 0;
@@ -566,6 +612,29 @@ package com.anjantek.controls.sliders.supportClasses
 			
 			track_highlight.setLayoutBoundsPosition( hl_x, hl_y );
 			track_highlight.setLayoutBoundsSize( hl_width, hl_height );
+			
+			updateTrackHighlightColor( index );
+			track_highlight.visible = _showTrackHighlight;
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		private function updateTrackHighlightColor( index: Number ): void
+		{
+			var track_highlight: Button = trackHighlightButtons[ index ];
+			
+			if( !track_highlight )
+				return;
+			
+			// Color of the track highlight
+			var index_color_to_use: Number;
+			
+			if( index > accentColors.length )
+				index_color_to_use = index % accentColors.length;
+			else
+				index_color_to_use = index;
+			
+			track_highlight.setStyle( "themeColor", uint( accentColors[ index_color_to_use ] ) );
 		}
 		
 		//-------------------------------------------------------------------------------------------------
@@ -592,51 +661,6 @@ package com.anjantek.controls.sliders.supportClasses
 			}
 			
 			trackHighlightButtons.splice( 0, trackHighlightButtons.length );
-		}
-		
-		//-------------------------------------------------------------------------------------------------
-		
-		private function get valueBasedLayout(): IValueLayout
-		{
-			return (layout as IValueLayout);
-		}
-		
-		//-------------------------------------------------------------------------------------------------
-		
-		private function get numberOfThumbs(): int
-		{
-			return thumbs.length;
-		}
-		
-		//-------------------------------------------------------------------------------------------------
-		
-		private function getThumbAt(index: int): SliderThumb
-		{
-			return thumbs[index];
-		}
-		
-		//-------------------------------------------------------------------------------------------------
-		
-		private function getIndexOf(thumb: SliderThumb): int
-		{
-			return thumbs.indexOf(thumb);
-		}
-		
-		//-------------------------------------------------------------------------------------------------
-		
-		private function thumbMouseDownHandler(event: MouseEvent): void
-		{                    
-			visuallyMoveToFront(IVisualElement(event.currentTarget));
-		}
-		
-		//-------------------------------------------------------------------------------------------------
-		
-		private function visuallyMoveToFront(instance: IVisualElement): void
-		{
-			var lastIndexElement: IVisualElement = getElementAt(numElements - 1);
-			
-			if(instance != lastIndexElement)
-				swapElements(instance, lastIndexElement);
 		}
 		
 		//-------------------------------------------------------------------------------------------------
@@ -731,7 +755,7 @@ package com.anjantek.controls.sliders.supportClasses
 			
 			if(!allowOverlap && numberOfThumbs > 1)
 			{
-				constrainThumb( _thumb );
+				constrainNeighboringThumbs( _thumb );
 			}
 			
 			if(!animating && !isDraggingThumbWithLiveDraggingDisabled)
@@ -782,15 +806,26 @@ package com.anjantek.controls.sliders.supportClasses
 		
 		//-------------------------------------------------------------------------------------------------
 		
-		private function constrainThumb(thumb: SliderThumb): void
+		private function constrainNeighboringThumbs( thumb: SliderThumb ): void
 		{
-			var thumbIndex: int = getIndexOf(thumb);
+			var _thumb: SliderThumb;
+			var thumbIndex: int = getIndexOf( thumb );
 			
 			if(thumbIndex != 0)
-				getThumbAt(thumbIndex - 1).constrainMaximumTo(thumb);
+			{
+				_thumb = getThumbAt(thumbIndex - 1);
+				// If the thumb is a fixed_value thumb, then the constraints should not be messed with.
+				if( ! _thumb.isValueFixed )
+					_thumb.constrainMaximumTo( thumb, allowDuplicateValues );
+			}
 			
 			if(thumbIndex != numberOfThumbs - 1)
-				getThumbAt(thumbIndex + 1).constrainMinimumTo(thumb);           
+			{
+				_thumb = getThumbAt(thumbIndex + 1);
+				// If the thumb is a fixed_value thumb, then the constraints should not be messed with.
+				if( ! _thumb.isValueFixed )
+					_thumb.constrainMinimumTo( thumb, allowDuplicateValues );
+			}
 		}
 		
 		//-------------------------------------------------------------------------------------------------
@@ -900,6 +935,51 @@ package com.anjantek.controls.sliders.supportClasses
 		
 		//-------------------------------------------------------------------------------------------------
 		
+		private function get valueBasedLayout(): IValueLayout
+		{
+			return (layout as IValueLayout);
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		private function get numberOfThumbs(): int
+		{
+			return thumbs.length;
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		private function getThumbAt(index: int): SliderThumb
+		{
+			return thumbs[index];
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		private function getIndexOf(thumb: SliderThumb): int
+		{
+			return thumbs.indexOf(thumb);
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		private function thumbMouseDownHandler(event: MouseEvent): void
+		{                    
+			visuallyMoveToFront(IVisualElement(event.currentTarget));
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		private function visuallyMoveToFront(instance: IVisualElement): void
+		{
+			var lastIndexElement: IVisualElement = getElementAt(numElements - 1);
+			
+			if(instance != lastIndexElement)
+				swapElements(instance, lastIndexElement);
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
 		private function dispatchChangeStart(): void
 		{
 			dispatchEvent(new FlexEvent(FlexEvent.CHANGE_START));
@@ -910,6 +990,38 @@ package com.anjantek.controls.sliders.supportClasses
 		private function dispatchChangeEnd(): void
 		{
 			dispatchEvent(new FlexEvent(FlexEvent.CHANGE_END));
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		private function mergeArrays( array_1: Array, array_2: Array ): Array
+		{
+			for each( var _value: Number in array_1 )
+			{
+				// If the fixed_value has already been added to the values array, skip this fixed_value.
+				if( -1 != array_2.indexOf( _value ) )
+					continue;
+				
+				array_2.push( _value );
+			}
+			
+			array_2.sort( Array.NUMERIC );
+			return array_2;
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		public function removeDuplicates( arr:Array ): Array
+		{
+			var newArr: Array = new Array();
+			
+			for each( var val: * in arr )
+			{
+				if( -1 == newArr.indexOf(val) )
+					newArr.push( val );
+			}
+			
+			return newArr;
 		}
 		
 		//-------------------------------------------------------------------------------------------------

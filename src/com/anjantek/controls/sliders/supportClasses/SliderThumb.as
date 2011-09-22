@@ -77,6 +77,7 @@ package com.anjantek.controls.sliders.supportClasses
 		private const DEFAULT_VALUE: Number = 0;
 		
 		private var _value: Number;
+		private var _isValueFixed: Boolean = false;
 		private var newValue: Number = DEFAULT_VALUE;
 		private var valueChanged: Boolean = false;
 		
@@ -156,7 +157,10 @@ package com.anjantek.controls.sliders.supportClasses
 			
 			dataFormatter.fractionalDigits = formattedValuePrecision;
 			
-			formatted_value = dataFormatter.format( value ); 
+			formatted_value = dataFormatter.format( value );
+			
+			if( _isValueFixed )
+				formatted_value += " (fixed)";
 			
 			return formatted_value;
 		}
@@ -181,22 +185,50 @@ package com.anjantek.controls.sliders.supportClasses
 			}
 		}
 		
+		//-------------------------------------------------------------------------------------------------
+		
+		public function get isValueFixed(): Boolean
+		{
+			return _isValueFixed;
+		}
+		
+		public function set isValueFixed(value: Boolean): void
+		{
+			if( this.value != _isValueFixed )
+			{
+				_isValueFixed = value;
+				enabled = (! _isValueFixed );
+			}
+		}
+		
 		//------------------------------ PROPERTIES - END -------------------------------------------------------------------
 		
 		//-------------------------------------------------------------------------------------------------
 		
-		public function constrainMinimumTo(thumb: SliderThumb): void
+		public function constrainMinimumTo( thumb: SliderThumb, allowOverlappingThumbs: Boolean = true ): void
 		{
+			if( isValueFixed )
+				return;
+			
 			var nearestGreaterInterval: Number = valueRange.roundToNearestGreaterInterval(thumb.value);
+			
+			if( ! allowOverlappingThumbs )
+				nearestGreaterInterval += snapInterval;
 			
 			minimum = nearestGreaterInterval;
 		}
 		
 		//-------------------------------------------------------------------------------------------------
 		
-		public function constrainMaximumTo(thumb: SliderThumb): void
+		public function constrainMaximumTo( thumb: SliderThumb, allowOverlappingThumbs: Boolean = true ): void
 		{
+			if( isValueFixed )
+				return;
+			
 			var nearestLesserInterval: Number = valueRange.roundToNearestLesserInterval(thumb.value);
+			
+			if( ! allowOverlappingThumbs )
+				nearestLesserInterval -= snapInterval;
 			
 			maximum = nearestLesserInterval;
 		}
