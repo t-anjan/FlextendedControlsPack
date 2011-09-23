@@ -58,39 +58,16 @@ package com.anjantek.controls.sliders.supportClasses
 	
 	[Style(name="slideDuration", type="Number", format="Time", inherit="no")]
 	
-	public class SliderThumb extends SkinnableComponent implements IValueCarrying, IValueBounding, IValueSnapping, IFocusManagerComponent
+	public class SliderThumb extends SliderThumbBase implements IValueCarrying, IValueBounding, IValueSnapping, IFocusManagerComponent
 	{
-		[SkinPart(required="false")]
-		public var button: Button;
-		
-		[SkinPart(required="false", type="spark.components.DataRenderer")]
-		public var dataTip: IFactory;
-		
-		[SkinPart(required="false")]
-		public var label: Label;
-		
 		private var dataTipInstance: DataRenderer;
-		
-		private const DEFAULT_MINIMUM: Number = 0;
-		private const DEFAULT_MAXIMUM: Number = 100;
-		private const DEFAULT_SNAP_INTERVAL: Number = 1;
-		private const DEFAULT_VALUE: Number = 0;
-		
-		private var _value: Number;
 		private var _isValueFixed: Boolean = false;
-		private var newValue: Number = DEFAULT_VALUE;
-		private var valueChanged: Boolean = false;
-		
-		private var valueRange: ValueRange;
 		private var animation: ISliderThumbAnimation;
-		
 		private var isDragging: Boolean;
 		
 		public function SliderThumb()
 		{
 			super();
-			
-			valueRange = new ValueRange(DEFAULT_MINIMUM, DEFAULT_MAXIMUM, DEFAULT_SNAP_INTERVAL);
 		}
 		
 		//------------------------------ PROPERTIES - START -------------------------------------------------------------------
@@ -145,44 +122,14 @@ package com.anjantek.controls.sliders.supportClasses
 		
 		//-------------------------------------------------------------------------------------------------
 		
-		private var dataFormatter: NumberFormatter;
-		public var formattedValuePrecision: Number = 0;
-		
-		public function get formattedValue(): String
+		override public function get formattedValue(): String
 		{
-			var formatted_value: String;
-			
-			if(dataFormatter == null)
-				dataFormatter = new NumberFormatter();
-			
-			dataFormatter.fractionalDigits = formattedValuePrecision;
-			
-			formatted_value = dataFormatter.format( value );
+			var formatted_value: String = super.formattedValue;
 			
 			if( _isValueFixed )
 				formatted_value += " (fixed)";
 			
 			return formatted_value;
-		}
-		
-		//-------------------------------------------------------------------------------------------------
-		
-		public function get value(): Number
-		{
-			if(valueChanged)
-				return newValue;
-			else
-				return _value;
-		}
-		
-		public function set value(value: Number): void
-		{
-			if(this.value != value)
-			{
-				newValue = value;
-				valueChanged = true;
-				invalidateProperties();
-			}
 		}
 		
 		//-------------------------------------------------------------------------------------------------
@@ -302,24 +249,6 @@ package com.anjantek.controls.sliders.supportClasses
 		
 		//-------------------------------------------------------------------------------------------------
 		
-		override protected function commitProperties(): void
-		{
-			super.commitProperties();
-			
-			newValue = valueRange.getNearestValidValueTo(newValue);
-			
-			if(newValue != _value)
-			{
-				_value = newValue;
-				
-				dispatchEvent(new FlexEvent(FlexEvent.VALUE_COMMIT));
-			}
-			
-			valueChanged = false;
-		}
-		
-		//-------------------------------------------------------------------------------------------------
-		
 		override public function drawFocus(isFocused: Boolean): void
 		{
 			if(button)
@@ -411,13 +340,6 @@ package com.anjantek.controls.sliders.supportClasses
 			
 			dataTipInstance.setLayoutBoundsPosition(dataTipPosition.x, dataTipPosition.y);
 			dataTipInstance.data = value;
-		}
-		
-		//-------------------------------------------------------------------------------------------------
-		
-		private function updateLabel(): void
-		{
-			label.text = formattedValue;
 		}
 		
 		//-------------------------------------------------------------------------------------------------

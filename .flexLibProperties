@@ -7,6 +7,9 @@
     <classEntry path="com.anjantek.controls.gridColumns.CheckBoxGridColumn"/>
     <classEntry path="com.anjantek.controls.sliders.skins.MultiThumbHSliderSkin"/>
     <classEntry path="com.anjantek.controls.sliders.MultiThumbHSlider"/>
+    <classEntry path="com.anjantek.controls.sliders.supportClasses.SliderMarker"/>
+    <classEntry path="com.anjantek.controls.sliders.supportClasses.SliderThumbBase"/>
+    <classEntry path="com.anjantek.controls.sliders.skins.SliderTrackHighlightSkin"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

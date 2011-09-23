@@ -26,10 +26,31 @@
 		<fx:Component id="thumb">
 			<supportClasses:SliderThumb skinClass="com.anjantek.controls.sliders.skins.SliderThumbSkin" />
 		</fx:Component>
+		
+		<fx:Component id="marker">
+			<supportClasses:SliderMarker skinClass="com.anjantek.controls.sliders.skins.SliderMarkerSkin" />
+		</fx:Component>
+		
+		<fx:Component id="trackHighlight">
+			<s:Button skinClass="com.anjantek.controls.sliders.skins.SliderTrackHighlightSkin"
+					  left="0" right="0" top="0" bottom="0"/>
+		</fx:Component>
 	</fx:Declarations>
 	
 	<s:Button id="track" left="0" right="0" top="0" bottom="0" minHeight="33" height="100"
 			  skinClass="spark.skins.spark.VSliderTrackSkin" />
+	
+	<s:Group id="contentGroupHighlight" left="0" right="0" top="0" bottom="0" minWidth="0" minHeight="0">
+		<s:layout>
+			<layouts:VerticalValueLayout elementAlignment="{VerticalValueLayoutAlign.CENTER}" />
+		</s:layout>
+	</s:Group>
+	
+	<s:Group id="contentGroupMarker" left="0" right="0" top="0" bottom="0" minWidth="0" minHeight="0">
+		<s:layout>
+			<layouts:VerticalValueLayout elementAlignment="{VerticalValueLayoutAlign.CENTER}" />
+		</s:layout>
+	</s:Group>
 	
 	<s:Group id="contentGroup" left="0" right="0" top="0" bottom="0" minWidth="0" minHeight="0">
 		<s:layout>

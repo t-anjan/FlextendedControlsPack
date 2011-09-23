@@ -87,6 +87,12 @@ package com.anjantek.controls.sliders.supportClasses
 		[SkinPart(required="false", type="spark.components.Group")]
 		public var contentGroupHighlight: Group
 		
+		[SkinPart(required="false", type="com.anjantek.controls.sliders.components.supportClasses.SliderMarker")]
+		public var marker: IFactory;
+		
+		[SkinPart(required="false", type="spark.components.Group")]
+		public var contentGroupMarker: Group
+		
 		private const DEFAULT_MINIMUM: Number = 0;
 		private const DEFAULT_MAXIMUM: Number = 100;
 		private const DEFAULT_SNAP_INTERVAL: Number = 1;
@@ -98,11 +104,14 @@ package com.anjantek.controls.sliders.supportClasses
 		private var _snapInterval: Number = DEFAULT_SNAP_INTERVAL;
 		private var newValues: Array;
 		private var _fixedValues: Array = new Array();
+		private var _markers: Array = new Array();
 		private var _allowOverlap: Boolean = DEFAULT_ALLOW_OVERLAP;
+		private var _allowDuplicateValues: Boolean = true;
 		
 		private var minimumChanged: Boolean = false;
 		private var maximumChanged: Boolean = false;
 		private var valuesChanged: Boolean = false;
+		private var markersChanged: Boolean = false;
 		private var allowOverlapChanged: Boolean = false;
 		private var snapIntervalChanged: Boolean = false;
 		private var thumbValueChanged: Boolean = false;
@@ -116,6 +125,7 @@ package com.anjantek.controls.sliders.supportClasses
 		
 		private var thumbs: Vector.<SliderThumb>;
 		private var trackHighlightButtons: Vector.<Button>;
+		private var markerComponents: Vector.<SliderMarker>;
 		
 		private var focusedThumbIndex: uint = 0;
 		private var animatedThumb: SliderThumb;
@@ -128,6 +138,7 @@ package com.anjantek.controls.sliders.supportClasses
 			
 			thumbs = new Vector.<SliderThumb>();
 			trackHighlightButtons = new Vector.<Button>();
+			markerComponents = new Vector.<SliderMarker>();
 			
 			if(!newMinimum)
 				minimum = DEFAULT_MINIMUM;
@@ -137,6 +148,8 @@ package com.anjantek.controls.sliders.supportClasses
 			
 			if(!newValues)
 				values = DEFAULT_VALUES;
+			
+			this.addEventListener( FlexEvent.CREATION_COMPLETE, creationCompleteHandler );
 		}
 		
 		//-------------------------------------------------------------------------------------------------
@@ -247,6 +260,9 @@ package com.anjantek.controls.sliders.supportClasses
 		//-------------------------------------------------------------------------------------------------
 		
 		// Contains the values whose thumbs will not be allowed to be moved.
+		// Note that these fixedValues will be part of the "values" array.
+		// The thumbs created for these fixedValues are just ordinary thumbs,
+		// unlike the "markers".
 		public function get fixedValues(): Array
 		{
 			return _fixedValues;
@@ -261,6 +277,26 @@ package com.anjantek.controls.sliders.supportClasses
 			{
 				_fixedValues = value;
 				values = mergeArrays( _fixedValues, values );
+			}  
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		// Contains the values for which "markers" will be created on the track.
+		// These will just be labels on the track, indicating the value at that point.
+		// These markers will not be movable and their values will not be part of the "values" array.
+		public function get markers(): Array
+		{
+			return _markers;
+		}
+		
+		public function set markers(value: Array): void
+		{
+			if( value != _markers )
+			{
+				_markers = value;
+				markersChanged = true;
+				invalidateProperties();
 			}  
 		}
 		
@@ -283,7 +319,21 @@ package com.anjantek.controls.sliders.supportClasses
 		
 		//-------------------------------------------------------------------------------------------------
 		
-		public var allowDuplicateValues: Boolean = true;
+		public function get allowDuplicateValues(): Boolean
+		{
+			return _allowDuplicateValues;
+		}
+		
+		public function set allowDuplicateValues(value: Boolean): void
+		{
+			if(value != _allowDuplicateValues)
+			{
+				_allowDuplicateValues = value;
+				
+				if( ! _allowDuplicateValues )
+					values = removeDuplicates( values );
+			}
+		}
 		
 		//-------------------------------------------------------------------------------------------------
 		
@@ -292,12 +342,12 @@ package com.anjantek.controls.sliders.supportClasses
 		
 		public function get accentColors(): Array
 		{
-			return this._accentColors;
+			return _accentColors;
 		}
 		
 		public function set accentColors(colors:Array):void
 		{
-			this._accentColors = colors;
+			_accentColors = colors;
 			accentColorsChanged = true;
 			invalidateProperties();
 		}
@@ -309,7 +359,7 @@ package com.anjantek.controls.sliders.supportClasses
 		
 		public function get showTrackHighlight():Boolean
 		{
-			return this._showTrackHighlight;
+			return _showTrackHighlight;
 		}
 		
 		public function set showTrackHighlight(show:Boolean):void
@@ -323,13 +373,26 @@ package com.anjantek.controls.sliders.supportClasses
 		
 		//-------------------------------------------------------------------------------------------------
 		
+		private function creationCompleteHandler( event: FlexEvent ): void
+		{
+			// When the track highlights are created on initialization, the position and dimensions are set wrong
+			// because the dimensions of the "track" component itself are not yet finalized. So, re-calculating the properties of the
+			// track highlights when the track component has been fully created.
+			for( var i: Number = 0 ; i <= trackHighlightButtons.length - 1 ; i++ )
+			{
+				updateTrackHighlightDisplay( i );
+			}
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
 		override protected function partAdded(partName: String, instance: Object): void
 		{
-			super.partAdded(partName, instance);
+			super.partAdded( partName, instance );
 			
 			if(partName == "thumb")
 			{
-				var instance_thumb: SliderThumb = SliderThumb(instance);
+				var instance_thumb: SliderThumb = SliderThumb( instance );
 				
 				var slideDuration: Number = getStyle("slideDuration");
 				
@@ -483,51 +546,59 @@ package com.anjantek.controls.sliders.supportClasses
 				
 				accentColorsChanged = false;
 			}
-		}
-		
-		//-------------------------------------------------------------------------------------------------
-		
-		private function createThumbsFrom(values: Array): void
-		{   
-			for(var index: int = 0; index < values.length; index++)
+			
+			if( markersChanged )
 			{
-				var thumb: SliderThumb = SliderThumb(createDynamicPartInstance("thumb"));
+				removeAllMarkers();
+				createMarkersFrom( _markers );
 				
-				if(!thumb)
-				{
-					throw new ArgumentError("Thumb part must be of type " +
-						getQualifiedClassName(SliderThumb));
-				}
-				
-				thumb.snapInterval = snapInterval;
-				
-				// If the value is not a fixed_value.
-				if( -1 == _fixedValues.indexOf( values[index] ) )
-				{
-					thumb.minimum = minimum;
-					thumb.maximum = maximum;
-					thumb.isValueFixed = false;
-				}
-				else
-				{
-					// If the value is a fixed value, then the max and min of the thumb should be the value itself.
-					thumb.minimum = values[index];
-					thumb.maximum = values[index];
-					thumb.isValueFixed = true;
-				}
-				
-				thumb.value = values[index];
-				
-				addElement(thumb);
-				thumbs.push(thumb);
+				markersChanged = false;
 			}
 		}
 		
 		//-------------------------------------------------------------------------------------------------
 		
-		private function createTrackHighlightsFrom(values: Array): void
+		private function createThumbsFrom(array_thumb_values: Array): void
+		{   
+			for(var index: int = 0; index < array_thumb_values.length; index++)
+			{
+				var thumb_component: SliderThumb = SliderThumb(createDynamicPartInstance("thumb"));
+				
+				if(!thumb_component)
+				{
+					throw new ArgumentError("Thumb part must be of type " +
+						getQualifiedClassName(SliderThumb));
+				}
+				
+				thumb_component.snapInterval = snapInterval;
+				
+				// If the value is not a fixed_value.
+				if( -1 == _fixedValues.indexOf( array_thumb_values[index] ) )
+				{
+					thumb_component.minimum = minimum;
+					thumb_component.maximum = maximum;
+					thumb_component.isValueFixed = false;
+				}
+				else
+				{
+					// If the value is a fixed value, then the max and min of the thumb should be the value itself.
+					thumb_component.minimum = array_thumb_values[index];
+					thumb_component.maximum = array_thumb_values[index];
+					thumb_component.isValueFixed = true;
+				}
+				
+				thumb_component.value = array_thumb_values[index];
+				
+				addElement(thumb_component);
+				thumbs.push(thumb_component);
+			}
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		private function createTrackHighlightsFrom(array_thumb_values: Array): void
 		{
-			for(var index: int = 0; index < values.length; index++)
+			for(var index: int = 0; index < array_thumb_values.length; index++)
 			{
 				var track_highlight: Button = Button( createDynamicPartInstance("trackHighlight") );
 				
@@ -639,28 +710,62 @@ package com.anjantek.controls.sliders.supportClasses
 		
 		//-------------------------------------------------------------------------------------------------
 		
+		private function createMarkersFrom(array_markers: Array): void
+		{
+			for(var index: int = 0; index < array_markers.length; index++)
+			{
+				var marker_component: SliderMarker = SliderMarker( createDynamicPartInstance("marker") );
+				
+				if( ! marker_component )
+				{
+					throw new ArgumentError("Slider Marker part must be of type " +
+						getQualifiedClassName( SliderMarker ) );
+				}
+				
+				marker_component.value = array_markers[ index ];
+				markerComponents.push( marker_component );
+				
+				contentGroupMarker.addElement( marker_component );
+			}
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
 		private function removeAllThumbs(): void
 		{
-			for(var index: int = 0; index < thumbs.length; index++)
+			for each( var _thumb: SliderThumb in thumbs )
 			{
-				removeDynamicPartInstance("thumb", thumbs[index]);
-				removeElement(thumbs[index]);
+				removeDynamicPartInstance( "thumb", _thumb );
+				removeElement( _thumb );
 			}
 			
-			thumbs.splice(0, thumbs.length);
+			thumbs.splice( 0, thumbs.length );
 		}
 		
 		//-------------------------------------------------------------------------------------------------
 		
 		private function removeAllTrackHighlights(): void
 		{
-			for(var index: int = 0; index < trackHighlightButtons.length; index++)
+			for each( var track_hl: Button in trackHighlightButtons )
 			{
-				removeDynamicPartInstance("trackHighlight", trackHighlightButtons[index]);
-				contentGroupHighlight.removeElement(trackHighlightButtons[index]);
+				removeDynamicPartInstance( "trackHighlight", track_hl );
+				contentGroupHighlight.removeElement( track_hl );
 			}
 			
 			trackHighlightButtons.splice( 0, trackHighlightButtons.length );
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		private function removeAllMarkers(): void
+		{
+			for each( var _marker: SliderMarker in markerComponents )
+			{
+				removeDynamicPartInstance( "marker", _marker );
+				contentGroupMarker.removeElement( _marker );
+			}
+			
+			markerComponents.splice(0, markerComponents.length);
 		}
 		
 		//-------------------------------------------------------------------------------------------------
