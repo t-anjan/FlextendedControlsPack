@@ -27,5 +27,15 @@ package com.anjantek.controls.sliders.supportClasses
 		
 		//-------------------------------------------------------------------------------------------------
 		
+		override protected function getCurrentSkinState():String
+		{
+			if (!enabled)
+				return "disabled";
+			
+			return "normal";
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
 	}
 }

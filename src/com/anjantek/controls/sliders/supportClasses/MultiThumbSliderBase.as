@@ -702,10 +702,10 @@ package com.anjantek.controls.sliders.supportClasses
 			// Color of the track highlight
 			var index_color_to_use: Number;
 			
-			if( index > accentColors.length )
-				index_color_to_use = index % accentColors.length;
-			else
+			if( index <= accentColors.length - 1 )
 				index_color_to_use = index;
+			else
+				index_color_to_use = index % accentColors.length;
 			
 			track_highlight.setStyle( "themeColor", uint( accentColors[ index_color_to_use ] ) );
 		}

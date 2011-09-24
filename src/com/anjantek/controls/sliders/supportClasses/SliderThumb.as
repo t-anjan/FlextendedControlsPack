@@ -38,6 +38,7 @@ package com.anjantek.controls.sliders.supportClasses
 	import flash.ui.Keyboard;
 	
 	import mx.core.IFactory;
+	import mx.core.InteractionMode;
 	import mx.core.UIComponent;
 	import mx.core.mx_internal;
 	import mx.events.FlexEvent;
@@ -64,6 +65,12 @@ package com.anjantek.controls.sliders.supportClasses
 		private var _isValueFixed: Boolean = false;
 		private var animation: ISliderThumbAnimation;
 		private var isDragging: Boolean;
+		
+		[SkinPart(required="false")]
+		public var removeThumb: Button;
+		
+		[SkinPart(required="false")]
+		public var addThumb: Button;
 		
 		public function SliderThumb()
 		{
@@ -148,6 +155,44 @@ package com.anjantek.controls.sliders.supportClasses
 			}
 		}
 		
+		//-------------------------------------------------------------------------------------------------
+		
+		//----------------------------------
+		//  hovered
+		//----------------------------------
+		
+		/**
+		 *  @private
+		 *  Storage for the hovered property 
+		 */
+		private var _hovered:Boolean = false;
+		
+		/**
+		 *  Indicates whether the mouse pointer is over the button.
+		 *  Used to determine the skin state.
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */ 
+		protected function get hovered():Boolean
+		{
+			return _hovered;
+		}
+		
+		/**
+		 *  @private
+		 */ 
+		protected function set hovered(value:Boolean):void
+		{
+			if (value == _hovered)
+				return;
+			
+			_hovered = value;
+			invalidateSkinState();
+		}
+		
 		//------------------------------ PROPERTIES - END -------------------------------------------------------------------
 		
 		//-------------------------------------------------------------------------------------------------
@@ -212,6 +257,8 @@ package com.anjantek.controls.sliders.supportClasses
 			if(partName == "button")
 			{
 				button.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
+				this.addEventListener( MouseEvent.ROLL_OVER, rollOverHandler );
+				this.addEventListener( MouseEvent.ROLL_OUT, rollOutHandler );
 			}
 			else if(partName == "dataTip")
 			{
@@ -329,6 +376,20 @@ package com.anjantek.controls.sliders.supportClasses
 			}
 		}
 		
+		//-------------------------------------------------------------------------------------------------
+		
+		private function rollOverHandler( event: MouseEvent ): void
+		{
+			hovered = true;
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		private function rollOutHandler( event: MouseEvent ): void
+		{
+			hovered = false;
+		}
+		
 		//---------------------------------- MOUSE EVENTS - END ---------------------------------------------------------------
 		
 		//-------------------------------------------------------------------------------------------------
@@ -410,6 +471,19 @@ package com.anjantek.controls.sliders.supportClasses
 					break;
 				}
 			}
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		override protected function getCurrentSkinState():String
+		{
+			if (!enabled)
+				return "disabled";
+			
+			if( getStyle("interactionMode") == InteractionMode.MOUSE && hovered )
+				return "over";
+			
+			return "up";
 		}
 		
 		//-------------------------------------------------------------------------------------------------

@@ -86,7 +86,7 @@
 	</s:Label>
 	
 	<s:TextInput id="labelEditor"
-				 textAlign="center"
+				 textAlign="center" width="135"
 				 horizontalCenter="0.5"
 				 fontWeight="bold" fontSize="14"
 				 bottom="-22"
