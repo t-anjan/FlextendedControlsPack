@@ -28,7 +28,7 @@
         /** 
          * @copy spark.skins.spark.ApplicationSkin#hostComponent
          */
-        [HostComponent("spark.components.Button")]
+        [HostComponent("com.anjantek.controls.sliders.supportClasses.SliderTrackHighlight")]
     ]]>
     </fx:Metadata> 
     
@@ -58,10 +58,9 @@
 	</fx:Script>
     
     <s:states>
-        <s:State name="up" />
-        <s:State name="down" />
-        <s:State name="over" />
-        <s:State name="disabled" />
+        <s:State name="disabled" stateGroups="displayGroup" />
+		<s:State name="base" stateGroups="displayGroup" />
+		<s:State name="edit" stateGroups="editGroup" />
     </s:states>
 
     <!-- fill -->
@@ -77,16 +76,22 @@
     </s:Rect>
 	
 	
-	<!-- layer 8: text -->
-	<!--- @copy spark.components.supportClasses.ButtonBase#labelDisplay  -->
 	<s:Label id="labelDisplay"
 			 textAlign="center"
 			 maxDisplayedLines="1"
-			 horizontalCenter="0" verticalCenter="1" verticalAlign="middle"
-			 left="10" right="10" top="2" bottom="2">
+			 fontWeight="bold" fontSize="14"
+			 horizontalCenter="0"
+			 bottom="-18"
+			 visible.editGroup="false">
 	</s:Label>
 	
-    
+	<s:TextInput id="labelEditor"
+				 textAlign="center"
+				 horizontalCenter="0.5"
+				 fontWeight="bold" fontSize="14"
+				 bottom="-22"
+				 visible.displayGroup="false"/>
+	
     <!-- hit area -->
     <s:Rect left="0" right="0" top="0" bottom="0">
         <s:fill>

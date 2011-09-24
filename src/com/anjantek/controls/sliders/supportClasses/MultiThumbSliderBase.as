@@ -81,7 +81,7 @@ package com.anjantek.controls.sliders.supportClasses
 		[SkinPart(required="false")]
 		public var track: Button;
 		
-		[SkinPart(required="false", type="spark.components.Button")]
+		[SkinPart(required="false", type="com.anjantek.controls.sliders.components.supportClasses.SliderTrackHighlight")]
 		public var trackHighlight: IFactory;
 		
 		[SkinPart(required="false", type="spark.components.Group")]
@@ -124,7 +124,7 @@ package com.anjantek.controls.sliders.supportClasses
 		private var keyDownOnThumb: Boolean = false;
 		
 		private var thumbs: Vector.<SliderThumb>;
-		private var trackHighlightButtons: Vector.<Button>;
+		private var trackHighlightButtons: Vector.<SliderTrackHighlight>;
 		private var markerComponents: Vector.<SliderMarker>;
 		
 		private var focusedThumbIndex: uint = 0;
@@ -137,7 +137,7 @@ package com.anjantek.controls.sliders.supportClasses
 			super();
 			
 			thumbs = new Vector.<SliderThumb>();
-			trackHighlightButtons = new Vector.<Button>();
+			trackHighlightButtons = new Vector.<SliderTrackHighlight>();
 			markerComponents = new Vector.<SliderMarker>();
 			
 			if(!newMinimum)
@@ -413,13 +413,12 @@ package com.anjantek.controls.sliders.supportClasses
 			}
 			else if(partName == "trackHighlight")
 			{
-				var instance_track_highlight: Button = Button( instance );
-				instance_track_highlight.focusEnabled = false;
-				instance_track_highlight.addEventListener(ResizeEvent.RESIZE, trackHighLight_resizeHandler);
+				var instance_track_highlight: SliderTrackHighlight = SliderTrackHighlight( instance );
+				instance_track_highlight.addEventListener(ResizeEvent.RESIZE, trackHighlight_resizeHandler);
 				
 				// track is only clickable if in mouse interactionMode
 				if (getStyle("interactionMode") == InteractionMode.MOUSE)
-					instance_track_highlight.addEventListener(MouseEvent.MOUSE_DOWN, trackHighLight_mouseDownHandler);
+					instance_track_highlight.addEventListener(MouseEvent.MOUSE_DOWN, trackHighlight_mouseDownHandler);
 			}
 		}
 		
@@ -446,9 +445,9 @@ package com.anjantek.controls.sliders.supportClasses
 			}
 			else if(partName == "trackHighlight")
 			{
-				var instance_track_highlight: Button = Button( instance );
-				instance_track_highlight.removeEventListener(MouseEvent.MOUSE_DOWN, trackHighLight_mouseDownHandler);
-				instance_track_highlight.removeEventListener(ResizeEvent.RESIZE, trackHighLight_resizeHandler);
+				var instance_track_highlight: SliderTrackHighlight = SliderTrackHighlight( instance );
+				instance_track_highlight.removeEventListener(MouseEvent.MOUSE_DOWN, trackHighlight_mouseDownHandler);
+				instance_track_highlight.removeEventListener(ResizeEvent.RESIZE, trackHighlight_resizeHandler);
 			}
 		}
 		
@@ -529,7 +528,7 @@ package com.anjantek.controls.sliders.supportClasses
 			
 			if( showTrackHighlightChanged )
 			{
-				for each( var track_highlight: Button in trackHighlightButtons )
+				for each( var track_highlight: SliderTrackHighlight in trackHighlightButtons )
 				{
 					track_highlight.visible = _showTrackHighlight;
 				}
@@ -549,8 +548,11 @@ package com.anjantek.controls.sliders.supportClasses
 			
 			if( markersChanged )
 			{
-				removeAllMarkers();
-				createMarkersFrom( _markers );
+				if( contentGroupMarker && marker )
+				{
+					removeAllMarkers();
+					createMarkersFrom( _markers );
+				}
 				
 				markersChanged = false;
 			}
@@ -600,12 +602,12 @@ package com.anjantek.controls.sliders.supportClasses
 		{
 			for(var index: int = 0; index < array_thumb_values.length; index++)
 			{
-				var track_highlight: Button = Button( createDynamicPartInstance("trackHighlight") );
+				var track_highlight: SliderTrackHighlight = SliderTrackHighlight( createDynamicPartInstance("trackHighlight") );
 				
 				if( ! track_highlight )
 				{
 					throw new ArgumentError("Track highlight part must be of type " +
-						getQualifiedClassName(Button));
+						getQualifiedClassName(SliderTrackHighlight));
 				}
 				
 				trackHighlightButtons.push( track_highlight );
@@ -628,7 +630,7 @@ package com.anjantek.controls.sliders.supportClasses
 			if( trackHighlightButtons.length < (index + 1) )
 				return;
 			
-			var track_highlight: Button = trackHighlightButtons[ index ];
+			var track_highlight: SliderTrackHighlight = trackHighlightButtons[ index ];
 			
 			if( !_thumb || !track || !track_highlight )
 				return;
@@ -692,7 +694,7 @@ package com.anjantek.controls.sliders.supportClasses
 		
 		private function updateTrackHighlightColor( index: Number ): void
 		{
-			var track_highlight: Button = trackHighlightButtons[ index ];
+			var track_highlight: SliderTrackHighlight = trackHighlightButtons[ index ];
 			
 			if( !track_highlight )
 				return;
@@ -746,7 +748,7 @@ package com.anjantek.controls.sliders.supportClasses
 		
 		private function removeAllTrackHighlights(): void
 		{
-			for each( var track_hl: Button in trackHighlightButtons )
+			for each( var track_hl: SliderTrackHighlight in trackHighlightButtons )
 			{
 				removeDynamicPartInstance( "trackHighlight", track_hl );
 				contentGroupHighlight.removeElement( track_hl );
@@ -1015,9 +1017,9 @@ package com.anjantek.controls.sliders.supportClasses
 		/**
 		 *  @private
 		 */
-		private function trackHighLight_resizeHandler(event:Event):void
+		private function trackHighlight_resizeHandler(event:Event):void
 		{
-			var track_highlight: Button = Button( event.currentTarget );
+			var track_highlight: SliderTrackHighlight = SliderTrackHighlight( event.currentTarget );
 			var index: Number = trackHighlightButtons.indexOf( track_highlight );
 			updateTrackHighlightDisplay( index );
 		}
@@ -1031,7 +1033,7 @@ package com.anjantek.controls.sliders.supportClasses
 		 *  move the thumb to the correct location as well as
 		 *  commit the value.
 		 */
-		protected function trackHighLight_mouseDownHandler(event:MouseEvent):void
+		protected function trackHighlight_mouseDownHandler(event:MouseEvent):void
 		{
 			trackMouseDownHandler(event);
 		}

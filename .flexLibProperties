@@ -10,6 +10,7 @@
     <classEntry path="com.anjantek.controls.sliders.supportClasses.SliderMarker"/>
     <classEntry path="com.anjantek.controls.sliders.supportClasses.SliderThumbBase"/>
     <classEntry path="com.anjantek.controls.sliders.skins.SliderTrackHighlightSkin"/>
+    <classEntry path="com.anjantek.controls.sliders.supportClasses.SliderTrackHighlight"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
