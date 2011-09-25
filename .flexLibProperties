@@ -11,6 +11,7 @@
     <classEntry path="com.anjantek.controls.sliders.supportClasses.SliderThumbBase"/>
     <classEntry path="com.anjantek.controls.sliders.skins.SliderTrackHighlightSkin"/>
     <classEntry path="com.anjantek.controls.sliders.supportClasses.SliderTrackHighlight"/>
+    <classEntry path="com.anjantek.controls.sliders.events.ThumbEvent"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

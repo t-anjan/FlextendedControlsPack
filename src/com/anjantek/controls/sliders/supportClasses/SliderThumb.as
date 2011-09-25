@@ -24,6 +24,7 @@
 
 package com.anjantek.controls.sliders.supportClasses
 {
+	import com.anjantek.controls.sliders.events.ThumbEvent;
 	import com.anjantek.controls.sliders.events.ThumbKeyEvent;
 	import com.anjantek.controls.sliders.events.ThumbMouseEvent;
 	import com.anjantek.controls.sliders.interfaces.ISliderThumbAnimation;
@@ -277,6 +278,14 @@ package com.anjantek.controls.sliders.supportClasses
 				
 				updateLabel();
 			}
+			else if( partName == "removeThumb" )
+			{
+				removeThumb.addEventListener( MouseEvent.CLICK, removeThumb_clickHandler );
+			}
+			else if( partName == "addThumb" )
+			{
+				addThumb.addEventListener( MouseEvent.CLICK, addThumb_clickHandler );
+			}
 		}
 		
 		//-------------------------------------------------------------------------------------------------
@@ -291,6 +300,14 @@ package com.anjantek.controls.sliders.supportClasses
 			{
 				systemManager.toolTipChildren.removeChild(DisplayObject(instance));
 				dataTipInstance = null;
+			}
+			else if( partName == "removeThumb" )
+			{
+				removeThumb.removeEventListener( MouseEvent.CLICK, removeThumb_clickHandler );
+			}
+			else if( partName == "addThumb" )
+			{
+				addThumb.removeEventListener( MouseEvent.CLICK, addThumb_clickHandler );
 			}
 		}
 		
@@ -388,6 +405,22 @@ package com.anjantek.controls.sliders.supportClasses
 		private function rollOutHandler( event: MouseEvent ): void
 		{
 			hovered = false;
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		private function removeThumb_clickHandler( event: MouseEvent ): void
+		{
+			var remove_thumb_clicked_event: ThumbEvent = new ThumbEvent( ThumbEvent.REMOVE_THUMB_CLICKED );
+			this.dispatchEvent( remove_thumb_clicked_event );
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		private function addThumb_clickHandler( event: MouseEvent ): void
+		{
+			var add_thumb_clicked_event: ThumbEvent = new ThumbEvent( ThumbEvent.ADD_THUMB_CLICKED );
+			this.dispatchEvent( add_thumb_clicked_event );
 		}
 		
 		//---------------------------------- MOUSE EVENTS - END ---------------------------------------------------------------

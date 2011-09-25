@@ -24,6 +24,7 @@
 
 package com.anjantek.controls.sliders.supportClasses
 {
+	import com.anjantek.controls.sliders.events.ThumbEvent;
 	import com.anjantek.controls.sliders.events.ThumbKeyEvent;
 	import com.anjantek.controls.sliders.events.ThumbMouseEvent;
 	import com.anjantek.controls.sliders.interfaces.IValueBounding;
@@ -35,11 +36,13 @@ package com.anjantek.controls.sliders.supportClasses
 	import flash.geom.Point;
 	import flash.utils.getQualifiedClassName;
 	
+	import mx.controls.Alert;
 	import mx.core.IFactory;
 	import mx.core.IVisualElement;
 	import mx.core.InteractionMode;
 	import mx.events.FlexEvent;
 	import mx.events.ResizeEvent;
+	import mx.utils.ObjectUtil;
 	
 	import spark.components.Button;
 	import spark.components.Group;
@@ -402,6 +405,8 @@ package com.anjantek.controls.sliders.supportClasses
 				instance_thumb.addEventListener(ThumbMouseEvent.PRESS, thumbPressHandler);
 				instance_thumb.addEventListener(ThumbKeyEvent.KEY_DOWN, thumbKeyDownHandler);
 				instance_thumb.addEventListener(FlexEvent.VALUE_COMMIT, thumbValueCommitHandler);
+				instance_thumb.addEventListener(ThumbEvent.ADD_THUMB_CLICKED, addThumb_clickHandler);
+				instance_thumb.addEventListener(ThumbEvent.REMOVE_THUMB_CLICKED, removeThumb_clickHandler);
 				
 				instance_thumb.focusEnabled = true;
 			}
@@ -430,12 +435,14 @@ package com.anjantek.controls.sliders.supportClasses
 			
 			if(partName == "thumb")
 			{
-				var thumb: SliderThumb = SliderThumb(instance);
+				var instance_thumb: SliderThumb = SliderThumb(instance);
 				
-				thumb.removeEventListener(MouseEvent.MOUSE_DOWN, thumbMouseDownHandler);
-				thumb.removeEventListener(ThumbMouseEvent.PRESS, thumbPressHandler);
-				thumb.removeEventListener(ThumbKeyEvent.KEY_DOWN, thumbKeyDownHandler);
-				thumb.removeEventListener(FlexEvent.VALUE_COMMIT, thumbValueCommitHandler);
+				instance_thumb.removeEventListener(MouseEvent.MOUSE_DOWN, thumbMouseDownHandler);
+				instance_thumb.removeEventListener(ThumbMouseEvent.PRESS, thumbPressHandler);
+				instance_thumb.removeEventListener(ThumbKeyEvent.KEY_DOWN, thumbKeyDownHandler);
+				instance_thumb.removeEventListener(FlexEvent.VALUE_COMMIT, thumbValueCommitHandler);
+				instance_thumb.removeEventListener(ThumbEvent.ADD_THUMB_CLICKED, addThumb_clickHandler);
+				instance_thumb.removeEventListener(ThumbEvent.REMOVE_THUMB_CLICKED, removeThumb_clickHandler);
 			}
 			else if(partName == "track")
 			{
@@ -1008,6 +1015,139 @@ package com.anjantek.controls.sliders.supportClasses
 			animating = false;   
 			
 			dispatchChangeEnd();
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		private function addThumb_clickHandler( event: ThumbEvent ): void
+		{
+			const thumb_component: SliderThumb = SliderThumb( event.currentTarget );
+			var current_value: Number = thumb_component.value;
+			var local_values: Array = ObjectUtil.copy( values.sort( Array.NUMERIC ) ) as Array;
+			const index_current_value: Number = local_values.indexOf( current_value );
+			var next_value: Number = local_values[ index_current_value + 1 ];
+			var gap_between_values: Number = next_value - current_value;
+			var new_value: Number;
+			
+			// The difference between the current and next values should be greater than
+			// the snapInterval. Only then, we can insert another value between them.
+			// NOTE: It is NOT enough if the gap is exactly the snapInterval, because we 
+			// are inserting a new thumb in this gap.
+			// Contrastingly, in all other checks below, for all the other values, we are satisfied with
+			// a gap of snapInterval, because we are not inserting a thumb in those gaps.
+			if( gap_between_values <= snapInterval )
+			{
+				// 1. Increment the next_value by snapInterval.
+				// 2. Make sure that the new next_value and the value after it are separated
+				// by at least snapInterval.
+				// 3. If not, repeat (from step 1) for the value after the new next_value.
+				
+				next_value += snapInterval;
+				
+				if( next_value > maximum )
+					next_value = maximum;
+				
+				local_values[ index_current_value + 1 ] = next_value;
+				
+				var successfully_spread: Boolean = false;
+				
+				for( var i: Number = index_current_value + 1 ; i <=  local_values.length - 1 ; i++ )
+				{
+					var i_value: Number = local_values[ i ];
+					var i_plus_one_value: Number = ( i == local_values.length - 1 ) ? maximum : local_values[ i + 1 ];
+					
+					// We are satisfied if the gap is at least snapInterval.
+					if( i_plus_one_value - i_value >= snapInterval )
+					{
+						successfully_spread = true;
+						break;
+					}
+					else if( i == local_values.length - 1 )
+					{
+						successfully_spread = false;
+						break;
+					}
+					else
+					{
+						i_plus_one_value += snapInterval;
+						
+						if( i_plus_one_value > maximum )
+							i_plus_one_value = maximum;
+						
+						local_values[ i + 1 ] = i_plus_one_value;
+					}
+				}
+				
+				if( ! successfully_spread )
+				{
+					// Try spreading in the other direction.
+					local_values = ObjectUtil.copy( values.sort( Array.NUMERIC ) ) as Array;
+					
+					current_value -= snapInterval;
+					
+					if( current_value < minimum )
+						current_value = minimum;
+					
+					local_values[ index_current_value ] = current_value;
+					
+					
+					for( var j: Number = index_current_value ; j >= 0 ; j-- )
+					{
+						var j_value: Number = local_values[ j ];
+						var j_minus_one_value: Number = ( 0 == j ) ? minimum : local_values[ j - 1 ];
+						
+						// We are satisfied if the gap is at least snapInterval.
+						if( j_value - j_minus_one_value >= snapInterval )
+						{
+							successfully_spread = true;
+							break;
+						}
+						else if( 0 == j )
+						{
+							successfully_spread = false;
+							break;
+						}
+						else
+						{
+							j_minus_one_value -= snapInterval;
+							
+							if( j_minus_one_value < minimum )
+								j_minus_one_value = minimum;
+							
+							local_values[ j - 1 ] = j_minus_one_value;
+						}
+					}
+					
+					if( ! successfully_spread )
+					{
+						trace("Can't insert new thumb because of lack of space.");
+						Alert.show( "Sorry, no space for a new thumb!", "You have run out of thumbs!" );
+						return;
+					}
+				}
+			}
+			
+			current_value = local_values[ index_current_value ];
+			next_value = local_values[ index_current_value + 1 ];
+			gap_between_values = next_value - current_value;
+			
+			// The new value should be equi-distant between the two values.
+			new_value = current_value + Math.round( gap_between_values / 2 );
+			
+			local_values.push( new_value );
+			values = local_values.sort( Array.NUMERIC );
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		private function removeThumb_clickHandler( event: ThumbEvent ): void
+		{
+			const thumb_component: SliderThumb = SliderThumb( event.currentTarget );
+			const current_value: Number = thumb_component.value;
+			var local_values: Array = ObjectUtil.copy( values.sort( Array.NUMERIC ) ) as Array;
+			const index_current_value: Number = local_values.indexOf( current_value );
+			local_values.splice( index_current_value, 1 );
+			values = local_values.sort( Array.NUMERIC );
 		}
 		
 		//---------------------------------------Thumb Code - End----------------------------------------------------------
