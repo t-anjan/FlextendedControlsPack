@@ -194,62 +194,11 @@ package com.anjantek.controls.sliders.supportClasses
 			invalidateSkinState();
 		}
 		
+		//-------------------------------------------------------------------------------------------------
+		
+		public var dataProviderItem: Object;
+		
 		//------------------------------ PROPERTIES - END -------------------------------------------------------------------
-		
-		//-------------------------------------------------------------------------------------------------
-		
-		public function constrainMinimumTo( thumb: SliderThumb, allowOverlappingThumbs: Boolean = true ): void
-		{
-			if( isValueFixed )
-				return;
-			
-			var nearestGreaterInterval: Number = valueRange.roundToNearestGreaterInterval(thumb.value);
-			
-			if( ! allowOverlappingThumbs )
-				nearestGreaterInterval += snapInterval;
-			
-			minimum = nearestGreaterInterval;
-		}
-		
-		//-------------------------------------------------------------------------------------------------
-		
-		public function constrainMaximumTo( thumb: SliderThumb, allowOverlappingThumbs: Boolean = true ): void
-		{
-			if( isValueFixed )
-				return;
-			
-			var nearestLesserInterval: Number = valueRange.roundToNearestLesserInterval(thumb.value);
-			
-			if( ! allowOverlappingThumbs )
-				nearestLesserInterval -= snapInterval;
-			
-			maximum = nearestLesserInterval;
-		}
-		
-		//-------------------------------------------------------------------------------------------------
-		
-		public function animateMovementTo(value: Number, endHandler: Function): void
-		{
-			var slideDuration: Number = getStyle("slideDuration");
-			
-			animation = new SimpleSliderThumbAnimation(this);
-			animation.play(slideDuration, valueRange.getNearestValidValueTo(value), endHandler);
-		}
-		
-		//-------------------------------------------------------------------------------------------------
-		
-		public function stopAnimation(): void
-		{
-			if(animationIsPlaying)
-				animation.stop();
-		}
-		
-		//-------------------------------------------------------------------------------------------------
-		
-		private function get animationIsPlaying(): Boolean
-		{
-			return animation && animation.isPlaying();
-		}
 		
 		//-------------------------------------------------------------------------------------------------
 		
@@ -309,6 +258,61 @@ package com.anjantek.controls.sliders.supportClasses
 			{
 				addThumb.removeEventListener( MouseEvent.CLICK, addThumb_clickHandler );
 			}
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		public function constrainMinimumTo( thumb: SliderThumb, allowOverlappingThumbs: Boolean = true ): void
+		{
+			if( isValueFixed )
+				return;
+			
+			var nearestGreaterInterval: Number = valueRange.roundToNearestGreaterInterval(thumb.value);
+			
+			if( ! allowOverlappingThumbs )
+				nearestGreaterInterval += snapInterval;
+			
+			minimum = nearestGreaterInterval;
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		public function constrainMaximumTo( thumb: SliderThumb, allowOverlappingThumbs: Boolean = true ): void
+		{
+			if( isValueFixed )
+				return;
+			
+			var nearestLesserInterval: Number = valueRange.roundToNearestLesserInterval(thumb.value);
+			
+			if( ! allowOverlappingThumbs )
+				nearestLesserInterval -= snapInterval;
+			
+			maximum = nearestLesserInterval;
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		public function animateMovementTo(value: Number, endHandler: Function): void
+		{
+			var slideDuration: Number = getStyle("slideDuration");
+			
+			animation = new SimpleSliderThumbAnimation(this);
+			animation.play(slideDuration, valueRange.getNearestValidValueTo(value), endHandler);
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		public function stopAnimation(): void
+		{
+			if(animationIsPlaying)
+				animation.stop();
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		private function get animationIsPlaying(): Boolean
+		{
+			return animation && animation.isPlaying();
 		}
 		
 		//-------------------------------------------------------------------------------------------------
@@ -385,11 +389,6 @@ package com.anjantek.controls.sliders.supportClasses
 			if(dataTipInstance && !animationIsPlaying)
 			{
 				updateDataTip();
-			}
-			
-			if( label && !animationIsPlaying )
-			{
-				updateLabel();
 			}
 		}
 		

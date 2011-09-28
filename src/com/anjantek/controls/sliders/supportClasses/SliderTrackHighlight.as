@@ -52,7 +52,6 @@ package com.anjantek.controls.sliders.supportClasses
 		
 		//------------------------------------PROPERTIES - START-------------------------------------------------------------
 		
-		
 		//----------------------------------
 		//  label
 		//----------------------------------
@@ -78,6 +77,14 @@ package com.anjantek.controls.sliders.supportClasses
 		//-------------------------------------------------------------------------------------------------
 		
 		public var maxLabelLength: Number = 10;
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		public var value: Number;
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		public var dataProviderItem: Object;
 		
 		//-------------------------------------PROPERTIES - END------------------------------------------------------------
 		
@@ -292,7 +299,11 @@ package com.anjantek.controls.sliders.supportClasses
 		protected function finishEditing( save: Boolean = true ): void
 		{
 			if( save )
+			{
 				label = labelEditor.text;
+				var label_change_event: Event = new Event( Event.CHANGE );
+				dispatchEvent( label_change_event );
+			}
 			
 			this.currentState = BASE_STATE;
 		}

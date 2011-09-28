@@ -91,6 +91,9 @@ package com.anjantek.controls.sliders.supportClasses
 			{
 				_value = newValue;
 				
+				if( label )
+					updateLabel();
+				
 				dispatchEvent(new FlexEvent(FlexEvent.VALUE_COMMIT));
 			}
 			
