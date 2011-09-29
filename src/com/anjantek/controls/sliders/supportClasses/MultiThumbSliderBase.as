@@ -1630,20 +1630,6 @@ package com.anjantek.controls.sliders.supportClasses
 			
 			switch (event.kind)
 			{ 
-				/*case CollectionEventKind.ADD: 
-					for( i = 0; i < event.items.length; i++ )
-					{ 
-						
-					}
-					break;
-				
-				case CollectionEventKind.REMOVE: 
-					for( i = 0; i < event.items.length; i++ )
-					{ 
-						
-					}
-					break;*/
-				
 				case CollectionEventKind.UPDATE: 
 					for each( var event_object: * in event.items ) 
 					{ 
@@ -1665,24 +1651,6 @@ package com.anjantek.controls.sliders.supportClasses
 						}
 					}
 					break;
-				
-				/*case CollectionEventKind.RESET: 
-					// Data provider is being reset, clear out the selection
-					if (dataProvider.length == 0)
-					{
-						// Remove everything.
-					}
-					else
-					{
-						dataProviderChanged = true; 
-						invalidateProperties(); 
-					}
-					break;
-				
-				case CollectionEventKind.REFRESH:
-					dataProviderChanged = true; 
-					invalidateProperties(); 
-					break;*/
 				
 				default:
 					reactToDataProviderUpdate();

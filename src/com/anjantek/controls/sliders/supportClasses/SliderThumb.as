@@ -207,8 +207,6 @@ package com.anjantek.controls.sliders.supportClasses
 			if(partName == "button")
 			{
 				button.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
-				this.addEventListener( MouseEvent.ROLL_OVER, rollOverHandler );
-				this.addEventListener( MouseEvent.ROLL_OUT, rollOutHandler );
 			}
 			else if(partName == "dataTip")
 			{
@@ -230,10 +228,22 @@ package com.anjantek.controls.sliders.supportClasses
 			else if( partName == "removeThumb" )
 			{
 				removeThumb.addEventListener( MouseEvent.CLICK, removeThumb_clickHandler );
+				
+				if( ! this.hasEventListener( MouseEvent.ROLL_OVER ) )
+					this.addEventListener( MouseEvent.ROLL_OVER, rollOverHandler );
+				
+				if( ! this.hasEventListener( MouseEvent.ROLL_OUT ) )
+					this.addEventListener( MouseEvent.ROLL_OUT, rollOutHandler );
 			}
 			else if( partName == "addThumb" )
 			{
 				addThumb.addEventListener( MouseEvent.CLICK, addThumb_clickHandler );
+				
+				if( ! this.hasEventListener( MouseEvent.ROLL_OVER ) )
+					this.addEventListener( MouseEvent.ROLL_OVER, rollOverHandler );
+				
+				if( ! this.hasEventListener( MouseEvent.ROLL_OUT ) )
+					this.addEventListener( MouseEvent.ROLL_OUT, rollOutHandler );
 			}
 		}
 		
