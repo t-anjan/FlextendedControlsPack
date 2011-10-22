@@ -24,6 +24,7 @@
 
 package com.anjantek.controls.sliders.supportClasses
 {
+	import com.anjantek.controls.sliders.events.MultiThumbSliderEvent;
 	import com.anjantek.controls.sliders.events.ThumbEvent;
 	import com.anjantek.controls.sliders.events.ThumbKeyEvent;
 	import com.anjantek.controls.sliders.events.ThumbMouseEvent;
@@ -84,6 +85,9 @@ package com.anjantek.controls.sliders.supportClasses
 	 *  @productversion Flex 4
 	 */
 	[Style(name="showTrackHighlight", type="Boolean", inherit="no")]
+	
+	[Event(name="valueChange", type="com.anjantek.controls.sliders.events.MultiThumbSliderEvent")]
+	[Event(name="labelChange", type="com.anjantek.controls.sliders.events.MultiThumbSliderEvent")]
 	
 	public class MultiThumbSliderBase extends SkinnableContainer implements IValueBounding, IValueSnapping
 	{
@@ -1086,6 +1090,8 @@ package com.anjantek.controls.sliders.supportClasses
 			}
 			
 			contentGroup.invalidateDisplayList();
+			
+			dispatchEvent( new MultiThumbSliderEvent( MultiThumbSliderEvent.VALUE_CHANGE ) );
 		}
 		
 		//-------------------------------------------------------------------------------------------------
@@ -1396,6 +1402,8 @@ package com.anjantek.controls.sliders.supportClasses
 			
 			dp_item[ labelField ] = track_highlight.label;
 			dataProvider.itemUpdated( dp_item, labelField );
+			
+			dispatchEvent( new MultiThumbSliderEvent( MultiThumbSliderEvent.LABEL_CHANGE ) );
 		}
 		
 		//-------------------------------------------------------------------------------------------------
