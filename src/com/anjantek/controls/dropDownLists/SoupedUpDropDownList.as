@@ -11,7 +11,6 @@ package com.anjantek.controls.dropDownLists
 	import mx.events.FlexEvent;
 	import mx.events.StateChangeEvent;
 	import mx.states.State;
-	import mx.utils.ObjectUtil;
 	
 	import spark.components.DropDownList;
 	import spark.components.supportClasses.ButtonBase;

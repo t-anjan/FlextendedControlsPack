@@ -88,6 +88,8 @@ package com.anjantek.controls.sliders.supportClasses
 	
 	[Event(name="valueChange", type="com.anjantek.controls.sliders.events.MultiThumbSliderEvent")]
 	[Event(name="labelChange", type="com.anjantek.controls.sliders.events.MultiThumbSliderEvent")]
+	[Event(name="thumbAdded", type="com.anjantek.controls.sliders.events.MultiThumbSliderEvent")]
+	[Event(name="thumbRemoved", type="com.anjantek.controls.sliders.events.MultiThumbSliderEvent")]
 	
 	public class MultiThumbSliderBase extends SkinnableContainer implements IValueBounding, IValueSnapping
 	{
@@ -356,6 +358,20 @@ package com.anjantek.controls.sliders.supportClasses
 			_showTrackHighlight = show;
 			showTrackHighlightChanged = true;
 			invalidateProperties();
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		private var _defaultTrackHighlightLabel: String = "Label";
+		
+		public function get defaultTrackHighlightLabel():String
+		{
+			return _defaultTrackHighlightLabel;
+		}
+		
+		public function set defaultTrackHighlightLabel( value: String ):void
+		{
+			_defaultTrackHighlightLabel = value;
 		}
 		
 		//-------------------------------------------------------------------------------------------------
@@ -724,7 +740,7 @@ package com.anjantek.controls.sliders.supportClasses
 		
 		//-------------------------------------------------------------------------------------------------
 		
-		public function addThumbAt( dp_item: Object ): void
+		private function addThumbAt( dp_item: Object ): void
 		{
 			var thumb_component: SliderThumb = SliderThumb( createDynamicPartInstance("thumb") );
 			
@@ -892,6 +908,11 @@ package com.anjantek.controls.sliders.supportClasses
 			
 			if( dp_item.hasOwnProperty( labelField ) && dp_item[ labelField ] is String )
 				track_highlight.label = String( dp_item[ labelField ] );
+			else
+			{
+				dp_item[ labelField ] = defaultTrackHighlightLabel;
+				track_highlight.label = defaultTrackHighlightLabel;
+			}
 		}
 		
 		//-------------------------------------------------------------------------------------------------
@@ -944,7 +965,7 @@ package com.anjantek.controls.sliders.supportClasses
 		
 		//-------------------------------------------------------------------------------------------------
 		
-		public function removeThumb( thumb_instance: SliderThumb ): void
+		private function removeThumb( thumb_instance: SliderThumb ): void
 		{
 			removeDynamicPartInstance( "thumb", thumb_instance );
 			removeElement( thumb_instance );
@@ -1360,9 +1381,14 @@ package com.anjantek.controls.sliders.supportClasses
 			// The new value should be equi-distant between the two values.
 			new_value = current_value + Math.round( gap_between_values / 2 );
 			
-			var new_dp_item: Object = { value: new_value };
+			var new_dp_item: Object = new Object();
+			new_dp_item[ valueField ] = new_value;
+			new_dp_item[ labelField ] = defaultTrackHighlightLabel;
 			local_data_provider.addItem( new_dp_item );
 			dataProvider = local_data_provider;
+			
+			var thumb_added_event: MultiThumbSliderEvent = new MultiThumbSliderEvent( MultiThumbSliderEvent.THUMB_ADDED, new_dp_item );
+			dispatchEvent( thumb_added_event );
 		}
 		
 		//-------------------------------------------------------------------------------------------------
@@ -1370,7 +1396,14 @@ package com.anjantek.controls.sliders.supportClasses
 		private function removeThumb_clickHandler( event: ThumbEvent ): void
 		{
 			const thumb_component: SliderThumb = SliderThumb( event.currentTarget );
+			
+			// Make a copy of the thumb's DP item so it can be sent with the dispatched event.
+			var data_provider_item: Object = ObjectUtil.copy( thumb_component.dataProviderItem );
+			
 			dataProvider.removeItemAt( dataProvider.getItemIndex( thumb_component.dataProviderItem ) );
+			
+			var thumb_removed_event: MultiThumbSliderEvent = new MultiThumbSliderEvent( MultiThumbSliderEvent.THUMB_REMOVED, data_provider_item );
+			dispatchEvent( thumb_removed_event );
 		}
 		
 		//-------------------------------------------------------------------------------------------------
@@ -1537,6 +1570,30 @@ package com.anjantek.controls.sliders.supportClasses
 		
 		//-------------------------------------------------------------------------------------------------
 		
+		private function removeValuesOutOfBounds(): void
+		{
+			var items_out_of_bounds: ArrayCollection = new ArrayCollection();
+			
+			for each( var dp_item: Object in dataProvider )
+			{
+				if( dp_item.hasOwnProperty( valueField ) && dp_item[ valueField ] is Number )
+				{
+					const _value: Number = Number( dp_item[ valueField ] );
+					
+					if( _value < minimum || _value > maximum )
+						items_out_of_bounds.addItem( dp_item );
+				}
+			}
+			
+			// Remove items out of bounds.
+			for each( var item_out_of_bounds: Object in items_out_of_bounds )
+			{
+				dataProvider.removeItemAt( dataProvider.getItemIndex( item_out_of_bounds ) );
+			}
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
 		private function getValuesFromDataProvider(): Vector.<Number>
 		{
 			var thumbValues: Vector.<Number> = new Vector.<Number>();
@@ -1558,9 +1615,18 @@ package com.anjantek.controls.sliders.supportClasses
 			
 			for each( var dp_item: Object in dataProvider )
 			{
-				if( dp_item.hasOwnProperty( fixedValueField ) &&
-					dp_item[ fixedValueField ] is Boolean &&
-					dp_item.hasOwnProperty( valueField ) && 
+				if( ! dp_item.hasOwnProperty( fixedValueField ) ||
+					( 
+						dp_item.hasOwnProperty( fixedValueField ) &&
+						! (dp_item[ fixedValueField ] is Boolean)
+					))
+				{
+					dp_item[ fixedValueField ] = false;
+					continue;
+				}
+				
+				// If we reach this point, dp_item[ fixedValueField ] definitely exists.
+				if( dp_item.hasOwnProperty( valueField ) && 
 					dp_item[ valueField ] is Number )
 				{
 					var is_fixed_value: Boolean = Boolean( dp_item[ fixedValueField ] );
@@ -1583,6 +1649,7 @@ package com.anjantek.controls.sliders.supportClasses
 			if( ! allowDuplicateValues )
 				removeDataProviderDuplicateValues();
 			
+			removeValuesOutOfBounds();
 			newValues = getValuesFromDataProvider();
 			newFixedValues = getFixedValuesFromDataProvider();
 		}
@@ -1634,6 +1701,12 @@ package com.anjantek.controls.sliders.supportClasses
 		 */
 		protected function dataProvider_collectionChangeHandler( event: CollectionEvent ):void
 		{
+			// We need to temporarily disable the listener because in this handler we may make some updates to the
+			// dataProvider (in "reactToDataProviderUpdate") which will further call the same events. It goes into
+			// an endless loop. We will add the listener again at the end of this handler function.
+			if (dataProvider)
+				dataProvider.removeEventListener( CollectionEvent.COLLECTION_CHANGE, dataProvider_collectionChangeHandler );
+			
 			var i: uint;
 			
 			switch (event.kind)
@@ -1665,6 +1738,9 @@ package com.anjantek.controls.sliders.supportClasses
 					dataProviderChanged = true;
 					invalidateProperties();
 			}
+			
+			if (dataProvider)
+				dataProvider.addEventListener( CollectionEvent.COLLECTION_CHANGE, dataProvider_collectionChangeHandler );
 		}
 		
 		//-------------------------------------------------------------------------------------------------

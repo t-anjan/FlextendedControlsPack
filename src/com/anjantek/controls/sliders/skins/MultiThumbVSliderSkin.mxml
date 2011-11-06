@@ -24,15 +24,15 @@
 	
 	<fx:Declarations>
 		<fx:Component id="thumb">
-			<supportClasses:SliderThumb skinClass="com.anjantek.controls.sliders.skins.SliderThumbSkin" />
+			<supportClasses:SliderThumb skinClass="com.anjantek.controls.sliders.skins.thumb.SliderBigThumbSkin" />
 		</fx:Component>
 		
 		<fx:Component id="marker">
-			<supportClasses:SliderMarker skinClass="com.anjantek.controls.sliders.skins.SliderMarkerSkin" />
+			<supportClasses:SliderMarker skinClass="com.anjantek.controls.sliders.skins.marker.SliderBigMarkerSkin" />
 		</fx:Component>
 		
 		<fx:Component id="trackHighlight">
-			<s:Button skinClass="com.anjantek.controls.sliders.skins.SliderTrackHighlightSkin"
+			<s:Button skinClass="com.anjantek.controls.sliders.skins.track.HSliderWideTrackHighlightSkin"
 					  left="0" right="0" top="0" bottom="0"/>
 		</fx:Component>
 	</fx:Declarations>

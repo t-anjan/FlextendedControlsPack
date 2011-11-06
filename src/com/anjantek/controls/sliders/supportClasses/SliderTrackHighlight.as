@@ -276,9 +276,12 @@ package com.anjantek.controls.sliders.supportClasses
 		 */
 		private function systemManager_mouseUpHandler(event:Event):void
 		{
-			// If the target is the editor, do nothing.
-			if (event.target == labelEditor.textDisplay)
+			// If the target is the editor or if the target's parent is the editor, do nothing.
+			if (event.target == labelEditor.textDisplay || 
+				event.target.parent == labelEditor.textDisplay)
+			{
 				return;
+			}
 			
 			finishEditing();
 		}

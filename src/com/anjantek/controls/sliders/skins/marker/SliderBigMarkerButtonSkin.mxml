@@ -20,8 +20,11 @@ in accordance with the terms of the license agreement accompanying it.
 @playerversion AIR 1.5
 @productversion Flex 4
 -->
-<s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
-			 xmlns:fb="http://ns.adobe.com/flashbuilder/2009">
+<s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009"
+			 xmlns:s="library://ns.adobe.com/flex/spark"
+			 xmlns:fb="http://ns.adobe.com/flashbuilder/2009"
+			 alpha.disabled="0.5"
+			 width="20" height="40">
 	
 	<fx:Metadata>
 		<![CDATA[ 
@@ -51,7 +54,12 @@ in accordance with the terms of the license agreement accompanying it.
 	</s:states>
 	
 	<!-- drop shadow -->
-	<s:Rect left="-2" top="-2" right="-2" bottom="-2" radiusX="8.5" radiusY="8.5">
+	<s:Path data="M 10 -1
+			L 21 20
+			V 41
+			H -1
+			V 20
+			Z" >
 		<s:stroke>
 			<s:LinearGradientStroke rotation="90" weight="1">
 				<s:GradientEntry color="0x000000" alpha="0" />
@@ -59,58 +67,72 @@ in accordance with the terms of the license agreement accompanying it.
 				<s:GradientEntry color="0x000000" alpha="0.03"/>
 			</s:LinearGradientStroke>
 		</s:stroke>
-	</s:Rect>
-	<s:Rect left="-1" top="-1" right="-1" bottom="-1" radiusX="7.5" radiusY="7.5">
+	</s:Path>
+	<s:Path data="M 10 -0.5
+			L 20.5 20
+			V 40.5
+			H -0.5
+			V 20
+			Z" >
 		<s:stroke>
 			<s:LinearGradientStroke rotation="90" weight="1">
 				<s:GradientEntry color="0x000000" alpha="0.011" />
 				<s:GradientEntry color="0x000000" alpha="0.121" />
 			</s:LinearGradientStroke>
 		</s:stroke>
-	</s:Rect>
+	</s:Path>
 	
 	<!-- border -->
-	<s:Rect left="0" right="0" top="0" bottom="0" radiusX="7" radiusY="7">
+	<s:Path data="M 10 0
+			L 20 20
+			V 40
+			H 0
+			V 20
+			Z" >
 		<s:fill>
-			<s:SolidColor color="0x4F4F4F"  />
+			<s:SolidColor color="0xD74660"  />
 		</s:fill>
-	</s:Rect>
+	</s:Path>
 	
 	<!-- fill -->
-	<s:Rect left="0.5" right="0.5" top="0.5" bottom="0.5" radiusX="6" radiusY="6">
+	<s:Path data="M 10 0.5
+			L 19.5 20
+			V 39.5
+			H 0.5
+			V 20
+			Z" >
 		<s:stroke>
 			<s:LinearGradientStroke rotation="90" weight="1">
-				<s:GradientEntry color="0x000000" alpha="0" />
-				<s:GradientEntry color="0x000000" alpha="0.33" />
+				<s:GradientEntry color="0x131313" />
+				<s:GradientEntry color="0x333333" />
 			</s:LinearGradientStroke>
 		</s:stroke>
 		<s:fill>
 			<s:LinearGradient rotation="90">
-				<s:GradientEntry color="0xFFFFFF" 
-								 color.over="0xE5E5E5"
-								 color.down="0x999999" />
-				<s:GradientEntry color="0xD8D8D8" 
-								 color.over="0x7D7D7D"
-								 color.down="0x555555" />
+				<s:GradientEntry color="0xFCFCFC" 
+								 color.over="0xBBBBBB"
+								 color.down="0x606060" />
+				<s:GradientEntry color="0xAAAAAA" 
+								 color.over="0x9B9B9B"
+								 color.down="0x272727" />
 			</s:LinearGradient>
 		</s:fill>
-	</s:Rect>
+	</s:Path>
 	
 	<!-- highlight -->
-	<s:Rect left="1" right="1" top="1" bottom="1" radiusX="6" radiusY="6">
+	<s:Path data="M 10 1
+			L 19 20
+			V 39
+			H 1
+			V 20
+			Z" >
 		<s:fill>
 			<s:LinearGradient rotation="90">
-				<s:GradientEntry color="0xFFFFFF" alpha.over="0" alpha.down="0" />
-				<s:GradientEntry color="0xFFFFFF" alpha="0" />
-				<s:GradientEntry color="0xFFFFFF" alpha="0" />
+				<s:GradientEntry color="0xFFFFFF" alpha.down="0" />
+				<s:GradientEntry color="0xFFFFFF" alpha.up="0" alpha.down="0.2" alpha.over="0" />
+				<s:GradientEntry color="0xFFFFFF" alpha.down="0.6" alpha.over="0" />
 			</s:LinearGradient>
 		</s:fill>
-	</s:Rect>
-	<s:Rect left="4" top="1" right="4" height="1">
-		<s:fill>
-			<s:SolidColor color="0xFFFFFF" 
-						  color.down="0x939393"
-						  alpha.over="0.22" />
-		</s:fill>
-	</s:Rect>
+	</s:Path>
+	
 </s:SparkSkin>

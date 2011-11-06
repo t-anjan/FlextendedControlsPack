@@ -3,7 +3,7 @@
 									 xmlns:s="library://ns.adobe.com/flex/spark" 
 									 xmlns:mx="library://ns.adobe.com/flex/mx" 
 									 xmlns:supportClasses="com.anjantek.controls.sliders.supportClasses.*"
-									 skinClass="com.anjantek.controls.sliders.skins.MultiThumbHSliderSkin"
+									 skinClass="com.anjantek.controls.sliders.skins.MultiThumbHSliderWideSkin"
 									 dataTipOffsetX="0" dataTipOffsetY="-25">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
