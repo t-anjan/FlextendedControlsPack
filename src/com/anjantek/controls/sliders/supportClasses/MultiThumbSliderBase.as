@@ -1144,7 +1144,7 @@ package com.anjantek.controls.sliders.supportClasses
 			{
 				_thumb = getThumbAtValue( newValues[ index_of_value - 1 ] );
 				// If the thumb is a fixed_value thumb, then the constraints should not be messed with.
-				if( ! _thumb.isValueFixed )
+				if( _thumb && ! _thumb.isValueFixed )
 					_thumb.constrainMaximumTo( thumb_component, allowDuplicateValues );
 			}
 			
@@ -1152,7 +1152,7 @@ package com.anjantek.controls.sliders.supportClasses
 			{
 				_thumb = getThumbAtValue( newValues[ index_of_value + 1 ] );
 				// If the thumb is a fixed_value thumb, then the constraints should not be messed with.
-				if( ! _thumb.isValueFixed )
+				if( _thumb && ! _thumb.isValueFixed )
 					_thumb.constrainMinimumTo( thumb_component, allowDuplicateValues );
 			}
 		}
