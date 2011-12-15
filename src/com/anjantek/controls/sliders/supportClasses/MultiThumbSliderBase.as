@@ -528,7 +528,7 @@ package com.anjantek.controls.sliders.supportClasses
 		
 		//-------------------------------------------------------------------------------------------------
 		
-		private function creationCompleteHandler( event: FlexEvent ): void
+		protected function creationCompleteHandler( event: FlexEvent ): void
 		{
 			// When the track highlights are created on initialization, the position and dimensions are set wrong
 			// because the dimensions of the "track" component itself are not yet finalized. So, re-calculating the properties of the
@@ -572,7 +572,7 @@ package com.anjantek.controls.sliders.supportClasses
 			{
 				var instance_track_highlight: SliderTrackHighlight = SliderTrackHighlight( instance );
 				instance_track_highlight.addEventListener(ResizeEvent.RESIZE, trackHighlight_resizeHandler);
-				instance_track_highlight.addEventListener( Event.CHANGE, trackHighlight_labelChangeHandler);
+				instance_track_highlight.addEventListener( Event.CHANGE, trackHighlight_changeHandler);
 				
 				// track is only clickable if in mouse interactionMode
 				if (getStyle("interactionMode") == InteractionMode.MOUSE)
@@ -607,6 +607,7 @@ package com.anjantek.controls.sliders.supportClasses
 			{
 				var instance_track_highlight: SliderTrackHighlight = SliderTrackHighlight( instance );
 				instance_track_highlight.removeEventListener(MouseEvent.MOUSE_DOWN, trackHighlight_mouseDownHandler);
+				instance_track_highlight.removeEventListener( Event.CHANGE, trackHighlight_changeHandler);
 				instance_track_highlight.removeEventListener(ResizeEvent.RESIZE, trackHighlight_resizeHandler);
 			}
 		}
@@ -837,7 +838,7 @@ package com.anjantek.controls.sliders.supportClasses
 		//-------------------------------------------------------------------------------------------------
 		
 		/**
-		 *  @private
+		 *  @protected
 		 */
 		protected function updateTrackHighlightDisplay( track_highlight: SliderTrackHighlight ):void
 		{
@@ -917,7 +918,7 @@ package com.anjantek.controls.sliders.supportClasses
 		
 		//-------------------------------------------------------------------------------------------------
 		
-		private function updateTrackHighlightColor( track_highlight: SliderTrackHighlight, index_of_dp_value: Number ): void
+		protected function updateTrackHighlightColor( track_highlight: SliderTrackHighlight, index_of_dp_value: Number ): void
 		{
 			if( !track_highlight )
 				return;
@@ -1428,7 +1429,7 @@ package com.anjantek.controls.sliders.supportClasses
 		
 		//-------------------------------------------------------------------------------------------------
 		
-		private function trackHighlight_labelChangeHandler( event: Event ): void
+		protected function trackHighlight_changeHandler( event: Event ): void
 		{
 			var track_highlight: SliderTrackHighlight = SliderTrackHighlight( event.currentTarget );
 			var dp_item: Object = track_highlight.dataProviderItem;

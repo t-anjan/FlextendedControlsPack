@@ -58,9 +58,9 @@
 	</fx:Script>
     
     <s:states>
-        <s:State name="disabled" stateGroups="displayGroup" />
-		<s:State name="base" stateGroups="displayGroup" />
-		<s:State name="edit" stateGroups="editGroup" />
+        <s:State name="disabled" />
+		<s:State name="base" />
+		<s:State name="edit" />
     </s:states>
 
     <!-- fill -->
@@ -75,22 +75,13 @@
         </s:fill>
     </s:Rect>
 	
-	
-	<s:Label id="labelDisplay"
-			 textAlign="center"
-			 maxDisplayedLines="1"
-			 fontWeight="bold" fontSize="14"
-			 horizontalCenter="0"
-			 bottom="-18"
-			 visible.editGroup="false">
-	</s:Label>
-	
 	<s:TextInput id="labelEditor"
+				 borderVisible="false" borderVisible.edit="true"
+				 editable="false" editable.edit="true"
 				 textAlign="center" width="135"
-				 horizontalCenter="0.5"
+				 horizontalCenter="0"
 				 fontWeight="bold" fontSize="14"
-				 bottom="-22"
-				 visible.displayGroup="false"/>
+				 bottom="-22" bottom.edit="-23"/>
 	
     <!-- hit area -->
     <s:Rect left="0" right="0" top="0" bottom="0">

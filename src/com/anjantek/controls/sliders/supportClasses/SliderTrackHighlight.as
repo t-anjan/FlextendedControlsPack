@@ -1,5 +1,7 @@
 package com.anjantek.controls.sliders.supportClasses
 {
+	import com.anjantek.controls.sliders.skins.track.HSliderWideTrackHighlightSkin;
+	
 	import flash.events.Event;
 	import flash.events.FocusEvent;
 	import flash.events.KeyboardEvent;
@@ -21,20 +23,6 @@ package com.anjantek.controls.sliders.supportClasses
 	
 	public class SliderTrackHighlight extends SkinnableComponent
 	{
-		
-		[SkinPart(required="true")]
-		
-		/**
-		 *  A skin part that defines the label of the button. 
-		 *  
-		 *  @langversion 3.0
-		 *  @playerversion Flash 10
-		 *  @playerversion AIR 1.5
-		 *  @productversion Flex 4
-		 */
-		public var labelDisplay:IDisplayText;
-		
-		//-------------------------------------------------------------------------------------------------
 		
 		[SkinPart(required="true")]
 		
@@ -61,9 +49,6 @@ package com.anjantek.controls.sliders.supportClasses
 		public function set label(value:String):void
 		{
 			_label = value;
-			
-			if( labelDisplay )
-				labelDisplay.text = _label;
 		}
 		
 		/**
@@ -91,6 +76,7 @@ package com.anjantek.controls.sliders.supportClasses
 		public function SliderTrackHighlight()
 		{
 			super();
+			setStyle( 'skinClass', HSliderWideTrackHighlightSkin );
 			Add_States();
 			
 			this.currentState = BASE_STATE;
@@ -98,8 +84,8 @@ package com.anjantek.controls.sliders.supportClasses
 		
 		//-------------------------------------------------------------------------------------------------
 		
-		private const BASE_STATE: String = "base";
-		private const EDIT_STATE: String = "edit";
+		protected const BASE_STATE: String = "base";
+		protected const EDIT_STATE: String = "edit";
 		
 		protected function Add_States(): void
 		{
@@ -134,16 +120,7 @@ package com.anjantek.controls.sliders.supportClasses
 				case EDIT_STATE:
 				{
 					editMode = true;
-					
-					addSystemMouseHandlers();
-					
-					labelEditor.addEventListener( MouseEvent.MOUSE_DOWN, labelEditor_mouseDownHandler );
-					labelEditor.addEventListener( KeyboardEvent.KEY_UP, labelEditor_keyUpHandler );
-					
-					labelEditor.text = labelDisplay.text;
-					labelEditor.setFocus();
-					labelEditor.selectAll();
-					
+					addEditStateListeners();
 					break;
 				}
 				
@@ -160,11 +137,21 @@ package com.anjantek.controls.sliders.supportClasses
 		
 		//-------------------------------------------------------------------------------------------------
 		
-		private function removeEditStateListeners(): void
+		protected function addEditStateListeners(): void
+		{
+			addSystemMouseHandlers();
+			labelEditor.addEventListener( KeyboardEvent.KEY_UP, labelEditor_keyUpHandler );
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		protected function removeEditStateListeners(): void
 		{
 			removeSystemMouseHandlers();
-			labelEditor.removeEventListener( MouseEvent.MOUSE_DOWN, labelEditor_mouseDownHandler );
 			labelEditor.removeEventListener( KeyboardEvent.KEY_UP, labelEditor_keyUpHandler );
+			
+			if( stage )
+				stage.focus = null;
 		}
 		
 		//-------------------------------------------------------------------------------------------------
@@ -173,16 +160,13 @@ package com.anjantek.controls.sliders.supportClasses
 		{
 			super.partAdded(partName, instance);
 			
-			if (instance == labelDisplay)
-			{
-				labelDisplay.text = label;
-				labelDisplay.addEventListener( MouseEvent.MOUSE_DOWN, trackHighlightLabel_mouseDownHandler );
-				labelDisplay.addEventListener( MouseEvent.CLICK, trackHighlightLabel_clickHandler );
-			}
-			else if (instance == labelEditor)
+			if (instance == labelEditor)
 			{
 				labelEditor.text = label;
 				labelEditor.maxChars = maxLabelLength;
+				
+				labelEditor.addEventListener( MouseEvent.MOUSE_DOWN, labelEditor_mouseDownHandler );
+				labelEditor.addEventListener( MouseEvent.CLICK, labelEditor_clickHandler );
 			}
 		}
 		
@@ -192,20 +176,12 @@ package com.anjantek.controls.sliders.supportClasses
 		{
 			super.partRemoved(partName, instance);
 			
-			if (instance == labelDisplay)
+			if (instance == labelEditor)
 			{
-				labelDisplay.removeEventListener( MouseEvent.MOUSE_DOWN, trackHighlightLabel_mouseDownHandler );
-				labelDisplay.removeEventListener( MouseEvent.CLICK, trackHighlightLabel_clickHandler );
+				labelEditor.removeEventListener( MouseEvent.MOUSE_DOWN, labelEditor_mouseDownHandler );
+				labelEditor.removeEventListener( MouseEvent.CLICK, labelEditor_clickHandler );
 			}
 		}
-		
-		//-------------------------------------------------------------------------------------------------
-		
-		protected function trackHighlightLabel_mouseDownHandler( event: MouseEvent ): void
-		{
-			event.stopPropagation();
-		}
-		
 		
 		//-------------------------------------------------------------------------------------------------
 		
@@ -216,7 +192,7 @@ package com.anjantek.controls.sliders.supportClasses
 		
 		//-------------------------------------------------------------------------------------------------
 		
-		protected function trackHighlightLabel_clickHandler( event: MouseEvent ): void
+		protected function labelEditor_clickHandler( event: MouseEvent ): void
 		{
 			event.stopPropagation();
 			this.currentState = EDIT_STATE;
@@ -230,7 +206,7 @@ package com.anjantek.controls.sliders.supportClasses
 		{
 			var super_skin_state: String = super.getCurrentSkinState();
 			
-			if( !labelDisplay || !labelEditor )
+			if( !labelEditor )
 				return BASE_STATE;
 			
 			if( ! enabled )
@@ -250,7 +226,7 @@ package com.anjantek.controls.sliders.supportClasses
 		 *  are dispatched outside of this component. This is used to close the editor
 		 *  when the user clicks anywhere outside the editor component.
 		 */
-		private function addSystemMouseHandlers():void
+		protected function addSystemMouseHandlers():void
 		{
 			systemManager.getSandboxRoot().addEventListener( MouseEvent.MOUSE_UP, systemManager_mouseUpHandler, true /* useCapture */);
 			systemManager.getSandboxRoot().addEventListener( SandboxMouseEvent.MOUSE_UP_SOMEWHERE, systemManager_mouseUpHandler );
@@ -263,7 +239,7 @@ package com.anjantek.controls.sliders.supportClasses
 		 *  This method removes the systemManager_mouseUpHandler as an event
 		 *  listener from the stage and the systemManager.
 		 */
-		private function removeSystemMouseHandlers():void
+		protected function removeSystemMouseHandlers():void
 		{
 			systemManager.getSandboxRoot().removeEventListener(	MouseEvent.MOUSE_UP, systemManager_mouseUpHandler, true /* useCapture */);
 			systemManager.getSandboxRoot().removeEventListener( SandboxMouseEvent.MOUSE_UP_SOMEWHERE, systemManager_mouseUpHandler );
@@ -274,7 +250,7 @@ package com.anjantek.controls.sliders.supportClasses
 		/**
 		 *  @private
 		 */
-		private function systemManager_mouseUpHandler(event:Event):void
+		protected function systemManager_mouseUpHandler(event:Event):void
 		{
 			// If the target is the editor or if the target's parent is the editor, do nothing.
 			if (event.target == labelEditor.textDisplay || 
