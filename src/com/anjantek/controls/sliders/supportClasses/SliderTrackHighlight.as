@@ -21,6 +21,12 @@ package com.anjantek.controls.sliders.supportClasses
 	import spark.core.IDisplayText;
 	import spark.events.TextOperationEvent;
 	
+	//-------------------------------------------------------------------------------------------------
+	
+	[Event(name="change", type="flash.events.Event")]
+	
+	//-------------------------------------------------------------------------------------------------
+	
 	public class SliderTrackHighlight extends SkinnableComponent
 	{
 		
@@ -283,6 +289,8 @@ package com.anjantek.controls.sliders.supportClasses
 				var label_change_event: Event = new Event( Event.CHANGE );
 				dispatchEvent( label_change_event );
 			}
+			else
+				labelEditor.text = label;
 			
 			this.currentState = BASE_STATE;
 		}
