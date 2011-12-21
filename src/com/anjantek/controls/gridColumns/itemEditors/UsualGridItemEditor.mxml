@@ -23,14 +23,10 @@
 			{
 				super.data = _value;
 				
-				if( _value && column.dataField )
-				{
-					this.value = _value[ column.dataField ];
-				}
+				if( _value && column.dataField && _value.hasOwnProperty( column.dataField ) )
+					this.value = _value[ column.dataField ];            
 				else
-				{
 					this.value = column.itemToLabel( _value );
-				}
 			}
 			
 			//----------------------------------------------------------------------------------------------------------			
