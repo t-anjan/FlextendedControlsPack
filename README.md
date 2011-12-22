@@ -122,6 +122,8 @@ This is a component based on the Spark `TitleWindow` component. This is an unobt
 
 # 7. MultiThumbSlider
 
+Please visit [this](http://anjantek.com/2011/12/22/flex-4-6-spark-slider-multiple-thumbs-track-highlights-and-a-host-of-other-features/) page to view a demo of the component. The source of the demo application is also available there.
+
 This is a Spark Slider component with a lot of additional features. The component is a fusion of the work of Patrick Mowrer ([here](https://github.com/pmowrer/spark-components) and [here](http://www.patrickmowrer.com/2010/10/18/multiple-thumb-spark-slider-component)) and [Patrick Heinzelmann](https://github.com/patrickheinzelmann/Spark-Slider-with-Track-Highlight). It has been so heavily modified that it retains little resemblance to either of the above components. But full credit to both Patricks for their amazing work which set me in the right direction.
 
 **NOTE: Only the horizontal orientation of the slider has been tested extensively. Since I did not need the vertical orientation, I haven't made the skins for it. Anyone who needs the vertical orientation can easily create the required skins by referring to the horizontal version of the skins.**
