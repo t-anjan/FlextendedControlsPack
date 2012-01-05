@@ -93,19 +93,19 @@ package com.anjantek.controls.sliders.supportClasses
 	
 	public class MultiThumbSliderBase extends SkinnableContainer implements IValueBounding, IValueSnapping
 	{
-		[SkinPart(required="true", type="com.anjantek.controls.sliders.components.supportClasses.SliderThumb")]
+		[SkinPart(required="true", type="com.anjantek.controls.sliders.supportClasses.SliderThumb")]
 		public var thumb: IFactory;
 		
 		[SkinPart(required="true")]
 		public var track: Button;
 		
-		[SkinPart(required="false", type="com.anjantek.controls.sliders.components.supportClasses.SliderTrackHighlight")]
+		[SkinPart(required="false", type="com.anjantek.controls.sliders.supportClasses.SliderTrackHighlight")]
 		public var trackHighlight: IFactory;
 		
 		[SkinPart(required="false", type="spark.components.Group")]
 		public var contentGroupHighlight: Group
 		
-		[SkinPart(required="false", type="com.anjantek.controls.sliders.components.supportClasses.SliderMarker")]
+		[SkinPart(required="false", type="com.anjantek.controls.sliders.supportClasses.SliderMarker")]
 		public var marker: IFactory;
 		
 		[SkinPart(required="false", type="spark.components.Group")]
