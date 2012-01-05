@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="true"
+				doubleClickEnabled="true" doubleClick="doubleClickHandler(event)"
+				creationComplete="creationCompleteHandler(event)"
+				minHeight="50">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.anjantek.controls.hierTree.events.HierTreeEvent;
+			import com.anjantek.controls.hierTree.supportClasses.LevelList;
+			import com.anjantek.controls.hierTree.supportClasses.NodeProperties;
+			
+			import mx.events.FlexEvent;
+			
+			//-------------------------------------------------------------------------------------------------
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				this.removeEventListener( FlexEvent.CREATION_COMPLETE, creationCompleteHandler );
+				owner.addEventListener( HierTreeEvent.REFRESH_HIER, On_Refresh_Hier );
+			}
+			
+			//-------------------------------------------------------------------------------------------------
+			
+			protected function doubleClickHandler(event:MouseEvent):void
+			{
+				var node_double_click_event: HierTreeEvent = new HierTreeEvent( HierTreeEvent.NODE_DOUBLE_CLICK, data );
+				owner.dispatchEvent( node_double_click_event );
+			}
+			
+			//-------------------------------------------------------------------------------------------------
+			
+			private var node_properties: NodeProperties;
+			
+			override public function set data(value:Object):void
+			{
+				super.data = value;
+				
+				if( ! (value is NodeProperties) )
+					return;
+				
+				node_properties = value as NodeProperties;
+				label = node_properties.data[ LevelList(owner).labelField ];
+			}
+			
+			//-------------------------------------------------------------------------------------------------
+			
+			override protected function getCurrentRendererState():String
+			{
+				var super_skin_state: String = super.getCurrentRendererState();
+				
+				if( null != node_properties )
+				{
+					if( node_properties.isExpanded )
+					{
+						if( node_properties.isSelected )
+							return "selectedAndExpanded";
+						else if( "hovered" == super_skin_state )
+							return super_skin_state + "AndExpanded";
+						else
+							return "normalAndExpanded";
+					}
+					else
+					{
+						if( "selected" == super_skin_state )
+							return ( node_properties.isSelected ? "selected" : "normal" );
+						else
+							return super_skin_state;
+					}
+				}
+				else
+					return super_skin_state;
+			}
+			
+			//-------------------------------------------------------------------------------------------------
+			
+			protected function On_Refresh_Hier( event: HierTreeEvent ): void
+			{
+				invalidateRendererState();
+			}
+			
+			//-------------------------------------------------------------------------------------------------
+			
+		]]>
+	</fx:Script>
+	
+	
+	<!-- states -->
+	<s:states>
+		<s:State name="normal" stateGroups="normalGroup" />
+		<s:State name="hovered" stateGroups="hoveredGroup" />
+		<s:State name="selected" stateGroups="selectedGroup" />
+		<s:State name="normalAndExpanded" stateGroups="normalGroup, expandedGroup" />
+		<s:State name="selectedAndExpanded" stateGroups="selectedGroup, expandedGroup" />
+		<s:State name="hoveredAndExpanded" stateGroups="hoveredGroup, expandedGroup" />
+		<s:State name="disabled" />
+	</s:states>
+	
+	
+	<!-- layer 1: shadow -->
+	<!--- @private -->
+	<s:Rect id="shadow" left="-1" right="-1" top="-1" bottom="-1" radiusX="7">
+		<s:fill>
+			<s:LinearGradient rotation="90">
+				<s:GradientEntry color="0x000000" 
+								 color.expandedGroup="0xFFFFFF"
+								 alpha="0.1"
+								 alpha.expandedGroup="0" />
+				<s:GradientEntry color="0x000000" 
+								 color.expandedGroup="0xFFFFFF" 
+								 alpha="0.17"
+								 alpha.expandedGroup="0.5" />
+			</s:LinearGradient>
+		</s:fill>
+	</s:Rect>
+	
+	<!-- layer 2: fill -->
+	<!--- @private -->
+	<s:Rect id="fill" left="1" right="1" top="1" bottom="1" radiusX="7">
+		<s:fill>
+			<s:LinearGradient rotation="90">
+				<s:GradientEntry color="0xF6FF8C" 
+								 color.expandedGroup="0xD3FF02" 
+								 alpha="0.85" />
+				<s:GradientEntry color="0xA8AA13" 
+								 color.expandedGroup="0xC9FF60" 
+								 alpha="0.85" />
+			</s:LinearGradient>
+		</s:fill>
+	</s:Rect>
+	
+	
+	<!-- layer 7: border - put on top of the fill so it doesn't disappear when scale is less than 1 -->
+	<!--- @private -->
+	<s:Rect id="border" left="0" right="0" top="0" bottom="0" radiusX="2"
+			includeIn="hoveredGroup, selectedGroup">
+		<s:stroke>
+			<s:LinearGradientStroke rotation="90" weight="1">
+				<s:GradientEntry color.hoveredGroup="0x000000" 
+								 color.selectedGroup="0x0000FF" />
+				<s:GradientEntry color.hoveredGroup="0x000000" 
+								 color.selectedGroup="0x0000FF" />
+			</s:LinearGradientStroke>
+		</s:stroke>
+	</s:Rect>
+	
+	
+	<s:VGroup horizontalCenter="0" verticalCenter="1"
+			  verticalAlign="middle" horizontalAlign="center"
+			  left="10" right="10" top="2" bottom="2">
+		<s:Label id="labelDisplay"
+				 textAlign="center"
+				 maxDisplayedLines="1">
+		</s:Label>
+		
+		<s:Label id="label_expanded"
+				 textAlign="center"
+				 maxDisplayedLines="1"
+				 includeIn="expandedGroup" text="Expanded">
+		</s:Label>
+	</s:VGroup>
+	
+</s:ItemRenderer>
