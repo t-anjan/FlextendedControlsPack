@@ -15,6 +15,7 @@
     <classEntry path="com.anjantek.controls.sliders.events.MultiThumbSliderEvent"/>
     <classEntry path="com.anjantek.controls.hierTree.layouts.HierVerticalLayout"/>
     <classEntry path="com.anjantek.controls.hierTree.interfaces.INodeContainer"/>
+    <classEntry path="com.anjantek.controls.hierTree.skins.LevelListSkin"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
