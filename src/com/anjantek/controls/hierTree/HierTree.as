@@ -333,13 +333,59 @@ package com.anjantek.controls.hierTree
 		 */
 		private var _selectedItem: NodeProperties;
 		
-		/*[Bindable("change")]
+		[Bindable("change")]
 		[Bindable("valueCommit")]
-		[Inspectable(category="General", defaultValue="null")]*/
+		[Inspectable(category="General", defaultValue="null")]
 		
 		public function get selectedItem(): NodeProperties
 		{
 			return _selectedItem;
+		}
+		
+		public function set selectedItem( value: NodeProperties ): void
+		{
+			if( _selectedItem == value )
+				return;
+			
+			// Create the selection.
+			// 1. Don't trust the level from the "value" variable. Get the corresponding node_properties object from our nodesMap.
+			var node_properties: NodeProperties = _nodesMap[ value.uid ] as NodeProperties;
+			
+			// 2. Find the level_list containing the item which needs to be selected.
+			var level_list: LevelList;
+			
+			if( node_properties.isRoot )
+			{
+				level_list = level_lists[ 0 ];
+			}
+			else
+			{
+				// Find the parent of node_properties.
+				var parent_uid: String = node_properties.parentUID;
+				var parent_node_properties: NodeProperties = _nodesMap[ parent_uid ] as NodeProperties;
+				
+				// If the parent is not expanded, expand it.
+				if( ! parent_node_properties.isExpanded )
+					expandItem( parent_uid );
+				
+				// Now, get the level_list containing the item to be selected.
+				level_list = level_lists[ node_properties.level ];
+			}
+			
+			// 3. Select the item in the level.
+			level_list.selectedItem = node_properties;
+			
+			// 4. Deselect items in all other lists.
+			for each( var ll: LevelList in level_lists )
+			{
+				if( ll != level_list )
+				{
+					ll.selectedIndex = -1;
+				}
+			}
+			
+			Set_Is_Selected_On_Node_Properties( node_properties );
+			_selectedItem = node_properties;
 		}
 		
 		//-------------------------------------------------------------------------------------------------
