@@ -44,11 +44,6 @@ package com.anjantek.controls.hierTree
 	[Event(name="itemOpen", type="com.anjantek.controls.hierTree.events.HierTreeEvent")]
 	
 	/**
-	 *  Dispatched when a branch open or close is initiated.
-	 */
-	[Event(name="itemOpening", type="com.anjantek.controls.hierTree.events.HierTreeEvent")]
-	
-	/**
 	 *  Dispatched when a node selection is changed.
 	 */
 	[Event(name="selectionChange", type="com.anjantek.controls.hierTree.events.HierTreeEvent")]
@@ -591,6 +586,7 @@ package com.anjantek.controls.hierTree
 			{
 				level_list = level_lists[ level ];
 				level_list.dataProvider = Build_Level_List_Data_Provider( _data_provider );
+				contentGroup.invalidateDisplayList();
 			}
 			else
 			{
@@ -798,7 +794,7 @@ package com.anjantek.controls.hierTree
 				actualExpandItem( object_uid );
 			}
 			
-			_expandedItems = new Vector.<String>();
+			_expandedItems.splice( 0, _expandedItems.length );
 			Build_Expanded_Items( object_uid );
 			Set_Is_Expanded_On_Node_Properties();
 		}
@@ -810,6 +806,11 @@ package com.anjantek.controls.hierTree
 			var node_properties: NodeProperties = _nodesMap[ object_uid ] as NodeProperties;
 			var object_level: Number = node_properties.level;
 			var object: Object = node_properties.data;
+			
+			// Store the expanded item position.
+			var _list: LevelList = level_lists[ object_level ];
+			var item_index: Number = _list.dataProvider.getItemIndex( node_properties );
+			_list.setExpandedItemPosition( item_index );
 			
 			//----------
 			

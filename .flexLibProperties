@@ -13,6 +13,8 @@
     <classEntry path="com.anjantek.controls.sliders.supportClasses.SliderTrackHighlight"/>
     <classEntry path="com.anjantek.controls.sliders.events.ThumbEvent"/>
     <classEntry path="com.anjantek.controls.sliders.events.MultiThumbSliderEvent"/>
+    <classEntry path="com.anjantek.controls.hierTree.layouts.HierVerticalLayout"/>
+    <classEntry path="com.anjantek.controls.hierTree.interfaces.INodeContainer"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

@@ -5,14 +5,16 @@
 				autoDrawBackground="true"
 				doubleClickEnabled="true" doubleClick="doubleClickHandler(event)"
 				creationComplete="creationCompleteHandler(event)"
-				minHeight="50">
+				minHeight="50" width="120">
 	
 	<fx:Script>
 		<![CDATA[
 			import com.anjantek.controls.hierTree.events.HierTreeEvent;
+			import com.anjantek.controls.hierTree.interfaces.INodeContainer;
 			import com.anjantek.controls.hierTree.supportClasses.LevelList;
 			import com.anjantek.controls.hierTree.supportClasses.NodeProperties;
 			
+			import mx.core.UIComponent;
 			import mx.events.FlexEvent;
 			
 			//-------------------------------------------------------------------------------------------------
@@ -87,7 +89,6 @@
 		]]>
 	</fx:Script>
 	
-	
 	<!-- states -->
 	<s:states>
 		<s:State name="normal" stateGroups="normalGroup" />
@@ -152,8 +153,7 @@
 			  verticalAlign="middle" horizontalAlign="center"
 			  left="10" right="10" top="2" bottom="2">
 		<s:Label id="labelDisplay"
-				 textAlign="center"
-				 maxDisplayedLines="1">
+				 textAlign="center" width="100%">
 		</s:Label>
 		
 		<s:Label id="label_expanded"
