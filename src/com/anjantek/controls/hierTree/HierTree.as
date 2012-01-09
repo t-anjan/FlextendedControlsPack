@@ -701,6 +701,8 @@ package com.anjantek.controls.hierTree
 				var instance_level_list: LevelList = LevelList( instance );
 				instance_level_list.addEventListener( IndexChangeEvent.CHANGE, onLevelListSelectionChange );
 				instance_level_list.addEventListener( HierTreeEvent.NODE_DOUBLE_CLICK, onNodeDoubleClick );
+				instance_level_list.addEventListener( HierTreeEvent.NODE_EXPAND_BUTTON_CLICK, onNodeExpandButtonClick );
+				instance_level_list.addEventListener( HierTreeEvent.NODE_COLLAPSE_BUTTON_CLICK, onNodeCollapseButtonClick );
 			}
 		}
 		
@@ -718,6 +720,8 @@ package com.anjantek.controls.hierTree
 				var instance_level_list: LevelList = LevelList( instance );
 				instance_level_list.removeEventListener( IndexChangeEvent.CHANGE, onLevelListSelectionChange );
 				instance_level_list.removeEventListener( HierTreeEvent.NODE_DOUBLE_CLICK, onNodeDoubleClick );
+				instance_level_list.removeEventListener( HierTreeEvent.NODE_EXPAND_BUTTON_CLICK, onNodeExpandButtonClick );
+				instance_level_list.removeEventListener( HierTreeEvent.NODE_COLLAPSE_BUTTON_CLICK, onNodeCollapseButtonClick );
 			}
 		}
 		
@@ -778,6 +782,40 @@ package com.anjantek.controls.hierTree
 			}
 			
 			Invalidate_Lists();
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		private function onNodeExpandButtonClick( event: HierTreeEvent ): void
+		{
+			var level_list: LevelList = event.currentTarget as LevelList;
+			var to_expand_item: NodeProperties = event.payload as NodeProperties;
+			var to_expand_item_uid: String = to_expand_item.uid;
+			
+			// If leaf node, return.
+			if( ! to_expand_item.hasChildren )
+				return;
+			
+			expandItem( to_expand_item_uid );
+			var item_open_event: HierTreeEvent = new HierTreeEvent( HierTreeEvent.ITEM_OPEN, to_expand_item.data );
+			dispatchEvent( item_open_event );
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		private function onNodeCollapseButtonClick( event: HierTreeEvent ): void
+		{
+			var level_list: LevelList = event.currentTarget as LevelList;
+			var to_collapse_item: NodeProperties = event.payload as NodeProperties;
+			var to_collapse_item_uid: String = to_collapse_item.uid;
+			
+			// If leaf node, return.
+			if( ! to_collapse_item.hasChildren )
+				return;
+			
+			collapseItem( to_collapse_item_uid );
+			var item_close_event: HierTreeEvent = new HierTreeEvent( HierTreeEvent.ITEM_CLOSE, to_collapse_item.data );
+			dispatchEvent( item_close_event );
 		}
 		
 		//-------------------------------------------------------------------------------------------------

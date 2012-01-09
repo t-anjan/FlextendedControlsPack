@@ -27,7 +27,7 @@ package com.anjantek.controls.hierTree.layouts
 		//  gap
 		//----------------------------------
 		
-		private var _gap:int = 6;
+		private var _gap:int = 2;
 		
 		[Inspectable(category="General")]
 		

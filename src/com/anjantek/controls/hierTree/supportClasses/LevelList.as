@@ -20,6 +20,8 @@ package com.anjantek.controls.hierTree.supportClasses
 	import spark.layouts.HorizontalLayout;
 	
 	[Event(name="nodeDoubleClick", type="com.anjantek.controls.hierTree.events.HierTreeEvent")]
+	[Event(name="nodeExpandButtonClick", type="com.anjantek.controls.hierTree.events.HierTreeEvent")]
+	[Event(name="nodeCollapseButtonClick", type="com.anjantek.controls.hierTree.events.HierTreeEvent")]
 	
 	public class LevelList extends List implements INodeContainer
 	{

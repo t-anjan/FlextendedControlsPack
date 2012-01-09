@@ -2,7 +2,7 @@
 <s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 				xmlns:s="library://ns.adobe.com/flex/spark" 
 				xmlns:mx="library://ns.adobe.com/flex/mx" 
-				autoDrawBackground="true"
+				autoDrawBackground="false"
 				doubleClickEnabled="true" doubleClick="doubleClickHandler(event)"
 				creationComplete="creationCompleteHandler(event)"
 				minHeight="50" width="120">
@@ -35,6 +35,9 @@
 			
 			//-------------------------------------------------------------------------------------------------
 			
+			[Bindable]
+			private var showExpandCollapseButton: Boolean = false;
+			
 			private var node_properties: NodeProperties;
 			
 			override public function set data(value:Object):void
@@ -46,6 +49,7 @@
 				
 				node_properties = value as NodeProperties;
 				label = node_properties.data[ LevelList(owner).labelField ];
+				showExpandCollapseButton = node_properties.hasChildren;
 			}
 			
 			//-------------------------------------------------------------------------------------------------
@@ -86,6 +90,22 @@
 			
 			//-------------------------------------------------------------------------------------------------
 			
+			protected function buttonExpand_clickHandler(event:MouseEvent):void
+			{
+				var node_double_click_event: HierTreeEvent = new HierTreeEvent( HierTreeEvent.NODE_EXPAND_BUTTON_CLICK, data );
+				owner.dispatchEvent( node_double_click_event );
+			}
+			
+			//-------------------------------------------------------------------------------------------------
+			
+			protected function buttonCollapse_clickHandler(event:MouseEvent):void
+			{
+				var node_double_click_event: HierTreeEvent = new HierTreeEvent( HierTreeEvent.NODE_COLLAPSE_BUTTON_CLICK, data );
+				owner.dispatchEvent( node_double_click_event );
+			}
+			
+			//-------------------------------------------------------------------------------------------------
+			
 		]]>
 	</fx:Script>
 	
@@ -103,7 +123,7 @@
 	
 	<!-- layer 1: shadow -->
 	<!--- @private -->
-	<s:Rect id="shadow" left="-1" right="-1" top="-1" bottom="-1" radiusX="7">
+	<s:Rect id="shadow" left="-1" right="-1" top="-1" bottom="7" radiusX="7">
 		<s:fill>
 			<s:LinearGradient rotation="90">
 				<s:GradientEntry color="0x000000" 
@@ -120,7 +140,7 @@
 	
 	<!-- layer 2: fill -->
 	<!--- @private -->
-	<s:Rect id="fill" left="1" right="1" top="1" bottom="1" radiusX="7">
+	<s:Rect id="fill" left="1" right="1" top="1" bottom="8" radiusX="7">
 		<s:fill>
 			<s:LinearGradient rotation="90">
 				<s:GradientEntry color="0xF6FF8C" 
@@ -136,7 +156,7 @@
 	
 	<!-- layer 7: border - put on top of the fill so it doesn't disappear when scale is less than 1 -->
 	<!--- @private -->
-	<s:Rect id="border" left="0" right="0" top="0" bottom="0" radiusX="2"
+	<s:Rect id="border" left="0" right="0" top="0" bottom="8" radiusX="2"
 			includeIn="hoveredGroup, selectedGroup">
 		<s:stroke>
 			<s:LinearGradientStroke rotation="90" weight="1">
@@ -149,18 +169,22 @@
 	</s:Rect>
 	
 	
-	<s:VGroup horizontalCenter="0" verticalCenter="1"
-			  verticalAlign="middle" horizontalAlign="center"
-			  left="10" right="10" top="2" bottom="2">
-		<s:Label id="labelDisplay"
-				 textAlign="center" width="100%">
-		</s:Label>
-		
-		<s:Label id="label_expanded"
-				 textAlign="center"
-				 maxDisplayedLines="1"
-				 includeIn="expandedGroup" text="Expanded">
-		</s:Label>
-	</s:VGroup>
+	<s:Label id="labelDisplay"
+			 textAlign="center" verticalAlign="middle"
+			 left="5" right="5" top="5" bottom="12">
+	</s:Label>
 	
+	<s:Button id="buttonExpand" skinClass="com.anjantek.controls.hierTree.skins.ExpandButtonSkin"
+			  excludeFrom="expandedGroup"
+			  horizontalCenter="0" bottom="2"
+			  visible="{ showExpandCollapseButton }"
+			  click="buttonExpand_clickHandler(event)"
+			  width="12" height="12" />
+	
+	<s:Button id="buttonCollapse" skinClass="com.anjantek.controls.hierTree.skins.CollapseButtonSkin"
+			  includeIn="expandedGroup"
+			  horizontalCenter="0" bottom="2"
+			  visible="{ showExpandCollapseButton }"
+			  click="buttonCollapse_clickHandler(event)"
+			  width="12" height="12" />
 </s:ItemRenderer>
