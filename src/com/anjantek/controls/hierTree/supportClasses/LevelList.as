@@ -12,12 +12,8 @@ package com.anjantek.controls.hierTree.supportClasses
 	import mx.core.ILayoutElement;
 	import mx.core.IVisualElement;
 	import mx.core.UIComponent;
-	import mx.effects.Parallel;
-	import mx.events.FlexEvent;
 	
 	import spark.components.List;
-	import spark.effects.Fade;
-	import spark.effects.Move;
 	import spark.layouts.HorizontalLayout;
 	
 	[Event(name="nodeDoubleClick", type="com.anjantek.controls.hierTree.events.HierTreeEvent")]
@@ -124,7 +120,7 @@ package com.anjantek.controls.hierTree.supportClasses
 			var local_point: Point = this.globalToLocal( global_point );
 			expandedItemX = Math.round( local_point.x );
 			expandedItemY = Math.round( local_point.y );
-			trace( "Exp Items from List: ", expandedItemX, expandedItemY );
+			//trace( "Exp Items from List: ", expandedItemX, expandedItemY );
 		}
 		
 		//-------------------------------------------------------------------------------------------------

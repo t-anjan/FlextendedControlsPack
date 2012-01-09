@@ -66,14 +66,14 @@ package com.anjantek.controls.hierTree.layouts
 		//---------------------------------------PROPERTIES END----------------------------------------------------------
 		
 		private var _containerWidth: Number;
-		private var effects: Parallel;
+		private var effects: Parallel = new Parallel();
 		private var vector_x: Vector.<Number> = new Vector.<Number>();
 		private var vector_y: Vector.<Number> = new Vector.<Number>();
 		private var dx: Number;
 		
 		override public function updateDisplayList(width:Number, height:Number):void
 		{
-			trace("updateDisplaylist. Width: ", width, ". Height: ", height);
+			//trace("updateDisplaylist. Width: ", width, ". Height: ", height);
 			
 			_containerWidth = width;
 			var count:int = target.numElements;
@@ -171,18 +171,18 @@ package com.anjantek.controls.hierTree.layouts
 			}
 			
 			contentWidth = x2 - x1;
-			trace( "Content x1 and x2:", x1, x2 );
+			//trace( "Content x1 and x2:", x1, x2 );
 			
 			var container_center_x: Number = Math.round( _containerWidth / 2 );
 			var content_center_x: Number = Math.round( x1 + (contentWidth / 2) );
 			// To show the items horizontally center-aligned, calculate the correction factor.
 			dx = container_center_x - content_center_x;
-			trace( "Container Center X:", container_center_x, "Content Center X:", content_center_x, "Dx:", dx );
+			//trace( "Container Center X:", container_center_x, "Content Center X:", content_center_x, "Dx:", dx );
 			
 			//-------------------
 			
 			target.autoLayout = false;
-			effects = new Parallel();
+			effects.children.splice( 0 );
 			effects.duration = 500;
 			effects.suspendBackgroundProcessing = true;
 			
@@ -219,7 +219,7 @@ package com.anjantek.controls.hierTree.layouts
 		
 		override public function elementAdded(index:int):void
 		{
-			trace("elementAdded: ", index);
+			//trace("elementAdded: ", index);
 			added_index = index;
 		}
 		
@@ -284,16 +284,6 @@ package com.anjantek.controls.hierTree.layouts
 		
 		//-------------------------------------------------------------------------------------------------
 		
-		private var removed_index: Number;
-		
-		override public function elementRemoved(index:int):void
-		{
-			trace("elementRemoved: ", index);
-			removed_index = index;
-		}
-		
-		//-------------------------------------------------------------------------------------------------
-		
 		private function calculateXFromPreviousElement( layoutElement: ILayoutElement, previousLayoutElement: ILayoutElement ): Number
 		{
 			var calculated_x: Number;
@@ -305,7 +295,7 @@ package com.anjantek.controls.hierTree.layouts
 				var container_content_point: Point = new Point( node_container.expandedItemX, node_container.expandedItemY );
 				var global_point: Point = UIComponent( node_container ).contentToGlobal( container_content_point );
 				var local_point: Point = target.globalToLocal( global_point );
-				trace("Calculated X:", local_point.x );
+				//trace("X of center of expanded item:", local_point.x );
 				calculated_x = Math.round( local_point.x - ( elementWidth / 2 ) );
 			}
 			else

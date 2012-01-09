@@ -19,12 +19,17 @@ package com.anjantek.controls.hierTree
 	import mx.controls.treeClasses.ITreeDataDescriptor2;
 	import mx.core.ClassFactory;
 	import mx.core.IFactory;
+	import mx.core.IVisualElement;
 	import mx.core.mx_internal;
+	import mx.effects.Parallel;
 	import mx.events.CollectionEvent;
 	import mx.events.CollectionEventKind;
+	import mx.events.EffectEvent;
 	import mx.events.PropertyChangeEvent;
 	
 	import spark.components.SkinnableContainer;
+	import spark.effects.Move;
+	import spark.effects.Scale;
 	import spark.events.IndexChangeEvent;
 	import spark.layouts.supportClasses.LayoutBase;
 	import spark.utils.LabelUtil;
@@ -630,8 +635,46 @@ package com.anjantek.controls.hierTree
 		
 		//-------------------------------------------------------------------------------------------------
 		
+		private var removed_effects: Parallel = new Parallel();
+		
 		private function removeAllLevelsBelowLowestDisplayedLevel(): void
 		{
+			removed_effects.children.splice( 0 );
+			removed_effects.suspendBackgroundProcessing = true;
+			removed_effects.duration = 500;
+			
+			for( var i: Number = contentGroup.numElements - 1 ; i > lowest_displayed_level ; i-- )
+			{
+				var item_to_be_removed: IVisualElement = contentGroup.getElementAt( i );
+				var scale_effect: Scale = new Scale( item_to_be_removed );
+				scale_effect.scaleXTo = 0.1;
+				scale_effect.scaleYTo = 0.1;
+				
+				removed_effects.addChild( scale_effect );
+				
+				var elementWidth: Number = Math.ceil( item_to_be_removed.getLayoutBoundsWidth() );
+				var move_effect: Move = new Move( item_to_be_removed );
+				move_effect.xTo = item_to_be_removed.getLayoutBoundsX() + (elementWidth / 2);
+				
+				removed_effects.addChild( move_effect );
+			}
+			
+			if( removed_effects.children.length > 0 )
+			{
+				this.autoLayout = false;
+				removed_effects.addEventListener( EffectEvent.EFFECT_END, onRemovedEffectsEndHandler );
+				removed_effects.play();
+			}
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		private function onRemovedEffectsEndHandler( event: EffectEvent ): void
+		{
+			removed_effects.removeEventListener( EffectEvent.EFFECT_END, onRemovedEffectsEndHandler );
+			
+			this.autoLayout = true;
+			
 			for( var i: Number = contentGroup.numElements - 1 ; i > lowest_displayed_level ; i-- )
 			{
 				contentGroup.removeElement( contentGroup.getElementAt( i ) );
