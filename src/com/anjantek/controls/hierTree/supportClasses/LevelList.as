@@ -117,10 +117,23 @@ package com.anjantek.controls.hierTree.supportClasses
 			{
 				if( ! sample_ir_instance )
 					sample_ir_instance = UIComponent( itemRenderer.newInstance() );
+				
 				const ir_width: Number = sample_ir_instance.width;
 				const ir_height: Number = sample_ir_instance.height;
-				x_in_data_group = (index * ir_width) + (ir_width / 2);
-				y_in_data_group = (index * ir_height) + (ir_height / 2);
+				
+				if( layout is HorizontalLayout && dataProvider && dataGroup )
+				{
+					var hor_layout: HorizontalLayout = layout as HorizontalLayout;
+					// The "+ index" at the end is to take care of a mystery disalignment.
+					x_in_data_group = hor_layout.paddingLeft + (index * ir_width) + Math.round( ir_width / 2 ) + ( index * hor_layout.gap ) + index;
+					y_in_data_group = hor_layout.paddingTop + (index * ir_height) + Math.round( ir_height / 2 );
+				}
+				else
+				{
+					// The "+ (index*2)" at the end is to take care of a mystery disalignment.
+					x_in_data_group = (index * ir_width) + Math.round( ir_width / 2 ) + (index * 2);
+					y_in_data_group = (index * ir_height) + Math.round( ir_height / 2 );
+				}
 			}
 			
 			var data_group_point: Point = new Point( x_in_data_group, y_in_data_group );

@@ -25,5 +25,6 @@ package com.anjantek.controls.hierTree.events
 		public static const ITEM_OPENING: String = "itemOpening";
 		
 		public static const REFRESH_HIER: String = "refreshHier";
+		public static const DATA_LOADED: String = "dataLoaded";
 	}
 }

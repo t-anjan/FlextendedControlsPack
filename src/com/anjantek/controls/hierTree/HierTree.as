@@ -52,6 +52,12 @@ package com.anjantek.controls.hierTree
 	 *  Dispatched when a node selection is changed.
 	 */
 	[Event(name="selectionChange", type="com.anjantek.controls.hierTree.events.HierTreeEvent")]
+	
+	/**
+	 *  Dispatched when a new dataProvider's data has been reflected in the tree.
+	 */
+	[Event(name="dataLoaded", type="com.anjantek.controls.hierTree.events.HierTreeEvent")]
+	
 
 	public class HierTree extends SkinnableContainer
 	{
@@ -347,6 +353,20 @@ package com.anjantek.controls.hierTree
 			if( _selectedItem == value )
 				return;
 			
+			var ll: LevelList;
+			
+			if( null == value )
+			{
+				for each( ll in level_lists )
+				{
+					ll.selectedIndex = -1;
+				}
+				
+				Set_Is_Selected_On_Node_Properties( null );
+				_selectedItem = null;
+				return;
+			}
+			
 			// Create the selection.
 			// 1. Don't trust the level from the "value" variable. Get the corresponding node_properties object from our nodesMap.
 			var node_properties: NodeProperties = _nodesMap[ value.uid ] as NodeProperties;
@@ -376,7 +396,7 @@ package com.anjantek.controls.hierTree
 			level_list.selectedItem = node_properties;
 			
 			// 4. Deselect items in all other lists.
-			for each( var ll: LevelList in level_lists )
+			for each( ll in level_lists )
 			{
 				if( ll != level_list )
 				{
@@ -535,7 +555,11 @@ package com.anjantek.controls.hierTree
 			lowest_displayed_level = 0;
 			addLevel( 0, dataProvider );
 			Restore_Expand_Collapse_Status();
+			Restore_Selected_Item();
 			addDataProviderListener();
+			
+			var data_loaded_event: HierTreeEvent = new HierTreeEvent( HierTreeEvent.DATA_LOADED );
+			this.dispatchEvent( data_loaded_event );
 		}
 		
 		//-------------------------------------------------------------------------------------------------
@@ -606,6 +630,32 @@ package com.anjantek.controls.hierTree
 						break;
 					}
 				}
+			}
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		private function Restore_Selected_Item(): void
+		{
+			if( null == _selectedItem )
+				return;
+			
+			var selected_item_uid: String = _selectedItem.uid;
+			
+			if( null != _nodesMap[ selected_item_uid ] && _nodesMap[ selected_item_uid ] is NodeProperties )
+			{
+				selectedItem = _nodesMap[ selected_item_uid ] as NodeProperties;
+				// Since we are setting the selectedItem to (essentially) what it was previously, no "change" has occurred.
+				// So, we don't need to dispatch a change event to notify the world.
+			}
+			else
+			{
+				selectedItem = null;
+				// We are changing the selected item here, because the previous selected item was not found
+				// in the new dataProvider.
+				// Dispatch a change event.
+				var selection_change_event: HierTreeEvent = new HierTreeEvent( HierTreeEvent.SELECTION_CHANGE );
+				dispatchEvent( selection_change_event );
 			}
 		}
 		
@@ -824,7 +874,7 @@ package com.anjantek.controls.hierTree
 		{
 			for each( var _node_properties: NodeProperties in _nodesMap )
 			{
-				_node_properties.isSelected = (_node_properties.uid == selected_node_properties.uid);
+				_node_properties.isSelected = (null != selected_node_properties) && (_node_properties.uid == selected_node_properties.uid);
 			}
 			
 			Invalidate_Lists();
