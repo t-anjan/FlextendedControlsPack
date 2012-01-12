@@ -56,7 +56,7 @@ in accordance with the terms of the license agreement accompanying it.
 	-->
 	<!--- @copy spark.components.SkinnableContainer#contentGroup -->
 	<panzoom:PanZoomComponent id="panzoom" backgroundAlpha="0"					  
-							  y="25" width="100%" height="100%" 
+							  width="100%" height="100%" 
 							  scaleMin="0.1" scaleMax="4"
 							  childPreventsPan="true"
 							  zoomToCursor="false"
