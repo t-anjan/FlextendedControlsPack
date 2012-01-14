@@ -43,7 +43,7 @@ in accordance with the terms of the license agreement accompanying it.
 			<supportClasses:LevelList>
 				<supportClasses:layout>
 					<s:HorizontalLayout verticalAlign="middle" horizontalAlign="center"
-										paddingLeft="2" paddingRight="2" paddingTop="2" paddingBottom="2"/>
+										paddingLeft="5" paddingRight="5" paddingTop="5" paddingBottom="2"/>
 				</supportClasses:layout>
 			</supportClasses:LevelList>
 		</fx:Component>

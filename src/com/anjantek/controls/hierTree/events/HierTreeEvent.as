@@ -19,6 +19,7 @@ package com.anjantek.controls.hierTree.events
 		public static const NODE_DOUBLE_CLICK: String = "nodeDoubleClick";
 		public static const NODE_EXPAND_BUTTON_CLICK: String = "nodeExpandButtonClick";
 		public static const NODE_COLLAPSE_BUTTON_CLICK: String = "nodeCollapseButtonClick";
+		public static const NODE_DELETE_BUTTON_CLICK: String = "nodeDeleteButtonClick";
 		public static const SELECTION_CHANGE: String = "selectionChange";
 		public static const ITEM_CLOSE: String = "itemClose";
 		public static const ITEM_OPEN: String = "itemOpen";

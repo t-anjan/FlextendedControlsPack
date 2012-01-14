@@ -58,7 +58,11 @@ package com.anjantek.controls.hierTree
 	 */
 	[Event(name="dataLoaded", type="com.anjantek.controls.hierTree.events.HierTreeEvent")]
 	
-
+	/**
+	 *  Dispatched when a delete button on the node item renderer is clicked.
+	 */
+	[Event(name="nodeDeleteButtonClick", type="com.anjantek.controls.hierTree.events.HierTreeEvent")]
+	
 	public class HierTree extends SkinnableContainer
 	{
 		[SkinPart(required="true", type="com.anjantek.controls.hierTree.supportClasses.LevelList")]
@@ -799,6 +803,7 @@ package com.anjantek.controls.hierTree
 				instance_level_list.addEventListener( HierTreeEvent.NODE_DOUBLE_CLICK, onNodeDoubleClick );
 				instance_level_list.addEventListener( HierTreeEvent.NODE_EXPAND_BUTTON_CLICK, onNodeExpandButtonClick );
 				instance_level_list.addEventListener( HierTreeEvent.NODE_COLLAPSE_BUTTON_CLICK, onNodeCollapseButtonClick );
+				instance_level_list.addEventListener( HierTreeEvent.NODE_DELETE_BUTTON_CLICK, onNodeDeleteButtonClick );
 			}
 		}
 		
@@ -818,6 +823,7 @@ package com.anjantek.controls.hierTree
 				instance_level_list.removeEventListener( HierTreeEvent.NODE_DOUBLE_CLICK, onNodeDoubleClick );
 				instance_level_list.removeEventListener( HierTreeEvent.NODE_EXPAND_BUTTON_CLICK, onNodeExpandButtonClick );
 				instance_level_list.removeEventListener( HierTreeEvent.NODE_COLLAPSE_BUTTON_CLICK, onNodeCollapseButtonClick );
+				instance_level_list.removeEventListener( HierTreeEvent.NODE_DELETE_BUTTON_CLICK, onNodeDeleteButtonClick );
 			}
 		}
 		
@@ -916,6 +922,15 @@ package com.anjantek.controls.hierTree
 		
 		//-------------------------------------------------------------------------------------------------
 		
+		private function onNodeDeleteButtonClick( event: HierTreeEvent ): void
+		{
+			// Re-dispatch the event.
+			var node_delete_click_event: HierTreeEvent = new HierTreeEvent( HierTreeEvent.NODE_DELETE_BUTTON_CLICK, event.payload );
+			this.dispatchEvent( node_delete_click_event );
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
 		private var lowest_displayed_level: Number;
 		
 		private function onNodeDoubleClick( event: HierTreeEvent ): void
@@ -952,7 +967,7 @@ package com.anjantek.controls.hierTree
 			
 			var node_properties: NodeProperties = _nodesMap[ object_uid ] as NodeProperties;
 			
-			if( ! node_properties.hasChildren )
+			if( ! node_properties || ! node_properties.hasChildren )
 				return;
 			
 			var object_level: Number = node_properties.level;
@@ -1146,13 +1161,11 @@ package com.anjantek.controls.hierTree
 						var deleted_item: Object = event.items[i];
 						var deleted_item_uid: String = String( deleted_item[ _uidField ] );
 						
-						if( "" == deleted_item_uid )
+						if( "" == deleted_item_uid || null == deleted_item_uid )
 							break;
 						
-						Build_Nodes_Map();
 						list = level_lists[ 0 ] as LevelList;
-						i = list.dataProvider.getItemIndex( NodeProperties( _nodesMap[ deleted_item_uid ] ) );
-						list.dataProvider.removeItemAt( i );
+						Delete_Node_And_Children( deleted_item_uid, list );
 					}
 					break;
 				}
@@ -1263,11 +1276,18 @@ package com.anjantek.controls.hierTree
 			
 			// Since the object's children have been updated, rebuild the nodesMap for this object and its children hierarchy.
 			var parent_object: Object = node_properties.isRoot ? null : NodeProperties( _nodesMap[ node_properties.parentUID ] ).data;
+			// Note that in the following function, there is no "_nodesMap = new Dictionary()".
+			// That is, the function only adds new node_properties or updates existing node_properties.
+			// It does NOT remove any node_properties objects whose nodes have just been deleted. These
+			// UIDs which have just been deleted are present in the deleted_children_uids vector above.
+			// We need these node_properties to be present in the nodesMap till the actual nodes are deleted below
+			// (in the "for each( var deleted_uid: String in deleted_children_uids )" loop). After the nodes have
+			// been removed, the node_properties are also removed from the nodesMap.
 			Build_Nodes_Map_For_Object_And_Children( object, parent_object, node_properties.level );
 			
 			if( -1 == _expandedItems.indexOf( object_uid ) )
 			{
-				// The expanding will take care setting the dataProvider to the child list.
+				// The expanding will take care of setting the dataProvider to the child list.
 				// Since the nodesMap has been rebuilt, ALL the new items will appear
 				// in the child list. So, we can break out of the loop.
 				expandItem( object_uid );
@@ -1279,17 +1299,17 @@ package com.anjantek.controls.hierTree
 				// Get the list containing the children.
 				list = level_lists[ node_properties.level + 1 ];
 				
+				//------- ADD --------------
 				for each( var added_uid: String in added_children_uids )
 				{
 					// Add the new item to the list's dataProvider.
 					list.dataProvider.addItem( NodeProperties( _nodesMap[ added_uid ] ) );
 				}
 				
+				//------------ DELETE -------------------
 				for each( var deleted_uid: String in deleted_children_uids )
 				{
-					// Add the new item to the list's dataProvider.
-					var index: Number = list.dataProvider.getItemIndex( NodeProperties( _nodesMap[ deleted_uid ] ) );
-					list.dataProvider.removeItemAt( index );
+					Delete_Node_And_Children( deleted_uid, list );
 				}
 			}
 		}
@@ -1321,6 +1341,53 @@ package com.anjantek.controls.hierTree
 			}
 			
 			return extra_in_vector_1;
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		private function Delete_Node_And_Children( deleted_uid: String, list: LevelList ): void
+		{
+			// Remove the item from the list's dataProvider.
+			const np_to_be_deleted: NodeProperties = NodeProperties( _nodesMap[ deleted_uid ] );
+			Delete_Children( np_to_be_deleted );
+			
+			// If the item to be deleted is the last item in the list, then, we'll just collapse the parent,
+			// instead of removing the lone item from the dataProvider.
+			if( 1 == list.dataProvider.length && list.dataProvider.getItemAt( 0 ) == np_to_be_deleted && ! np_to_be_deleted.isRoot )
+			{
+				collapseItem( np_to_be_deleted.parentUID );
+			}
+			else
+			{
+				const index: Number = list.dataProvider.getItemIndex( np_to_be_deleted );
+				list.dataProvider.removeItemAt( index );
+			}
+			
+			delete _nodesMap[ deleted_uid ];
+			
+			Restore_Selected_Item();
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
+		private function Delete_Children( np_to_be_deleted: NodeProperties ): void
+		{
+			if( np_to_be_deleted.hasChildren )
+			{
+				// The children should also be removed.
+				for each( var _uid: String in np_to_be_deleted.childrenUIDs )
+				{
+					var child_np: NodeProperties = _nodesMap[ _uid ] as NodeProperties;
+					Delete_Children( child_np );
+					delete _nodesMap[ _uid ];
+				}
+				
+				// The children node properties have been deleted from the nodes map now.
+				// But they will still exist in the UI. So, collapse them.
+				// Collapse at the end, so the bottom-most list will collapse first and then cascade up.
+				if( np_to_be_deleted.isExpanded )
+					collapseItem( np_to_be_deleted.uid );
+			}
 		}
 		
 		//-------------------------------------------------------------------------------------------------
