@@ -12,6 +12,7 @@ package com.anjantek.controls.hierTree.layouts
 	import spark.components.supportClasses.GroupBase;
 	import spark.effects.Move;
 	import spark.effects.Scale;
+	import spark.effects.easing.Power;
 	import spark.layouts.supportClasses.LayoutBase;
 	
 	public class HierVerticalLayout extends LayoutBase
@@ -225,6 +226,8 @@ package com.anjantek.controls.hierTree.layouts
 		
 		//-------------------------------------------------------------------------------------------------
 		
+		private const POWER_EASER: Power = new Power( 0.3, 3 );
+		
 		private function processNewItem( i: Number, layoutElement: ILayoutElement ): void
 		{
 			var x: Number = vector_x[ i ];
@@ -239,6 +242,7 @@ package com.anjantek.controls.hierTree.layouts
 			effects.addChild( scale_effect );
 			
 			var move_effect: Move = new Move( layoutElement );
+			move_effect.easer = POWER_EASER;
 			// Center point of the previous expanded item.
 			var elementWidth: Number = Math.ceil( layoutElement.getLayoutBoundsWidth() );
 			move_effect.xFrom = x + (elementWidth / 2);
@@ -263,6 +267,7 @@ package com.anjantek.controls.hierTree.layouts
 			if( x != current_x || y != current_y )
 			{
 				var move_effect: Move = new Move( layoutElement );
+				move_effect.easer = POWER_EASER;
 				move_effect.xFrom = current_x;
 				move_effect.xTo = x;
 				move_effect.yFrom = current_y;
