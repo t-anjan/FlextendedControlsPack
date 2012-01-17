@@ -967,8 +967,16 @@ package com.anjantek.controls.hierTree
 			
 			var node_properties: NodeProperties = _nodesMap[ object_uid ] as NodeProperties;
 			
-			if( ! node_properties || ! node_properties.hasChildren )
+			if( ! node_properties )
 				return;
+			
+			// If the node sent has no children, then expand the parent and leave it at that.
+			if( ! node_properties.hasChildren )
+			{
+				if( ! node_properties.isRoot )
+					expandItem( node_properties.parentUID );
+				return;
+			}
 			
 			var object_level: Number = node_properties.level;
 			
@@ -996,6 +1004,8 @@ package com.anjantek.controls.hierTree
 		private function actualExpandItem( object_uid: String ): void
 		{
 			var node_properties: NodeProperties = _nodesMap[ object_uid ] as NodeProperties;
+			if( ! node_properties || ! node_properties.hasChildren )
+				return;
 			var object_level: Number = node_properties.level;
 			var object: Object = node_properties.data;
 			
