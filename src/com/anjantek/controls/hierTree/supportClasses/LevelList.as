@@ -92,8 +92,13 @@ package com.anjantek.controls.hierTree.supportClasses
 			if( layout is HorizontalLayout && dataProvider && dataGroup )
 			{
 				var hor_layout: HorizontalLayout = layout as HorizontalLayout;
+				
+				if( ! sample_ir_instance )
+					sample_ir_instance = UIComponent( itemRenderer.newInstance() );
+				
+				var ir_width: Number = sample_ir_instance.width;
 				var num_items: Number = dataProvider.length;
-				this.width = PADDING_AROUND_DATA_GROUP + hor_layout.paddingLeft + hor_layout.paddingRight + ( num_items * hor_layout.columnWidth ) + ( ( num_items - 1) * hor_layout.gap );
+				this.width = PADDING_AROUND_DATA_GROUP + hor_layout.paddingLeft + hor_layout.paddingRight + ( num_items * ir_width ) + ( ( num_items - 1) * hor_layout.gap );
 				//trace("level:", level, "DG width:", dataGroup.width );
 			}
 		}
