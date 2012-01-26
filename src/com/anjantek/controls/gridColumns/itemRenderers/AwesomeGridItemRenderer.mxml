@@ -19,39 +19,40 @@
 			//-------------------------------------------------------------------------------------------------
 			
 			private var current_state: String = BASE_STATE;
-			private var is_item_column_valid: Boolean = true;
 			
 			[Bindable]
 			private var error_string: String = "";
 			
-			override public function set data(item:Object):void
+			protected function get is_item_column_valid(): Boolean
 			{
-				super.data = item;
+				var _is_item_column_valid: Boolean = true;
 				
-				if( item == null )
-					return;
+				if( null == data )
+					return _is_item_column_valid;
 				
 				if( ! (column is AwesomeGridColumn) )
-					return;
+					return _is_item_column_valid;
 				
 				var awesome_column: AwesomeGridColumn = AwesomeGridColumn( column );
 				var validity_properties: String = awesome_column.validityProperties;
 				error_string = awesome_column.validityErrorString;
 				
 				if( "" == validity_properties )
-					return;
+					return _is_item_column_valid;
 				
 				// Multiple validity properties could be specified, as a comma-separated string.
 				validity_properties = StringUtil.trimArrayElements( validity_properties, "," );
 				var array_validity_properties: Array = validity_properties.split( "," );
 				
-				is_item_column_valid = true;
-				
 				for each( var vp: String in array_validity_properties )
 				{
-					if( item.hasOwnProperty( vp ) )
-						is_item_column_valid = is_item_column_valid && Boolean( item[ vp ] );
+					if( data.hasOwnProperty( vp ) )
+						_is_item_column_valid = _is_item_column_valid && Boolean( data[ vp ] );
+					else
+						trace("Validity Property", vp, "not found in column", awesome_column.headerText );
 				}
+				
+				return _is_item_column_valid;
 			}
 			
 			//-------------------------------------------------------------------------------------------------
