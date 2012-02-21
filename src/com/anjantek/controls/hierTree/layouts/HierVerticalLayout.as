@@ -91,7 +91,7 @@ package com.anjantek.controls.hierTree.layouts
 			vector_y.splice( 0, vector_y.length );
 			
 			// First pass: Set the size and calculate content height first.
-			// Content height cannot be calculated here because the 'x' of the elements needs to be set first.
+			// Content width cannot be calculated here because the 'x' of the elements needs to be set first.
 			// Only if the 'x' is set, we can calculate the distance between the left-most and the right-most elements,
 			// which is the width of the content.
 			for( var i:int = 0 ; i < count ; i++ )

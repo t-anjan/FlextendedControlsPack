@@ -691,7 +691,7 @@ package com.anjantek.controls.hierTree
 		{
 			var level_list: LevelList;
 			
-			// If a list is already present at the next level. just change its data provider.
+			// If a list is already present at the next level, just change its data provider.
 			if( level_lists.length >= level + 1 )
 			{
 				level_list = level_lists[ level ];
