@@ -119,12 +119,16 @@ package com.anjantek.controls.checkBoxes
 			var super_skin_state: String = super.getCurrentSkinState();
 			
 			var skin_class: * = getStyle( "skinClass" );
+			
+			if( null == skin_class )
+				return super_skin_state;
+			
 			var skin_class_name: String = getQualifiedClassName( skin_class );
 			var allowed_skin_class_name: String = getQualifiedClassName( ThreeStateCheckBoxSkin );
 			
 			if( skin_class_name != allowed_skin_class_name )
 			{
-				trace("Wrong skin class being used for the three state check box!!");
+				trace("Wrong skin class being used for the three state check box!!", skin_class_name);
 				return super_skin_state;
 			}
 			
