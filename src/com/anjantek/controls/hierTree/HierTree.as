@@ -1141,7 +1141,7 @@ package com.anjantek.controls.hierTree
 				case CollectionEventKind.ADD:
 				{
 					// items are added
-					trace("Collection change: New" );
+					//trace("Collection change: New" );
 					for( i = 0 ; i <= event.items.length - 1 ; i++ )
 					{ 
 						var new_item: Object = event.items[i];
@@ -1160,7 +1160,7 @@ package com.anjantek.controls.hierTree
 				case CollectionEventKind.REPLACE:
 				{
 					// items are replaced
-					trace("Collection change: Replace" );
+					//trace("Collection change: Replace" );
 					removeDataProviderListener();
 					dataProviderChanged = true;
 					invalidateProperties();
@@ -1170,7 +1170,7 @@ package com.anjantek.controls.hierTree
 				case CollectionEventKind.REMOVE:
 				{
 					// items are removed
-					trace("Collection change: Remove" );
+					//trace("Collection change: Remove" );
 					for( i = 0 ; i <= event.items.length - 1 ; i++ )
 					{ 
 						var deleted_item: Object = event.items[i];
@@ -1188,7 +1188,7 @@ package com.anjantek.controls.hierTree
 				case CollectionEventKind.MOVE:
 				{
 					// one item is moved
-					trace("Collection change: Move" );
+					//trace("Collection change: Move" );
 					removeDataProviderListener();
 					dataProviderChanged = true;
 					invalidateProperties();
@@ -1198,7 +1198,7 @@ package com.anjantek.controls.hierTree
 				case CollectionEventKind.REFRESH:
 				{
 					// from a filter or sort...let's just reset everything
-					trace("Collection change: Refresh" );
+					//trace("Collection change: Refresh" );
 					removeDataProviderListener();
 					dataProviderChanged = true;
 					invalidateProperties();
@@ -1208,7 +1208,7 @@ package com.anjantek.controls.hierTree
 				case CollectionEventKind.RESET:
 				{
 					// reset everything
-					trace("Collection change: Reset" );
+					//trace("Collection change: Reset" );
 					removeDataProviderListener();                
 					dataProviderChanged = true;
 					invalidateProperties();
@@ -1218,7 +1218,7 @@ package com.anjantek.controls.hierTree
 				case CollectionEventKind.UPDATE:
 				{
 					//update the renderer's data and data-dependant properties. 
-					trace("Collection change: Update" );
+					//trace("Collection change: Update" );
 					for (i = 0; i < event.items.length; i++)
 					{
 						var pe:PropertyChangeEvent = event.items[i] as PropertyChangeEvent; 
