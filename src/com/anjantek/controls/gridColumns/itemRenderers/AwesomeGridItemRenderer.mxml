@@ -34,24 +34,38 @@
 					return _is_item_column_valid;
 				
 				var awesome_column: AwesomeGridColumn = AwesomeGridColumn( column );
-				var validity_properties: String = awesome_column.validityProperties;
-				error_string = awesome_column.validityErrorString;
 				
-				if( "" == validity_properties )
+				if( "" == awesome_column.validityProperties )
 					return _is_item_column_valid;
 				
 				// Multiple validity properties could be specified, as a comma-separated string.
-				validity_properties = StringUtil.trimArrayElements( validity_properties, "," );
-				var array_validity_properties: Array = validity_properties.split( "," );
+				const array_validity_properties: Array = awesome_column.validityPropertiesArray;
 				
-				for each( var vp: String in array_validity_properties )
+				// Multiple validity error strings could be specified, separated by a double pipe.
+				// The validity error strings correspond to the order of the validity properties.
+				const array_validity_error_strings: Array = awesome_column.validityErrorStringsArray;
+				
+				const error_string_per_property: Boolean = ( array_validity_properties.length == array_validity_error_strings.length );
+				
+				var vector_error_strings: Vector.<String> = new Vector.<String>(); 
+				
+				for( var i: Number = 0 ; i < array_validity_properties.length ; i++ )
 				{
-					if( data.hasOwnProperty( vp ) )
+					var vp: String = array_validity_properties[ i ] as String;
+					
+					if( data.hasOwnProperty( vp ) && data[ vp ] is Boolean )
+					{
+						if( error_string_per_property && ! Boolean( data[ vp ] ) )
+							vector_error_strings.push( array_validity_error_strings[ i ] as String );
+						
 						_is_item_column_valid = _is_item_column_valid && Boolean( data[ vp ] );
+					}
 					else
 						trace("Validity Property", vp, "not found in column", awesome_column.headerText );
 				}
 				
+				error_string = error_string_per_property ? vector_error_strings.join( ";\n " ) : String( array_validity_error_strings[ 0 ] );
+					
 				return _is_item_column_valid;
 			}
 			

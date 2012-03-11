@@ -8,6 +8,7 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.utils.StringUtil;
 			
 			//--------------------------------------------------------------------------
 			//
@@ -41,6 +42,13 @@
 			public function set validityProperties( value: String ): void
 			{
 				_valid_properties = value;
+			}
+			
+			public function get validityPropertiesArray(): Array
+			{
+				const validity_properties: String = StringUtil.trimArrayElements( validityProperties, "," );
+				const array_validity_properties: Array = validity_properties.split( "," );
+				return array_validity_properties;
 			}
 			
 			//-------------------------------------------------------------------------------------------------
@@ -87,16 +95,26 @@
 			
 			//-------------------------------------------------------------------------------------------------
 			
-			private var _validity_error_string: String = "";
+			// Multiple validity error strings could be specified, separated by a double pipe.
+			// The validity error strings correspond to the order of the validity properties.
+			private var _validity_error_strings: String = "";
 			
-			public function get validityErrorString(): String
+			public function get validityErrorStrings(): String
 			{
-				return _validity_error_string;
+				return _validity_error_strings;
 			}
 			
-			public function set validityErrorString( value: String ): void
+			public function set validityErrorStrings( value: String ): void
 			{
-				_validity_error_string = value;
+				_validity_error_strings = value;
+			}
+			
+			public function get validityErrorStringsArray(): Array
+			{
+				const validity_error_strings: String = StringUtil.trimArrayElements( validityErrorStrings, "||" );
+				const array_validity_error_strings: Array = validity_error_strings.split( "||" );
+				
+				return array_validity_error_strings;
 			}
 			
 			//-------------------------------------------------------------------------------------------------
