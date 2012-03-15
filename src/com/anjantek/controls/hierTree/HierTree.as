@@ -558,6 +558,14 @@ package com.anjantek.controls.hierTree
 		
 		//-------------------------------------------------------------------------------------------------
 		
+		override public function invalidateDisplayList():void
+		{
+			super.invalidateDisplayList();
+			Invalidate_Lists();
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		
 		private function React_To_DP_Change(): void
 		{
 			Build_Nodes_Map();
