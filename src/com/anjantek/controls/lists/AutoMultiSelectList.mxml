@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<lists:AwesomeList xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:lists="com.anjantek.controls.lists.*"
+				   selectionMode="multiple"
+				   contentBackgroundColor.base="#FFFFFF"
+				   contentBackgroundColor.valid="#CFFFD7"
+				   contentBackgroundColor.error="#FFDEDE">
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.core.IVisualElement;
+			
+			import spark.events.IndexChangeEvent;
+			/**
+			 * Override the mouseDown handler to act as though the Ctrl key is always down
+			 */
+			override protected function item_mouseDownHandler(event:MouseEvent):void
+			{
+				var newIndex:Number = dataGroup.getElementIndex(event.currentTarget as IVisualElement);
+				
+				// always assume the Ctrl key is pressed.
+				event.ctrlKey = true;
+				
+				selectedIndices = calculateSelectedIndices(newIndex, event.shiftKey, event.ctrlKey);
+				
+				var e: IndexChangeEvent = new IndexChangeEvent(IndexChangeEvent.CHANGE);
+				e.oldIndex = selectedIndex;
+				e.newIndex = newIndex;
+				
+				// Save the new selected indices and dispatch a change event to inform any listeners about the change.
+				commitSelection(); 
+				dispatchEvent(e);
+			}
+			
+			//-------------------------------------------------------------------------------------------------
+
+			public function selectAll(): void
+			{
+				if ( dataProvider )
+				{
+					var vct: Vector.<Object> = Vector.<Object>(dataProvider);
+					selectedItems = vct;
+					this.validateNow();
+				}
+			}
+			
+			//-------------------------------------------------------------------------------------------------
+
+			public function set selectedLabels( labels: Vector.<String> ): void
+			{
+				if( (dataProvider != null) && (labels != null) )
+				{
+					var select_indices: Vector.<int> = new Vector.<int>();
+					
+					for each( var _label: String in labels )
+					{
+						for( var i: Number = 0 ; i <= dataProvider.length - 1 ; i++ )
+						{
+							if( itemToLabel( dataProvider[i] ) == _label )
+							{
+								select_indices.push( i );
+							}
+						}
+					}
+				}
+				
+				selectedIndices = select_indices;
+				validateNow();
+			}
+			
+			//-------------------------------------------------------------------------------------------------
+
+		]]>
+	</fx:Script>
+	
+	
+	<lists:states>
+		<s:State name="base" />
+		<s:State name="error" />
+		<s:State name="valid" />
+	</lists:states>
+	
+</lists:AwesomeList>

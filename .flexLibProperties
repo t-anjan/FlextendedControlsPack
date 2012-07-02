@@ -17,6 +17,7 @@
     <classEntry path="com.anjantek.controls.hierTree.interfaces.INodeContainer"/>
     <classEntry path="com.anjantek.controls.hierTree.skins.LevelListSkin"/>
     <classEntry path="com.anjantek.controls.dataGrids.AwesomeDataGrid"/>
+    <classEntry path="com.anjantek.controls.lists.AwesomeList"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
