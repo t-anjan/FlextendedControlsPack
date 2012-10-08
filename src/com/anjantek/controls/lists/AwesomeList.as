@@ -16,7 +16,7 @@ package com.anjantek.controls.lists
 
 		private var _selectionMode: String = "single";
 
-		[Inspectable(defaultValue="single", enumeration="none,single,multiple")] 
+		[Inspectable(defaultValue="single", enumeration="none,single,multiple")]
 		public function get selectionMode():String
 		{
 			return _selectionMode;

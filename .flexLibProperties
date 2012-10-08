@@ -18,6 +18,7 @@
     <classEntry path="com.anjantek.controls.hierTree.skins.LevelListSkin"/>
     <classEntry path="com.anjantek.controls.dataGrids.AwesomeDataGrid"/>
     <classEntry path="com.anjantek.controls.lists.AwesomeList"/>
+    <classEntry path="com.anjantek.controls.lists.ExcludeSelectionList"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
