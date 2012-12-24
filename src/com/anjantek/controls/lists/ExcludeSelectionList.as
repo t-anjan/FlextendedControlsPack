@@ -20,7 +20,9 @@ package com.anjantek.controls.lists
 {
 	
 	import flash.events.KeyboardEvent;
+	import flash.events.MouseEvent;
 	
+	import mx.core.IVisualElement;
 	import mx.core.mx_internal;
 	import mx.events.FlexEvent;
 	
@@ -69,7 +71,7 @@ package com.anjantek.controls.lists
 	 *  @playerversion AIR 1.5
 	 *  @productversion Flex 4
 	 */
-	public class ExcludeSelectionList extends List
+	public class ExcludeSelectionList extends AwesomeList
 	{
 		
 		/**
@@ -709,6 +711,24 @@ package com.anjantek.controls.lists
 				return -1;
 			}
 		}
+		
+		//-------------------------------------------------------------------------------------------------
+
+		/**
+		 * Override the mouseDown handler to act as though the Ctrl key is always down
+		 */
+		override protected function item_mouseDownHandler(event:MouseEvent):void
+		{
+			var newIndex: Number = dataGroup.getElementIndex(event.currentTarget as IVisualElement);
+			
+			if( ! indexSelectable( newIndex ) )
+				event.preventDefault();
+			else
+				super.item_mouseDownHandler( event );
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+
 	}
 	
 	
