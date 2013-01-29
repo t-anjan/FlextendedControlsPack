@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Skin 
-	xmlns:fx="http://ns.adobe.com/mxml/2009" 
-	xmlns:s="library://ns.adobe.com/flex/spark" 
-	xmlns:fb="http://ns.adobe.com/flashbuilder/2009" 
-	xmlns:layouts="com.anjantek.controls.sliders.layouts.*" 
+<s:Skin
+	xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	xmlns:fb="http://ns.adobe.com/flashbuilder/2009"
+	xmlns:layouts="com.anjantek.controls.sliders.layouts.*"
 	xmlns:supportClasses="com.anjantek.controls.sliders.supportClasses.*"
-	alpha.disabled="0.5" 
+	alpha.disabled="0.5"
 	>
 	<fx:Metadata>
 		[HostComponent("com.anjantek.controls.sliders.MultiThumbHSlider")]
 	</fx:Metadata>
-	
+
 	<fx:Script>
 		<![CDATA[
 			import com.anjantek.controls.sliders.layouts.HorizontalValueLayoutAlign;
@@ -21,41 +21,41 @@
 		<s:State name="up" />
 		<s:State name="disabled" />
 	</s:states>
-	
+
 	<fx:Declarations>
 		<fx:Component id="thumb">
-			<supportClasses:SliderThumb skinClass="com.anjantek.controls.sliders.skins.thumb.SliderBigThumbSkin" />
+			<supportClasses:SliderThumb skinClass="com.anjantek.controls.sliders.skins.thumb.HSliderThumbSkin" />
 		</fx:Component>
-		
+
 		<fx:Component id="marker">
-			<supportClasses:SliderMarker enabled="false" skinClass="com.anjantek.controls.sliders.skins.marker.SliderBigMarkerSkin" />
+			<supportClasses:SliderMarker enabled="false" skinClass="com.anjantek.controls.sliders.skins.marker.HSliderMarkerSkin" />
 		</fx:Component>
-		
+
 		<fx:Component id="trackHighlight">
-			<supportClasses:SliderTrackHighlight skinClass="com.anjantek.controls.sliders.skins.track.HSliderWideTrackHighlightSkin"
+			<supportClasses:SliderTrackHighlight skinClass="com.anjantek.controls.sliders.skins.track.HSliderTrackHighlightSkin"
 												 left="0" right="0" top="0" bottom="0"/>
 		</fx:Component>
 	</fx:Declarations>
-	
+
 	<s:Button id="track" left="0" right="0" top="0" bottom="0" minWidth="33" width="100"
-			  skinClass="com.anjantek.controls.sliders.skins.track.HSliderWideTrackSkin" />
-	
+			  skinClass="com.anjantek.controls.sliders.skins.track.HSliderTrackSkin" />
+
 	<s:Group id="contentGroupHighlight" left="0" right="0" top="0" bottom="0" minWidth="0" minHeight="0">
 		<s:layout>
 			<layouts:HorizontalValueLayout elementAlignment="{HorizontalValueLayoutAlign.CENTER}" />
 		</s:layout>
 	</s:Group>
-	
+
 	<s:Group id="contentGroupMarker" left="0" right="0" top="0" bottom="0" minWidth="0" minHeight="0">
 		<s:layout>
 			<layouts:HorizontalValueLayout elementAlignment="{HorizontalValueLayoutAlign.CENTER}" />
 		</s:layout>
 	</s:Group>
-	
+
 	<s:Group id="contentGroup" left="0" right="0" top="0" bottom="0" minWidth="0" minHeight="0">
 		<s:layout>
 			<layouts:HorizontalValueLayout elementAlignment="{HorizontalValueLayoutAlign.CENTER}" />
 		</s:layout>
 	</s:Group>
-	
+
 </s:Skin>

@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Skin 
-	xmlns:fx="http://ns.adobe.com/mxml/2009" 
-	xmlns:s="library://ns.adobe.com/flex/spark" 
-	xmlns:fb="http://ns.adobe.com/flashbuilder/2009" 
+<s:Skin
+	xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	xmlns:fb="http://ns.adobe.com/flashbuilder/2009"
 	xmlns:supportClasses="com.anjantek.controls.sliders.supportClasses.*">
-	
+
 	<fx:Metadata>
 		[HostComponent("com.anjantek.controls.sliders.supportClasses.SliderMarker")]
-	</fx:Metadata> 
-	
+	</fx:Metadata>
+
 	<s:states>
 		<s:State name="normal" />
 		<s:State name="disabled" />
 	</s:states>
-	
-	<s:Group id="group_label" left="0" right="0" top="-35"
+
+	<s:Group id="group_label"
+             left="0" right="0" top="-30"
 			 horizontalCenter="0" alpha.disabled="0.5" >
 		<s:Rect top="0" left="0" right="0" bottom="0">
 			<s:fill>
@@ -31,11 +32,11 @@
 				 fontWeight="normal" color="white" fontSize="11">
 		</s:Label>
 	</s:Group>
-	
-	
-	<s:Button id="button" top="0" bottom="0" 
+
+
+	<s:Button id="button" top="0" bottom="0"
 			  horizontalCenter="0"
-			  width="20" height="40" 
-			  skinClass="com.anjantek.controls.sliders.skins.marker.SliderBigMarkerButtonSkin" />
-	
+			  width="20" height="40"
+			  skinClass="com.anjantek.controls.sliders.skins.marker.HSliderMarkerButtonSkin" />
+
 </s:Skin>
