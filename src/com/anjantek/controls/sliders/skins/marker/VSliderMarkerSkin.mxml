@@ -16,7 +16,7 @@
 
     <!--Shows the thumb's value on the slider.-->
     <s:Group id="group_label"
-             left="-30" top="0" bottom="0"
+             x="{button.x - group_label.width - 10}" top="0" bottom="0"
              verticalCenter="0" alpha.disabled="0.5">
 
         <s:Rect top="0" left="0" right="0" bottom="0">
@@ -39,7 +39,6 @@
 
 
     <s:Button id="button" top="0"
-              horizontalCenter="0" verticalCenter="0"
               width="40" height="20"
 			  skinClass="com.anjantek.controls.sliders.skins.marker.VSliderMarkerButtonSkin" />
 

@@ -1,27 +1,18 @@
 package com.anjantek.controls.sliders.supportClasses
 {
-	import com.anjantek.controls.sliders.skins.track.HSliderTrackHighlightSkin;
+import flash.events.Event;
+import flash.events.KeyboardEvent;
+import flash.events.MouseEvent;
+import flash.ui.Keyboard;
 
-	import flash.events.Event;
-	import flash.events.FocusEvent;
-	import flash.events.KeyboardEvent;
-	import flash.events.MouseEvent;
-	import flash.ui.Keyboard;
+import mx.events.SandboxMouseEvent;
+import mx.events.StateChangeEvent;
+import mx.states.State;
 
-	import mx.binding.utils.BindingUtils;
-	import mx.controls.Label;
-	import mx.events.FlexEvent;
-	import mx.events.SandboxMouseEvent;
-	import mx.events.StateChangeEvent;
-	import mx.states.State;
+import spark.components.TextInput;
+import spark.components.supportClasses.SkinnableComponent;
 
-	import spark.components.Button;
-	import spark.components.TextInput;
-	import spark.components.supportClasses.SkinnableComponent;
-	import spark.core.IDisplayText;
-	import spark.events.TextOperationEvent;
-
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
 
 	[Event(name="change", type="flash.events.Event")]
 
@@ -82,7 +73,6 @@ package com.anjantek.controls.sliders.supportClasses
 		public function SliderTrackHighlight()
 		{
 			super();
-			setStyle( 'skinClass', HSliderTrackHighlightSkin );
 			Add_States();
 
 			this.currentState = BASE_STATE;

@@ -81,7 +81,7 @@
 				 textAlign="center" width="135"
 				 verticalCenter="0"
 				 fontWeight="bold" fontSize="14"
-				 right="-22" right.edit="-23"/>
+				 left="{hostComponent.width + 10}" left.edit="{hostComponent.width + 11}"/>
 
     <!-- hit area -->
     <s:Rect left="0" right="0" top="0" bottom="0">

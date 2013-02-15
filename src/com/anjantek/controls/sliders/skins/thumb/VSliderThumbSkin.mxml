@@ -15,28 +15,9 @@
 		<s:State name="disabled" />
 	</s:states>
 
-	<s:HGroup id="group_add_delete" gap="3"
-			  left="-30"
-			  top="1" bottom="1"
-			  verticalCenter="0"
-			  horizontalAlign="center" verticalAlign="middle"
-			  visible="false" visible.over="true">
-
-		<s:Button id="removeThumb"
-				  width="12" height="12" skinClass="com.anjantek.controls.sliders.skins.thumb.RemoveThumbButtonSkin" />
-
-		<s:Button id="addThumb"
-				  width="12" height="12" skinClass="com.anjantek.controls.sliders.skins.thumb.AddThumbButtonSkin" />
-	</s:HGroup>
-
-    <s:Button id="button" top="0"
-              horizontalCenter="0" verticalCenter="0"
-              width="40" height="20"
-              skinClass="com.anjantek.controls.sliders.skins.thumb.VSliderThumbButtonSkin" />
-
     <!--Shows the thumb's value on the slider.-->
     <s:Group id="group_label"
-             left="{button.width + 30}" top="0" bottom="0"
+             x="{button.x - group_label.width - 10}" top="0" bottom="0"
              verticalCenter="0" alpha.disabled="0.5">
 
         <s:Rect top="0" left="0" right="0" bottom="0">
@@ -57,8 +38,26 @@
 
     </s:Group>
 
+    <s:Button id="button" top="0"
+              width="40" height="20"
+              skinClass="com.anjantek.controls.sliders.skins.thumb.VSliderThumbButtonSkin" />
+
+    <s:HGroup id="group_add_delete" gap="3"
+              x="{button.x + button.width + 10}"
+              top="1" bottom="1"
+              verticalCenter="0"
+              horizontalAlign="center" verticalAlign="middle"
+              visible="false" visible.over="true">
+
+        <s:Button id="removeThumb"
+                  width="12" height="12" skinClass="com.anjantek.controls.sliders.skins.thumb.RemoveThumbButtonSkin" />
+
+        <s:Button id="addThumb"
+                  width="12" height="12" skinClass="com.anjantek.controls.sliders.skins.thumb.AddThumbButtonSkin" />
+    </s:HGroup>
+
 	<!-- hit area -->
-	<s:Rect left="-35" right="-38" top="0" bottom="0">
+	<s:Rect left="{group_label.x}" width="100%" top="0" bottom="0">
 		<s:fill>
 			<s:SolidColor alpha="0"/>
 		</s:fill>
