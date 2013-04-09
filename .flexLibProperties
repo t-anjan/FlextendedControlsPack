@@ -9,7 +9,6 @@
     <classEntry path="com.anjantek.controls.sliders.MultiThumbHSlider"/>
     <classEntry path="com.anjantek.controls.sliders.supportClasses.SliderMarker"/>
     <classEntry path="com.anjantek.controls.sliders.supportClasses.SliderThumbBase"/>
-    <classEntry path="com.anjantek.controls.sliders.skins.track.HSliderWideTrackHighlightSkin"/>
     <classEntry path="com.anjantek.controls.sliders.supportClasses.SliderTrackHighlight"/>
     <classEntry path="com.anjantek.controls.sliders.events.ThumbEvent"/>
     <classEntry path="com.anjantek.controls.sliders.events.MultiThumbSliderEvent"/>
