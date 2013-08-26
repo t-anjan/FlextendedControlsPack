@@ -63,7 +63,7 @@
 				target_x = parent_width - width + 1;
 				
 				this.x = parent_width;
-				this.y = 70;
+				this.y = 130;
 				
 				BindingUtils.bindProperty( closeButton, "visible", this, "showCloseButton" );
 				
